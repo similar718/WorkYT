@@ -5,4 +5,9 @@
 
     <dimen name="date_unit_text_size">18sp</dimen>
     <dimen name="picker_view_height">160dp</dimen>
+
+    <!-- 选中字体 -->
+    <dimen name="design_bottom_navigation_active_text_size">8sp</dimen>
+    <!-- 未选中字体 -->
+    <dimen name="design_bottom_navigation_text_size">8sp</dimen>
 </resources>

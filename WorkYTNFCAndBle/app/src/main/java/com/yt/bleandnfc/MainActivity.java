@@ -48,6 +48,11 @@ public class MainActivity extends YTBaseActivity<EmptyViewModel, ActivityMainBin
         NavigationUI.setupActionBarWithNavController(this, mNavController, appBarConfiguration);
         NavigationUI.setupWithNavController(dataBinding.navView, mNavController);
 
+        // 底部文字大小的问题处理
+        dataBinding.navView.setItemTextAppearanceActive(R.style.bottom_selected_text);
+        dataBinding.navView.setItemTextAppearanceInactive(R.style.bottom_normal_text);
+
+
         // 底部点击事件的处理 保存状态信息的处理
         //bottomNavigationView Item 选择监听
         dataBinding.navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

@@ -132,12 +132,14 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
             case R.id.rl_bind: // 绑定
                 IntentManager.getInstance().goNextStepScanActivity(getActivity(),1);
                 break;
-            case R.id.rl_unbind: // 解绑
+            case R.id.rl_unbind: // 解绑 TODO
+                IntentManager.getInstance().goNextStepScanActivity(getActivity(),3);
                 break;
             case R.id.rl_wxby: // 维修保养
+                Navigation.findNavController(v).navigate(R.id.navigation_wb);
                 break;
-            case R.id.rl_wbgh: // 维保归还
-                showWarningRecordDetail("操作员“XXX（工号：11111）”于2020年9月24日09点25分使用工作梯（编号：xxxx）发生违规行为，违规内容“违规停放”。\n 返回到主界面");
+            case R.id.rl_wbgh: // 维保归还 TODO
+//                showWarningRecordDetail("操作员“XXX（工号：11111）”于2020年9月24日09点25分使用工作梯（编号：xxxx）发生违规行为，违规内容“违规停放”。\n 返回到主界面");
                 break;
         }
     }
@@ -261,18 +263,4 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         super.onStop();
         stopFlipping();
     }
-
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//
-//        EventBus.getDefault().unregister(this);
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEventScanData1(ScanResult result) {
-//        if (result.type == 1) {
-//
-//        }
-//    }
 }
