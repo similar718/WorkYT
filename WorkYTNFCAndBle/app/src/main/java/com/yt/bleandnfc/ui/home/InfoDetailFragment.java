@@ -139,7 +139,7 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
                 Navigation.findNavController(v).navigate(R.id.navigation_wb);
                 break;
             case R.id.rl_wbgh: // 维保归还 TODO
-//                showWarningRecordDetail("操作员“XXX（工号：11111）”于2020年9月24日09点25分使用工作梯（编号：xxxx）发生违规行为，违规内容“违规停放”。\n 返回到主界面");
+                IntentManager.getInstance().goNextStepScanActivity(getActivity(),4);
                 break;
         }
     }
