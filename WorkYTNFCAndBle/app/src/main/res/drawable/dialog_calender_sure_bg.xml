@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/dialog_warning_calender_sure_bg" />
+    <corners
+        android:topLeftRadius="@dimen/dp_0"
+        android:topRightRadius="@dimen/dp_0"
+        android:bottomLeftRadius="@dimen/dp_13"
+        android:bottomRightRadius="@dimen/dp_13"
+        />
+</shape>

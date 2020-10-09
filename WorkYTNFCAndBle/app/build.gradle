@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.yt.bleandnfc"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dataBinding {
+        enabled true
+    }
+
+}
+
+dependencies {
+    implementation rootProject.ext.impl.appcompat
+    implementation rootProject.ext.impl.material
+    implementation rootProject.ext.impl.constraintlayout
+    implementation rootProject.ext.impl.vectordrawable
+    implementation rootProject.ext.impl.navigation
+    implementation rootProject.ext.impl.navigationui
+    implementation rootProject.ext.impl.lifecycle
+
+    implementation rootProject.ext.impl.eventbus
+
+    implementation rootProject.ext.impl.SmartRefreshLayout
+    implementation rootProject.ext.impl.SmartRefreshHeader //没有使用特殊Header，可以不加这行
+
+    api project(":common")
+    implementation files('libs\\zxing_core-3.3.3.jar')
+}

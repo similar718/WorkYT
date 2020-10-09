@@ -1,0 +1,5 @@
+rootProject.name='WorkYTNFCAndBle'
+include ':app', ':ble'
+include ':base'
+include ':common'
+include ':network'

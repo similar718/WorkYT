@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg">
+
+        <com.yt.bleandnfc.ui.view.CommonTitleBarView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title_txt="@string/setting"
+            android:id="@+id/title_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/current_ip_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_43"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/title_view"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_43"
+            app:layout_constraintTop_toTopOf="@+id/current_ip_bg"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="@dimen/dp_13"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_size_13"
+            android:gravity="center_vertical"
+            android:text="@string/setting_current_ip"
+            />
+
+        <TextView
+            android:id="@+id/tv_current_content"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_43"
+            app:layout_constraintTop_toTopOf="@+id/current_ip_bg"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="@dimen/dp_13"
+            android:textColor="@color/item_line"
+            android:textSize="@dimen/text_size_13"
+            android:layout_marginRight="@dimen/dp_14"
+            android:gravity="center_vertical"
+            android:text="192.263.110.5"
+            />
+
+        <TextView
+            android:id="@+id/set_ip_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_43"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/current_ip_bg"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_43"
+            app:layout_constraintTop_toTopOf="@+id/set_ip_bg"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="@dimen/dp_13"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_size_13"
+            android:gravity="center_vertical"
+            android:text="@string/setting_ip"
+            />
+
+        <ImageView
+            android:layout_width="@dimen/dp_43"
+            android:layout_height="@dimen/dp_43"
+            android:background="@drawable/detail_right"
+            app:layout_constraintTop_toTopOf="@+id/set_ip_bg"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/set_port_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_43"
+            android:layout_marginTop="@dimen/dp_1_px"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/set_ip_bg"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_43"
+            app:layout_constraintTop_toTopOf="@+id/set_port_bg"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="@dimen/dp_13"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_size_13"
+            android:gravity="center_vertical"
+            android:text="@string/setting_port"
+            />
+
+        <ImageView
+            android:layout_width="@dimen/dp_43"
+            android:layout_height="@dimen/dp_43"
+            android:background="@drawable/detail_right"
+            app:layout_constraintTop_toTopOf="@+id/set_port_bg"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/tv_logout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_43"
+            app:layout_constraintTop_toBottomOf="@+id/set_port_bg"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/dp_19"
+            android:textSize="@dimen/text_size_13"
+            android:textColor="@color/text_black"
+            android:text="@string/setting_login_out"
+            android:gravity="center"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

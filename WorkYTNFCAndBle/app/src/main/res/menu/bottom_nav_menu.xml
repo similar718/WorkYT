@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_info_detail"
+        android:icon="@drawable/tab_info_detail_selected"
+        android:title="@string/info_detail"/>
+
+    <item
+        android:id="@+id/navigation_warning_record"
+        android:icon="@drawable/tab_warning_include_select"
+        android:title="@string/warning_record"/>
+
+    <item
+        android:id="@+id/navigation_check_location"
+        android:icon="@drawable/tab_findcar_location_select"
+        android:title="@string/check_location"/>
+
+    <item
+        android:id="@+id/navigation_wb"
+        android:icon="@drawable/tab_wb_select"
+        android:title="@string/wb" />
+
+</menu>

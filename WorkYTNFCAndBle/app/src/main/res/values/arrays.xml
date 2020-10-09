@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (C) 2008 ZXing authors
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <string-array name="country_codes" tools:ignore="MissingTranslation">
+    <item>-</item>
+    <item>AR</item>
+    <item>AU</item>
+    <item>BR</item>
+    <item>BG</item>
+    <item>CA</item>
+    <item>CH</item>
+    <item>CN</item>
+    <item>CZ</item>
+    <item>DE</item>
+    <item>DK</item>
+    <item>ES</item>
+    <item>FI</item>
+    <item>FR</item>
+    <item>GB</item>
+    <item>GR</item>
+    <item>HU</item>
+    <item>ID</item>
+    <item>IT</item>
+    <item>JP</item>
+    <item>KR</item>
+    <item>NL</item>
+    <item>PL</item>
+    <item>PT</item>
+    <item>RO</item>    
+    <item>RU</item>
+    <item>SE</item>
+    <item>SK</item>
+    <item>SI</item>
+    <item>TR</item>
+    <item>TW</item>
+    <item>US</item>
+  </string-array>
+  <string-array name="preferences_front_light_values" tools:ignore="MissingTranslation">
+    <item>ON</item>
+    <item>AUTO</item>
+    <item>OFF</item>
+  </string-array>
+  <string-array name="preferences_front_light_options">
+    <item>@string/preferences_front_light_on</item>
+    <item>@string/preferences_front_light_auto</item>
+    <item>@string/preferences_front_light_off</item>
+  </string-array>
+  <string-array name="heart_abnormal">
+    <item>停搏</item>
+    <item>室颤/室速</item>
+    <item>室性过速</item>
+    <item>室性心动过缓</item>
+    <item>极度心动过速</item>
+    <item>极度心动过缓</item>
+    <item>非持续性室速</item>
+    <item>室性节律</item>
+    <item>多连发室早</item>
+    <item>多连发室早</item>
+    <item>室性成对</item>
+    <item>室性成对</item>
+    <item>室性成对</item>
+    <item>多形PVCs</item>
+    <item>(R on T)</item>
+    <item>室性二联律</item>
+    <item>室性三联律</item>
+    <item>室性单发</item>
+    <item>暂停</item>
+    <item>起搏器夺获失败</item>
+    <item>起搏器输出失败</item>
+    <item>漏搏</item>
+    <item>心动过速</item>
+    <item>心动过缓</item>
+    <item>心律不齐</item>
+    <item>房颤</item>
+    <item>室上性过速</item>
+    <item>室上性成对</item>
+    <item>室上性二联律</item>
+    <item>室上性三联律</item>
+    <item>室上性单发</item>
+    <item>起搏器感知失败</item>
+    <item>ST抬高</item>
+    <item>ST压低</item>
+    <item>阻塞性睡眠呼吸暂停</item>
+  </string-array>
+  <string-array name="abnormal_glossary_url">
+      <item>https://baike.baidu.com/item/%E7%AA%A6%E6%80%A7%E5%81%9C%E6%90%8F/3290226</item>
+      <item>https://baike.baidu.com/item/%E5%BF%83%E5%AE%A4%E6%89%91%E5%8A%A8%E4%B8%8E%E9%A2%A4%E5%8A%A8?fromtitle=%E5%AE%A4%E9%A2%A4%26fromid=7426201</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E5%BF%83%E5%8A%A8%E8%BF%87%E9%80%9F?fromtitle=%E5%AE%A4%E6%80%A7%E8%BF%87%E9%80%9F%26fromid=169</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E9%80%B8%E6%90%8F%E5%8F%8A%E5%AE%A4%E6%80%A7%E9%80%B8%E6%90%8F%E5%BF%83%E5%BE%8B/10455190</item>
+      <item></item>
+      <item></item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E5%BF%83%E5%8A%A8%E8%BF%87%E9%80%9F/7990814</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E8%87%AA%E4%B8%BB%E8%8A%82%E5%BE%8B/15788931</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E6%97%A9%E6%90%8F/8393589?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E6%97%A9%E6%90%8F/8393589?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E6%97%A9%E6%90%8F/8393589?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E6%97%A9%E6%90%8F/8393589?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E6%97%A9%E6%90%8F/8393589?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E6%97%A9%E6%90%8F/8393589?fr=aladdin</item>
+      <item></item>
+      <item>https://baike.baidu.com/item/%E4%BA%8C%E8%81%94%E5%BE%8B</item>
+      <item>https://baike.baidu.com/item/%E4%B8%89%E8%81%94%E5%BE%8B</item>
+      <item>https://baike.baidu.com/item/%E5%AE%A4%E6%80%A7%E6%97%A9%E6%90%8F/8393589?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/%E7%AA%A6%E6%80%A7%E5%81%9C%E6%90%8F/3290226</item>
+      <item>https://baike.baidu.com/item/%E5%BF%83%E8%84%8F%E8%B5%B7%E6%90%8F%E5%99%A8/1215661?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/%E5%BF%83%E8%84%8F%E8%B5%B7%E6%90%8F%E5%99%A8/1215661?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/%E7%AA%A6%E6%80%A7%E5%81%9C%E6%90%8F/3290226</item>
+      <item>https://baike.baidu.com/item/%E5%BF%83%E5%8A%A8%E8%BF%87%E9%80%9F</item>
+      <item>https://baike.baidu.com/item/%E5%BF%83%E5%8A%A8%E8%BF%87%E7%BC%93</item>
+      <item>https://baike.baidu.com/item/%E5%BF%83%E5%BE%8B%E4%B8%8D%E9%BD%90</item>
+      <item>https://baike.baidu.com/item/%E6%88%BF%E9%A2%A4</item>
+      <item></item>
+      <item></item>
+      <item></item>
+      <item></item>
+      <item></item>
+      <item>https://baike.baidu.com/item/%E5%BF%83%E8%84%8F%E8%B5%B7%E6%90%8F%E5%99%A8/1215661?fr=aladdin</item>
+      <item>https://baike.baidu.com/item/ST%E6%AE%B5</item>
+      <item>https://baike.baidu.com/item/ST%E6%AE%B5</item>
+      <item>https://baike.baidu.com/item/%E9%98%BB%E5%A1%9E%E6%80%A7%E7%9D%A1%E7%9C%A0%E5%91%BC%E5%90%B8%E6%9A%82%E5%81%9C/10145124?fr=aladdin</item>
+  </string-array>
+</resources>

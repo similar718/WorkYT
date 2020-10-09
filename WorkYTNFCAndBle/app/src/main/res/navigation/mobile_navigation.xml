@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_info_detail">
+
+    <fragment
+        android:id="@+id/navigation_info_detail"
+        android:name="com.yt.bleandnfc.ui.home.InfoDetailFragment"
+        android:label="@string/info_detail"
+        tools:layout="@layout/fragment_info_detail" />
+
+    <fragment
+        android:id="@+id/navigation_warning_record"
+        android:name="com.yt.bleandnfc.ui.warningrecord.WarningRecordFragment"
+        android:label="@string/warning_record"
+        tools:layout="@layout/fragment_warning_record" />
+
+    <fragment
+        android:id="@+id/navigation_check_location"
+        android:name="com.yt.bleandnfc.ui.checklocation.CheckLocationFragment"
+        android:label="@string/check_location"
+        tools:layout="@layout/fragment_check_location" />
+
+    <fragment
+        android:id="@+id/navigation_wb"
+        android:name="com.yt.bleandnfc.ui.wb.WbFragment"
+        android:label="@string/wb"
+        tools:layout="@layout/fragment_wb" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.yt.bleandnfc.ui.settings.SettingsFragment"
+        android:label="@string/setting"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

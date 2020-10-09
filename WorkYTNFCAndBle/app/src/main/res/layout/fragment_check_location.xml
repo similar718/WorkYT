@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg">
+
+        <com.yt.bleandnfc.ui.view.CommonTitleBarView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title_txt="@string/check_location"
+            android:id="@+id/title_view"
+            />
+        <WebView
+            android:id="@+id/wv_view"
+            android:layout_below="@+id/title_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_7"
+            android:layout_above="@+id/rl_bottom"
+            />
+
+        <RelativeLayout
+            android:id="@+id/rl_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_95"
+            android:background="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_7"
+            >
+            <EditText
+                android:id="@+id/et_car_code"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_27"
+                android:background="@color/bg"
+                android:layout_marginTop="@dimen/dp_14"
+                android:layout_marginLeft="@dimen/dp_14"
+                android:layout_marginRight="@dimen/dp_14"
+                android:textColor="@color/text_gray"
+                android:textColorHint="@color/text_gray"
+                android:hint="@string/check_location_input_car_code"
+                android:textSize="@dimen/text_size_10"
+                android:paddingLeft="@dimen/dp_7"
+                android:gravity="center_vertical"
+                />
+            <TextView
+                android:id="@+id/tv_sure"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_102"
+                android:layout_marginRight="@dimen/dp_102"
+                android:layout_below="@+id/et_car_code"
+                android:layout_marginTop="@dimen/dp_9"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/dp_13"
+                android:text="@string/sure_commit"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_13"
+                android:textStyle="bold"
+                android:background="@drawable/sure_commit_btn_bg"
+                android:gravity="center"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+</layout>

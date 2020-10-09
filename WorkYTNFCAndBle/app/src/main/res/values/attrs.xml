@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 自定义标题栏属性 -->
+    <declare-styleable name="CommonTitleBarView">
+        <attr name="title_bg_res" format="reference"/> <!-- 背景图片 -->
+        <attr name="title_bg_show" format="boolean"/> <!-- 背景图片是否显示 -->
+        <attr name="left_txt" format="string"/> <!-- 左边文字 默认为空-->
+        <attr name="left_iv_res" format="reference"/> <!-- 左边图片 默认为返回-->
+        <attr name="left_tv_show" format="boolean"/> <!-- 左边文字是否显示 默认为不显示-->
+        <attr name="left_iv_show" format="boolean"/> <!-- 左边图片是否显示 默认为显示-->
+        <attr name="title_txt" format="string"/> <!-- 标题文字 默认为首页 -->
+        <attr name="right_txt" format="string"/> <!-- 右边文字 默认为空 -->
+        <attr name="right_iv_res" format="reference"/> <!-- 右边图片 默认为返回 -->
+        <attr name="right_tv_show" format="boolean"/> <!-- 右边文字是否显示 默认不显示 -->
+        <attr name="right_iv_show" format="boolean"/> <!-- 右边图片是否显示 默认不显示-->
+    </declare-styleable>
+
+</resources>
