@@ -198,7 +198,7 @@
     <string name="wxby_choice_car_3">故障报修</string>
     <string name="wxby_choice_car_4">其他</string>
     <string name="wxby_face_back_input_hint">请输入您想反馈的问题</string>
-    <string name="wxby_camera_hint">请拍摄损坏位置，便于平台更快审核</string>
+    <string name="wxby_camera_hint">请拍摄需维修部件，便于平台更快审核</string>
 
     <string name="year">年</string>
     <string name="month">月</string>
