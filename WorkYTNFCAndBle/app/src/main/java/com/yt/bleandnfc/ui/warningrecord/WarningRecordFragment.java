@@ -6,18 +6,24 @@ import android.widget.RadioGroup;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.yt.base.mvvm.model.IBaseModelListener;
+import com.yt.base.mvvm.model.IBaseModelListener1;
 import com.yt.base.mvvm.model.PagingResult;
 import com.yt.bleandnfc.R;
+import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
 import com.yt.bleandnfc.base.fragment.YTBaseFragment;
+import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.FragmentWarningRecordBinding;
+import com.yt.bleandnfc.eventbus.AlarmAddResult;
 import com.yt.bleandnfc.mvvm.model.WarningRecordModel;
-import com.yt.bleandnfc.mvvm.viewmodel.WarningRecordItemViewModel;
 import com.yt.bleandnfc.ui.adapter.WarningRecordItemAdapter;
 import com.yt.bleandnfc.ui.dialog.WarningRecordDatePickerDialog;
 import com.yt.bleandnfc.ui.dialog.WarningRecordDetailDialog;
 import com.yt.bleandnfc.ui.view.CommonTitleBarView;
 import com.yt.bleandnfc.utils.TimeUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel, FragmentWarningRecordBinding> implements IBaseModelListener<List<WarningRecordItemViewModel>> {
+public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel, FragmentWarningRecordBinding> implements IBaseModelListener1<List<AlarmFindAlarmByStateModel.ObjBean>> {
 
     @Override
     public void onLazyLoad() {
@@ -50,7 +56,9 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
     WarningRecordModel warningRecordModel;
 
     @Override
-    protected void initData() {
+    public void initData() {
+        EventBus.getDefault().register(this);
+
         // 月历时间
         Calendar ca = Calendar.getInstance();
         int year = ca.get(Calendar.YEAR);
@@ -101,8 +109,8 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
         dataBinding.rlCalender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO 显示日历dialog
-                mTimerPicker.show("2020-10-7 17:15");
+                // 显示日历dialog
+                mTimerPicker.show(TimeUtil.getTodayTime());
             }
         });
         // 类型点击事件处理
@@ -122,15 +130,30 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
                     case R.id.tv_stop_warning_type: // 停放报警
                         warning_type = 2;
                         break;
+                    case R.id.tv_outofindex_warning_type: // 越界报警
+                        warning_type = 3;
+                        break;
                 }
-                // 更新列表 TODO
+                // 更新列表
+                warningRecordModel.refresh();
             }
         });
 
         mAdapter.setOnItemClickListener(new WarningRecordItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                showWarningRecordDetail(viewModels.get(position).contentStr);
+                StringBuilder stringBuilder = new StringBuilder();
+                // 操作员“XXX（工号：11111）”于2020年9月24日09点25分使用工作梯（编号：xxxx）发生违规行为，违规内容“违规停放”。
+                stringBuilder.append("操作员“")
+                        .append(viewModels.get(position).getUserName())
+                        .append("（工号：")
+                        .append(viewModels.get(position).getUserId())
+                        .append("）”于")
+                        .append(viewModels.get(position).getCreateTime())
+                        .append("使用工作梯（编号：")
+                        .append(viewModels.get(position).getCarNumber())
+                        .append("）发生违规行为，违规内容“违规停放”。");
+                showWarningRecordDetail(stringBuilder.toString());
             }
         });
     }
@@ -144,14 +167,22 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
         mWarningRecordDetail.showDialog(content);
     }
 
-    private List<WarningRecordItemViewModel> viewModels = new ArrayList<>();
+    private List<AlarmFindAlarmByStateModel.ObjBean> viewModels = new ArrayList<>();
 
     @Override
-    public void onLoadSuccess(List<WarningRecordItemViewModel> baseCustomViewModels, PagingResult... results) {
-        if(results != null && results.length > 0 && results[0].isFirstPage) {
-            viewModels.clear();
+    public void onLoadSuccess(List<AlarmFindAlarmByStateModel.ObjBean> baseCustomViewModels, PagingResult... results) {
+        if(results != null && results.length > 0) {
+            if (results[0].isFirstPage) {
+                viewModels.clear();
+            }
+            if (!results[0].hasNextPage) {
+                dataBinding.refreshLayout.setNoMoreData(true);
+            } else {
+                dataBinding.refreshLayout.setNoMoreData(false);
+            }
         }
         viewModels.addAll(baseCustomViewModels);
+        Constants.mAlarmNum = viewModels.size();
         mAdapter.setData(viewModels);
         dataBinding.refreshLayout.finishRefresh();
         dataBinding.refreshLayout.finishLoadMore();
@@ -160,6 +191,8 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
     @Override
     public void onLoadFail(String message) {
         showToastMsg(message);
+        dataBinding.refreshLayout.finishRefresh();
+        dataBinding.refreshLayout.finishLoadMore();
     }
 
 
@@ -196,4 +229,17 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
         mTimerPicker.setShowYear(true);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventScanData(AlarmAddResult result) {
+        if (result.type == 1) {
+            warningRecordModel.refresh();
+        }
+    }
 }

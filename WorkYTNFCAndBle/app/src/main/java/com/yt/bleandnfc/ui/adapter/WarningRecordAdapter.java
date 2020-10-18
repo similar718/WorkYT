@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import com.yt.base.customview.BaseCustomViewModel;
 import com.yt.base.recyclerview.BaseViewHolder;
 import com.yt.bleandnfc.mvvm.view.WarningRecordItemView;
+import com.yt.bleandnfc.mvvm.viewmodel.WarningRecordItemViewModel;
 
 import java.util.List;
 
@@ -13,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class WarningRecordAdapter extends RecyclerView.Adapter<BaseViewHolder>{
 
-    private List<BaseCustomViewModel> mItems;
+    private List<WarningRecordItemViewModel> mItems;
 
-    public void setData(List<BaseCustomViewModel> items) {
+    public void setData(List<WarningRecordItemViewModel> items) {
         mItems = items;
         notifyDataSetChanged();
     }

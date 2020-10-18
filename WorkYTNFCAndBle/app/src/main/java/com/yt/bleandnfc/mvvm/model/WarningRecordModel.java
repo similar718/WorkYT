@@ -1,63 +1,58 @@
 package com.yt.bleandnfc.mvvm.model;
 
-import com.yt.base.mvvm.model.IBaseModelListener;
+import com.yt.base.mvvm.model.IBaseModelListener1;
 import com.yt.base.mvvm.model.PagingResult;
-import com.yt.bleandnfc.mvvm.viewmodel.WarningRecordItemViewModel;
+import com.yt.bleandnfc.api.YTApiInterface;
+import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
+import com.yt.bleandnfc.base.observer.BaseHttpObserver;
+import com.yt.bleandnfc.manager.SPManager;
+import com.yt.bleandnfc.utils.NetworkUtil;
+import com.yt.network.YTNetworkApi;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class WarningRecordModel {
-    private IBaseModelListener<List<WarningRecordItemViewModel>> mListener;
-    private int mPage = 1;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
-    public WarningRecordModel(IBaseModelListener listener){
+public class WarningRecordModel {
+    private IBaseModelListener1<List<AlarmFindAlarmByStateModel.ObjBean>> mListener;
+    private int mPage = -1;
+    private final int mSize = 10;
+    private final int init_page = 0;
+
+    public WarningRecordModel(IBaseModelListener1 listener){
         mListener = listener;
     }
 
     public void refresh(){
-        mPage = 1;
+        mPage = init_page;
         loadNextPage();
     }
 
     public void loadNextPage() {
-        List<WarningRecordItemViewModel> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++){
-            WarningRecordItemViewModel viewModel = new WarningRecordItemViewModel("领用报警",i+".使用工作梯（编号201520）发生违法行为...","2020-09-28 11:35");
-            list.add(viewModel);
+        if (!NetworkUtil.isNetworkConnected()) {
+            mListener.onLoadFail("手机网络不可用，请检查手机网络设置");
+            return;
         }
-        mListener.onLoadSuccess(list, new PagingResult(mPage == 1, list.isEmpty(), list.size() >= 10));
-        mPage ++;
+        YTNetworkApi.getService(YTApiInterface.class)
+                .alarmFindAlarmByState(SPManager.getInstance().getUserId(),mPage,mSize)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseHttpObserver<AlarmFindAlarmByStateModel>() {
+                    @Override
+                    public void getData(AlarmFindAlarmByStateModel data) {
+                        if (data.getCode() == 200) {
+                            mListener.onLoadSuccess(data.getObj(), new PagingResult(data.getObj().isEmpty(), mPage == init_page, data.getObj().size() == mSize));
+                            mPage++;
+                        } else {
+                            mListener.onLoadFail(data.getMessage());
+                        }
+                    }
 
-//        TecentNetworkApi.getService(NewsApiInterface.class)
-//                .getNewsList(mChannelId,
-//                        mChannelName, String.valueOf(mPage))
-//                .compose(TecentNetworkApi.getInstance().applySchedulers(new BaseObserver<NewsListBean>() {
-//                    @Override
-//                    public void onSuccess(NewsListBean newsChannelsBean) {
-//                        List<BaseCustomViewModel> viewModels = new ArrayList<>();
-//                        for(NewsListBean.Contentlist contentlist:newsChannelsBean.showapiResBody.pagebean.contentlist){
-//                            if(contentlist.imageurls != null && contentlist.imageurls.size() > 0){
-//                                PictureTitleViewModel pictureTitleViewModel = new PictureTitleViewModel();
-//                                pictureTitleViewModel.pictureUrl = contentlist.imageurls.get(0).url;
-//                                pictureTitleViewModel.jumpUri = contentlist.link;
-//                                pictureTitleViewModel.title = contentlist.title;
-//                                viewModels.add(pictureTitleViewModel);
-//                            } else {
-//                                TitleViewModel titleViewModel = new TitleViewModel();
-//                                titleViewModel.jumpUri = contentlist.link;
-//                                titleViewModel.title = contentlist.title;
-//                                viewModels.add(titleViewModel);
-//                            }
-//                        }
-//                        mListener.onLoadSuccess(viewModels, new PagingResult(mPage == 1, viewModels.isEmpty(), viewModels.size() >= 10));
-//                        mPage ++;
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//                }));
+                    @Override
+                    public void onErrorInfo(Throwable e) {
+                        mListener.onLoadFail(e.getMessage());
+                    }
+                });
     }
 }

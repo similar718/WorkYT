@@ -152,13 +152,17 @@
                     <EditText
                         android:id="@+id/et_scan_input"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_45"
-                        android:background="@null"
+                        android:layout_height="@dimen/dp_30"
+                        android:background="@drawable/dialog_scan_bg"
                         android:hint="@string/scan_input_hint"
                         android:gravity="center"
                         android:textSize="@dimen/text_size_10"
-                        android:textColor="@color/item_line"
-                        android:textColorHint="@color/item_line"
+                        android:layout_marginTop="@dimen/dp_7"
+                        android:layout_marginBottom="@dimen/dp_7"
+                        android:layout_marginLeft="@dimen/dp_11"
+                        android:layout_marginRight="@dimen/dp_11"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
                         />
                     <TextView
                         android:id="@+id/tv_scan_input_sure"
@@ -166,9 +170,8 @@
                         android:layout_height="@dimen/dp_35"
                         android:textColor="@color/white"
                         android:text="@string/sure"
-                        android:background="@drawable/scan_input_sure_bg"
-                        android:enabled="false"
-                        android:textSize="@dimen/text_size_13"
+                        android:background="@drawable/scan_input_trans_bg"
+                        android:textSize="@dimen/text_size_12"
                         android:textStyle="bold"
                         android:gravity="center"
                         />

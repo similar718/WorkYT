@@ -155,6 +155,7 @@
     <string name="info_detail_use_warning">领用报警</string>
     <string name="info_detail_timeout_warning">超时报警</string>
     <string name="info_detail_stop_warning">停放报警</string>
+    <string name="info_detail_outofindex_warning">越界报警</string>
     <string name="detail">详情</string>
 
     <!-- 扫码界面 -->
@@ -208,4 +209,6 @@
 
     <string name="take_photo">拍照</string>
     <string name="photo_album">从手机相册选择</string>
+
+    <string name="neterror_check_appversion_fail">手机网络不可用，请检查手机网络设置</string>
 </resources>

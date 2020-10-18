@@ -45,5 +45,6 @@ dependencies {
     implementation rootProject.ext.impl.SmartRefreshHeader //没有使用特殊Header，可以不加这行
 
     api project(":common")
+    api project(":network")
     implementation files('libs\\zxing_core-3.3.3.jar')
 }

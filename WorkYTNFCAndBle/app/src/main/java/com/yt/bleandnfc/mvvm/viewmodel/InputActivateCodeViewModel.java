@@ -4,98 +4,100 @@ import android.app.Activity;
 
 import com.yt.base.view.BaseViewModel;
 import com.yt.bleandnfc.R;
-
-import java.util.logging.LogManager;
+import com.yt.bleandnfc.api.YTApiInterface;
+import com.yt.bleandnfc.api.model.BindModel;
+import com.yt.bleandnfc.api.model.CarNumberInfoModel;
+import com.yt.bleandnfc.base.observer.BaseHttpObserver;
+import com.yt.bleandnfc.utils.NetworkUtil;
+import com.yt.network.YTNetworkApi;
 
 import androidx.lifecycle.MutableLiveData;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
-/**
- * com.lien.fitpatchh3t.ui.activity.active.vm
- * CLC  2020/8/5
- */
 public class InputActivateCodeViewModel extends BaseViewModel {
 
     private final String TAG = InputActivateCodeViewModel.class.getSimpleName();
 
-//    public MutableLiveData<User> mUser;
-//    public MutableLiveData<ActivateModel> mActivate;
+    public MutableLiveData<CarNumberInfoModel> mCarNumberInfo;
+    public MutableLiveData<BindModel> mBind;
 
     private Activity mContext;
 
     public InputActivateCodeViewModel(Activity context) {
         mContext = context;
-//        mActivate = new MutableLiveData<>();
-//        mUser = new MutableLiveData<>();
+        mCarNumberInfo = new MutableLiveData<>();
+        mBind = new MutableLiveData<>();
     }
 
     /**
-     * 将授权码请求服务器
+     * 获取当前二维码数据的信息
      */
-    public void postActiviteInfo(String authCode){
-//        if (!NetworkUtil.isNetworkConnected()) {
-//            mView.showToastMsg(mContext.getString(R.string.neterror_check_appversion_fail));
-//            return;
-//        }
-//        String json = "{ \n" +
-//                "\"accountId\":" + SPManager.getInstance().getAccountId() + ",\n" +
-//                " \"authCode\": \"" + authCode + "\"\n}";
-//        RetrofitUtils.getInstance().requestData(ApiService.class)
-//                .getActivate(RequestBodyUtils.getRequestBody(json))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new BaseObserver<ActivateModel>() {
-//                    @Override
-//                    public void startAnalysis() {
-//                        LogManager.e(TAG,"开始上传服务器 激活码");
-//                    }
-//
-//                    @Override
-//                    public void getData(ActivateModel data) {
-//                        mActivate.setValue(data);
-//                        if (data.success.equals("true")) {
-//                            mView.showToastMsg("激活成功");
-//                        } else {
-//                            mView.showToastMsg("" + data.message);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onErrorInfo(Throwable e) {
-//                        mActivate.setValue(null);
-//                        mView.showToastMsg("请求激活失败 ： " + e.getMessage());
-//                    }
-//                });
+    public void getCarNumberInfo(String numberInfo){
+        if (!NetworkUtil.isNetworkConnected()) {
+            mView.showToastMsg(mContext.getString(R.string.neterror_check_appversion_fail));
+            return;
+        }
+        YTNetworkApi.getService(YTApiInterface.class)
+                .getCarNumberInfo(numberInfo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseHttpObserver<CarNumberInfoModel>() {
+                    @Override
+                    public void getData(CarNumberInfoModel data) {
+                        mCarNumberInfo.setValue(data);
+                    }
 
+                    @Override
+                    public void onErrorInfo(Throwable e) {
+                        mCarNumberInfo.setValue(null);
+                    }
+                });
     }
 
     /**
-     * 获取用户信息
+     * 绑定接口 解绑接口
+     * @param UserId 人员绑号
+     * @param EquipmentNumber 设备编号（二维码）
+     * @param Type 01代表绑定，02代表解绑
+     * @param CoordinateSource 02代表手机，01代表设备
+     * @param Longitude 坐标
+     * @param LongType E代表东经，W代表西经
+     * @param Latitude 坐标
+     * @param LatType  N代表北纬  S 代表南纬
+     * @param Satellite 卫星数量
+     * @return
      */
-    public void getUserInfo(){
-//        if (!NetworkUtil.isNetworkConnected()) {
-//            mView.showToastMsg(mContext.getString(R.string.neterror_check_appversion_fail));
-//            return;
-//        }
-//        RetrofitUtils.getInstance().requestData(ApiService.class)
-//                .getUserInfo(SPManager.getInstance().getAccountId())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new BaseObserver<User>() {
-//                    @Override
-//                    public void startAnalysis() {
-//                        LogManager.e(TAG,"开始请求个人信息");
-//                    }
-//
-//                    @Override
-//                    public void getData(User data) {
-//                        mUser.setValue(data);
-//                    }
-//
-//                    @Override
-//                    public void onErrorInfo(Throwable e) {
-//                        mUser.setValue(null);
-//                        mView.showToastMsg("请求个人信息异常 ： " + e.getMessage());
-//                    }
-//                });
+    /**
+     * 绑定设备 解绑设备
+     */
+    public void optionBindAndUnBind(String userId,
+                                    String numberInfo,
+                                    boolean isBind,
+                                    boolean isPhone,
+                                    double longitude,
+                                    String longitudeType,
+                                    double latitude,
+                                    String latitudeType,
+                                    int satellite){
+        if (!NetworkUtil.isNetworkConnected()) {
+            mView.showToastMsg(mContext.getString(R.string.neterror_check_appversion_fail));
+            return;
+        }
+        YTNetworkApi.getService(YTApiInterface.class)
+                .bindDevice(userId,numberInfo,isBind ? "01" : "02",isPhone ? " 02" : "01" , longitude,longitudeType,latitude,latitudeType,satellite)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseHttpObserver<BindModel>() {
+                    @Override
+                    public void getData(BindModel data) {
+                        mBind.setValue(data);
+                    }
+
+                    @Override
+                    public void onErrorInfo(Throwable e) {
+                        mBind.setValue(null);
+                    }
+                });
     }
 }

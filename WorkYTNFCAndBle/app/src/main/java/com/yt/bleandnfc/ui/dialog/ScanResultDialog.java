@@ -48,9 +48,10 @@ public class ScanResultDialog extends Dialog {
         dataBinding.dialogSureBtn.setOnClickListener(new clickListener());
     }
 
-    public void showDialog(String str1,String str2,String str3,String str4){
+    public void showDialog(String str1,String str2,String str3,String str4,int type){
         String content = str1 + "\n" + str2 + "\n" + str3 + "\n" + str4 ;
         dataBinding.tvContent.setText(content);
+        dataBinding.dialogSureBtn.setText(type == 1 ? "绑定/领用" : "解绑/归还");
         show();
     }
 

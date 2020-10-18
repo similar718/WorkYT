@@ -26,7 +26,9 @@ import com.yt.bleandnfc.databinding.FragmentWbBinding;
 import com.yt.bleandnfc.eventbus.ScanResult;
 import com.yt.bleandnfc.manager.ImageShowManager;
 import com.yt.bleandnfc.manager.IntentManager;
+import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.ui.view.CommonTitleBarView;
+import com.yt.bleandnfc.utils.BLEAndGPSUtils;
 import com.yt.bleandnfc.utils.GetImagePath;
 import com.yt.bleandnfc.utils.ImageUtil;
 
@@ -128,7 +130,14 @@ public class WbFragment extends YTBaseFragment<WBViewModel, FragmentWbBinding> i
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_scan: // 扫码
-                IntentManager.getInstance().goNextStepScanActivity(getActivity(),2);
+                if (!BLEAndGPSUtils.isOpenBLE()) {
+                    // 蓝牙没有打开
+                    showBleAndGPSHintDialog("请打开蓝牙，可正常使用APP内的功能",false);
+                } else if (!BLEAndGPSUtils.isOpenGPS(YTApplication.getInstance())){
+                    showBleAndGPSHintDialog("请打开GPS，可正常使用APP内的功能",false);
+                } else {
+                    IntentManager.getInstance().goNextStepScanActivity(getActivity(), 2);
+                }
                 break;
             case R.id.tv_sure_commit: // 确认提交
                 break;
@@ -419,6 +428,25 @@ public class WbFragment extends YTBaseFragment<WBViewModel, FragmentWbBinding> i
                         dataBinding.ivImg);
                 break;
         }
+    }
+
+    private BLEAndGPSHintDialog mBLEAndGPSHintDialog;
+
+    private void showBleAndGPSHintDialog(String title,boolean isPermissionHint){
+        if (mBLEAndGPSHintDialog == null) {
+            mBLEAndGPSHintDialog = new BLEAndGPSHintDialog(getActivity());
+            mBLEAndGPSHintDialog.setBLEAndGPSHintClicklistener(new BLEAndGPSHintDialog.BLEAndGPSHintClickListenerInterface() {
+                @Override
+                public void doSure() {
+                    if (isPermissionHint) {
+                        IntentManager.getInstance().goToAppSetting(getActivity());
+                    } else {
+
+                    }
+                }
+            });
+        }
+        mBLEAndGPSHintDialog.showDialog(title, isPermissionHint);
     }
 
 }

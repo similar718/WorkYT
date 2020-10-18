@@ -33,4 +33,17 @@ android {
 dependencies {
     implementation rootProject.ext.impl.appcompat
     implementation rootProject.ext.impl.material
+
+    implementation rootProject.ext.impl.retrofit
+    api rootProject.ext.impl.converter
+
+    implementation rootProject.ext.impl.logging
+//    implementation rootProject.ext.impl.retrofit2
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+
+    api rootProject.ext.impl.rxandroid
+    api rootProject.ext.impl.rxjava
+
+    api rootProject.ext.impl.preference
+    api project(':base')
 }

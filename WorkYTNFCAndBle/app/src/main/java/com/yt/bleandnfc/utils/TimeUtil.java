@@ -21,6 +21,13 @@ public class TimeUtil {
     public static final String FORMAT_D = "yyyy-MM-dd HH:mm:ss";
     public static final String FORMAT_E = "MM月dd日";
     public static final String FORMAT_F = "yyyy年MM月dd日";
+
+    public static String getTodayTime(){
+        long time = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_B);
+        return formatter.format(time);
+    }
+
     /**
      * 将字符串按照时间格式转换为Date
      *

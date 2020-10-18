@@ -13,7 +13,9 @@ import android.webkit.WebViewClient;
 
 import com.yt.bleandnfc.R;
 import com.yt.bleandnfc.base.fragment.YTBaseFragment;
+import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.FragmentCheckLocationBinding;
+import com.yt.bleandnfc.manager.SPManager;
 import com.yt.bleandnfc.ui.view.CommonTitleBarView;
 
 import androidx.annotation.RequiresApi;
@@ -38,19 +40,21 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
         return viewModel;
     }
 
-    private String[] urls = {
-            "https://map.baidu.com",
-            "https://wwww.baidu.com",
-            "https://wwww.jianshu.com/p/4564be81a108"
-    };
-
-    private int position = 0;
+    private String[] urls = {"https://map.baidu.com"};
+    private String mCarNumber = "";
 
     @Override
     protected void initData() {
         initWebView();
-        // WebView
-        dataBinding.wvView.loadUrl(urls[position]);
+        mCarNumber = SPManager.getInstance().getCarNum();
+        if (!TextUtils.isEmpty(mCarNumber)){
+            // WebView
+            dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS+mCarNumber);
+            dataBinding.etCarCode.setText(mCarNumber);
+        } else {
+            // WebView
+            dataBinding.wvView.loadUrl(urls[0]);
+        }
 
         initClick();
     }
@@ -103,9 +107,8 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
                     showToastMsg(R.string.check_location_input_car_code);
                     return;
                 }
-                // 变更地址
-                position ++;
-                dataBinding.wvView.loadUrl(urls[position%urls.length]);
+                // WebView
+                dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS+mCarNumber);
             }
         });
 

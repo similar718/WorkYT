@@ -87,6 +87,7 @@ public class IntentManager {
     /**
      * 跳转到扫描界面前一个界面
      * @param context
+     * @param type 1 绑定  2 维修保养  3 解绑  4 维保归还
      */
     public void goNextStepScanActivity(Context context,int type){
         Intent it_qr = new Intent(context, NextStepScanActivity.class);

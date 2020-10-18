@@ -49,61 +49,89 @@
                 android:layout_marginLeft="@dimen/dp_15"
                 />
 
-            <TextView
-                android:id="@+id/tv_username"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_13"
-                android:textStyle="bold"
-                android:layout_marginLeft="@dimen/dp_14"
                 android:layout_toRightOf="@+id/iv_head"
-                android:text="用户123456"
-                />
-
-            <TextView
-                android:id="@+id/tv_type"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_14"
-                android:textColor="@color/white"
-                android:layout_marginTop="@dimen/dp_2"
-                android:textSize="@dimen/text_size_8"
-                android:gravity="center_vertical"
-                android:textStyle="bold"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_toRightOf="@+id/tv_username"
-                android:layout_alignTop="@+id/tv_username"
-                android:background="@drawable/info_detail_type_bg"
-                android:text="机务部"
-                android:paddingLeft="@dimen/dp_6"
-                android:paddingRight="@dimen/dp_6"
-                />
-
-            <TextView
-                android:id="@+id/tv_user_id"
-                android:layout_below="@+id/tv_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_7"
-                android:textColor="@color/white_50"
-                android:textSize="@dimen/text_size_8"
-                android:textStyle="bold"
                 android:layout_marginLeft="@dimen/dp_14"
-                android:layout_toRightOf="@+id/iv_head"
-                android:text="工号：AK-1997"
-                />
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_13"
+                    android:textStyle="bold"
+                    android:text="用户123456"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_14"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_8"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"
+                    android:background="@drawable/info_detail_type_bg"
+                    android:text="机务部"
+                    android:paddingLeft="@dimen/dp_6"
+                    android:paddingRight="@dimen/dp_6"
+                    android:layout_marginTop="@dimen/dp_7"
+                    android:layout_below="@+id/tv_username"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_user_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_username"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:textColor="@color/white_50"
+                    android:gravity="center_vertical"
+                    android:layout_alignTop="@+id/tv_username"
+                    android:layout_alignBottom="@+id/tv_username"
+                    android:textSize="@dimen/text_size_8"
+                    android:textStyle="bold"
+                    android:text="工号：AK-1997"
+                    />
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/iv_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
                 android:src="@drawable/info_detail_settings_icon"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/dp_15"
                 />
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_status_info"
+            android:layout_width="match_parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_top_bg"
+            android:background="@drawable/main_text_bg"
+            android:text="000006000000绑定成功   000006000000绑定成功   000006000000解绑成功"
+            android:gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_10"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_3"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:scrollHorizontally="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            />
 
         <LinearLayout
             android:id="@+id/ll_type"
@@ -228,8 +256,8 @@
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_20"
             android:paddingRight="@dimen/dp_20"
-            android:weightSum="4">
-            <RelativeLayout
+            android:weightSum="3">
+           <!-- <RelativeLayout
                 android:id="@+id/rl_status_content"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -258,7 +286,7 @@
                 android:background="@color/bg"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginBottom="@dimen/dp_10"
-                />
+                />-->
 
             <RelativeLayout
                 android:id="@+id/rl_use_warning"

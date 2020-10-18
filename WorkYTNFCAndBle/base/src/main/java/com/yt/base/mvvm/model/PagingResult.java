@@ -1,10 +1,9 @@
 package com.yt.base.mvvm.model;
 
 public class PagingResult {
-
-    public PagingResult(boolean isFirstPage, boolean isEmpty, boolean hasNextPage){
-        this.isFirstPage = isFirstPage;
+    public PagingResult(boolean isEmpty, boolean isFirstPage, boolean hasNextPage) {
         this.isEmpty = isEmpty;
+        this.isFirstPage = isFirstPage;
         this.hasNextPage = hasNextPage;
     }
 

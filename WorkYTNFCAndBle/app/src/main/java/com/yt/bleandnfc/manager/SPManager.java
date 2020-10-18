@@ -13,6 +13,16 @@ public class SPManager {
 
     private final String USER_PWD = "pwd"; // 登录密码 String
 
+    private final String CAR_NUM = "carNum"; // 车辆编号 String
+
+    private final String USER_ID = "userid"; // userid String
+
+    private final String DEPT_NAME = "deptName"; // deptName String
+
+    private final String DEPT_ID = "deptId"; // deptId String
+
+    private final String SAVE_STATUS_LOGIN = "saveStatusLogin"; // 是否记住账号和密码 boolean
+
     private static SharedPreferences sp ;
 
     private SPManager(){
@@ -66,6 +76,85 @@ public class SPManager {
      */
     public String getUserPwd(){
         return sp.getString(USER_PWD,"");
+    }
+
+    /**
+     * 保存车辆编号
+     * @param carNum
+     */
+    public void setCarNum(String carNum){
+        sp.edit().putString(CAR_NUM,carNum).commit();
+    }
+
+    /**
+     * 获取车辆编号
+     * @return
+     */
+    public String getCarNum(){
+        return sp.getString(CAR_NUM,"");
+    }
+
+    /**
+     * 保存用户编号
+     * @param userId
+     */
+    public void setUserId(String userId){
+        sp.edit().putString(USER_ID,userId).commit();
+    }
+
+    /**
+     * 获取用户编号
+     * @return
+     */
+    public String getUserId(){
+        return sp.getString(USER_ID,"");
+    }
+    /**
+     * 保存用户编号
+     * @param deptId
+     */
+    public void setDeptId(String deptId){
+        sp.edit().putString(DEPT_ID,deptId).commit();
+    }
+
+    /**
+     * 获取用户编号
+     * @return
+     */
+    public String getDeptId(){
+        return sp.getString(DEPT_ID,"");
+    }
+
+    /**
+     * 保存部门名称
+     * @param deptName
+     */
+    public void setDeptName(String deptName){
+        sp.edit().putString(DEPT_NAME,deptName).commit();
+    }
+
+    /**
+     * 获取部门名称
+     * @return
+     */
+    public String getDeptName(){
+        return sp.getString(DEPT_NAME,"");
+    }
+
+    /**
+     * 保存登录状态
+     * @param saveStatusLogin
+     */
+    public void setSaveStatusLogin(boolean saveStatusLogin){
+        sp.edit().putBoolean(SAVE_STATUS_LOGIN,saveStatusLogin).commit();
+    }
+
+    /**
+     * 获取登录状态
+     * @return
+     */
+    public boolean getSaveStatusLogin(){
+        return sp.getBoolean(SAVE_STATUS_LOGIN,false);
     }
 
 }

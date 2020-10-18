@@ -49,11 +49,14 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 import com.yt.base.utils.LogUtlis;
 import com.yt.base.utils.ToastUtils;
-import com.yt.bleandnfc.MainActivity;
 import com.yt.bleandnfc.R;
+import com.yt.bleandnfc.api.model.BindModel;
+import com.yt.bleandnfc.api.model.CarNumberInfoModel;
 import com.yt.bleandnfc.base.activity.YTBaseActivity;
+import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.ZxingActivityCaptureBinding;
 import com.yt.bleandnfc.eventbus.ScanResult;
+import com.yt.bleandnfc.manager.SPManager;
 import com.yt.bleandnfc.mvvm.viewmodel.InputActivateCodeViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.nfcres.NfcView;
@@ -75,6 +78,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.Observer;
 
 /**
  * This activity opens the camera and does the actual scanning on a background thread. It draws a
@@ -119,6 +123,8 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
     private BeepManager beepManager;
     private boolean mIsStop = false; // 界面是否没有关闭 只是回到了主界面 然后再返回的操作
 
+    private String mCodeNumber = "";
+
     QrcodeViewfinderView getViewfinderView() {
         return viewfinderView;
     }
@@ -151,47 +157,42 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
     protected InputActivateCodeViewModel createViewModel() {
         viewModel = new InputActivateCodeViewModel((Activity) mContext);
         viewModel.setIView(this);
-//        viewModel.mUser.observe(this, new Observer<User>() {
-//            @Override
-//            public void onChanged(@Nullable User userModel) {
-//                if (userModel != null) {
-//                    H3TApplication.getInstance().setUser(userModel);
-//                    if (!TextUtils.isEmpty(userModel.expirationTime)) {
-//                        try {
-//                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                            Date curDate = new Date(System.currentTimeMillis());//当前时间
-//                            Date serverDate = dateFormat.parse(userModel.expirationTime);
-//                            if (serverDate.getTime() > curDate.getTime()) {//服务器时间大于当期那时间为VIP用户
-//                                SPManager.getInstance().setIsVip(true);
-//                            } else {
-//                                SPManager.getInstance().setIsVip(false);
-//                            }
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//        });
-//        viewModel.mActivate.observe(this, new Observer<ActivateModel>() {
-//            @Override
-//            public void onChanged(@Nullable ActivateModel activateModel) {
-//                if (activateModel != null) {
-//                    if (activateModel.success.equals("true")) {//激活成功
-//                        SPManager.getInstance().setIsVip(true);
-//                        //激活成功之后重新获取一遍用户信息，刷新数据
-//                        getUser();
-//                        String expirationTime = activateModel.expirationTime;
-//                        IntentManager.getInstance().goChoiceDoctorActivity(mContext,expirationTime);
-//                        finish();
-//                    } else {//授权码已被使用
-//                        finish();
-//                    }
-//                } else {
-//                    finish();
-//                }
-//            }
-//        });
+        // 扫描结果的数据请求
+        viewModel.mCarNumberInfo.observe(this, new Observer<CarNumberInfoModel>() {
+            @Override
+            public void onChanged(CarNumberInfoModel carNumberInfoModel) {
+                if (carNumberInfoModel != null){
+                    if (carNumberInfoModel.getCode() == 200){
+                        // 显示子框口
+                        showScanResultDialog(mCodeNumber,carNumberInfoModel.getObj().getCarNumber(),carNumberInfoModel.getObj().getDeptName(), String.valueOf(carNumberInfoModel.getObj().getState()));
+                    } else {
+                        showToastMsg(carNumberInfoModel.getMessage());
+                    }
+                } else {
+                    showToastMsg("数据异常");
+                }
+            }
+        });
+        // 绑定和解绑
+        viewModel.mBind.observe(this, new Observer<BindModel>() {
+            @Override
+            public void onChanged(BindModel bindModel) {
+                if (bindModel != null){
+                    if (bindModel.getCode() == 100 && mType == 1){ // 绑定成功
+                        SPManager.getInstance().setCarNum(mCodeNumber);
+                        showToastMsg("绑定成功");
+                    } else if (bindModel.getCode() == 102 && mType == 3){ // 解绑成功
+                        SPManager.getInstance().setCarNum("");
+                        showToastMsg("解绑成功");
+                    } else {
+                        showToastMsg(bindModel.getMessage());
+                    }
+                    finish();
+                } else {
+                    showToastMsg("数据异常");
+                }
+            }
+        });
         return viewModel;
     }
 
@@ -246,8 +247,21 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
             @Override
             public void onClick(View v) {
                 String data = dataBinding.etScanInput.getText().toString().trim();
-                // TODO 扫码知道数据信息
-                showScanResultDialog(data,data,data,data);
+                if (!TextUtils.isEmpty(data)) {
+                    // 扫码知道数据信息
+                    // 扫码知道数据信息
+                    mCodeNumber = data;
+                    if (mType == 1 || mType == 3) { // 绑定  解绑
+                        viewModel.getCarNumberInfo(mCodeNumber);
+                    } else if (mType == 2) { // 维修保养
+                        EventBus.getDefault().post(new ScanResult(mType, mCodeNumber));
+                        finish();
+                    } else if (mType == 4) { // 维保归还
+
+                    }
+                } else {
+                    showToastMsg("请输入车辆编号");
+                }
             }
         });
 
@@ -512,17 +526,17 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
             CharSequence displayContents = rawResult.getText();
             LogUtlis.d(TAG, "解析结果 " + displayContents);
 
-            // TODO 扫码知道数据信息
-
-            showScanResultDialog(displayContents.toString(),displayContents.toString(),displayContents.toString(),displayContents.toString());
-
+            mCodeNumber = (String) displayContents;
             //提交服务器
-            viewModel.postActiviteInfo((String) displayContents);
-        }
-    }
+            if (mType == 1 || mType == 3) { // 绑定  解绑
+                viewModel.getCarNumberInfo(mCodeNumber);
+            } else if (mType == 2){ // 维修保养
+                EventBus.getDefault().post(new ScanResult(mType,mCodeNumber));
+                finish();
+            } else if (mType == 4) { // 维保归还
 
-    private void getUser() {
-        viewModel.getUserInfo();
+            }
+        }
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
@@ -591,12 +605,35 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
             mScanResultDialog.setScanResultClicklistener(new ScanResultDialog.ScanResultClickListenerInterface() {
                 @Override
                 public void doSure() {
-                    EventBus.getDefault().post(new ScanResult(mType,str1));
-                    finish();
+                    if (mType == 1) { // 绑定
+                        viewModel.optionBindAndUnBind(
+                                SPManager.getInstance().getUserId(),
+                                mCodeNumber,
+                                true,
+                                true,
+                                Constants.LOCATION_LNG,
+                                Constants.LOCATION_LNG_TYPE,
+                                Constants.LOCATION_LAT,
+                                Constants.LOCATION_LAT_TYPE,
+                                Constants.LOCATION_SATELLIE
+                        );
+                    } else if (mType == 3) { // 解绑
+                        viewModel.optionBindAndUnBind(
+                                SPManager.getInstance().getUserId(),
+                                mCodeNumber,
+                                false,
+                                true,
+                                Constants.LOCATION_LNG,
+                                Constants.LOCATION_LNG_TYPE,
+                                Constants.LOCATION_LAT,
+                                Constants.LOCATION_LAT_TYPE,
+                                Constants.LOCATION_SATELLIE
+                        );
+                    }
                 }
             });
         }
-        mScanResultDialog.showDialog(str1, str2, str3, str4);
+        mScanResultDialog.showDialog(str1, str2, str3, str4, mType);
     }
 
     private boolean hasFlash(){

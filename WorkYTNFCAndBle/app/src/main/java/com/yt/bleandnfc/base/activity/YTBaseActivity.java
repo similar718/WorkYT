@@ -13,13 +13,11 @@ import android.view.WindowManager;
 import com.yt.base.activity.BaseActivity;
 import com.yt.base.view.BaseViewModel;
 import com.yt.bleandnfc.R;
-import com.yt.bleandnfc.eventbus.ScanResult;
 import com.yt.bleandnfc.ui.dialog.CommonCenterDialog;
 import com.yt.common.interfaces.IPermissionListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;

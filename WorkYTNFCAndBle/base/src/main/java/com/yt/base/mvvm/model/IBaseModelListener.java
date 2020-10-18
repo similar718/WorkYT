@@ -1,6 +1,7 @@
 package com.yt.base.mvvm.model;
 
-public interface IBaseModelListener<DATA> {
-    void onLoadSuccess(DATA data, PagingResult... result);
-    void onLoadFail(String message);
+public interface IBaseModelListener<T> {
+    void onLoadFinish(MvvmBaseModel model, T data, PagingResult... pageResult);
+
+    void onLoadFail(MvvmBaseModel model, String prompt, PagingResult... pageResult);
 }

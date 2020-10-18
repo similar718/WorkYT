@@ -5,8 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yt.bleandnfc.R;
+import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
 import com.yt.bleandnfc.databinding.ItemWarningRecordBinding;
-import com.yt.bleandnfc.mvvm.viewmodel.WarningRecordItemViewModel;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 public class WarningRecordItemAdapter extends Adapter<WarningRecordItemAdapter.BaseViewHolder> {
 
-    List<WarningRecordItemViewModel> modelList;
+    List<AlarmFindAlarmByStateModel.ObjBean> modelList;
 
     private OnItemClickListener onItemClickListener;
 
@@ -26,7 +26,7 @@ public class WarningRecordItemAdapter extends Adapter<WarningRecordItemAdapter.B
     }
     public WarningRecordItemAdapter() { }
 
-    public void setData(List<WarningRecordItemViewModel> modelList){
+    public void setData(List<AlarmFindAlarmByStateModel.ObjBean> modelList){
         this.modelList = modelList;
         notifyDataSetChanged();
     }
@@ -42,9 +42,20 @@ public class WarningRecordItemAdapter extends Adapter<WarningRecordItemAdapter.B
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        dataBinding.tvContent.setText(modelList.get(position).contentStr);
-        dataBinding.tvType.setText(modelList.get(position).typeStr);
-        dataBinding.tvTime.setText(modelList.get(position).timeStr);
+        StringBuilder stringBuilder = new StringBuilder();
+        // 操作员“XXX（工号：11111）”于2020年9月24日09点25分使用工作梯（编号：xxxx）发生违规行为，违规内容“违规停放”。
+        stringBuilder.append("操作员“")
+                .append(modelList.get(position).getUserName())
+                .append("（工号：")
+                .append(modelList.get(position).getUserId())
+                .append("）”于")
+                .append(modelList.get(position).getCreateTime())
+                .append("使用工作梯（编号：")
+                .append(modelList.get(position).getCarNumber())
+                .append("）发生违规行为，违规内容“违规停放”。");
+        dataBinding.tvContent.setText(stringBuilder);
+//        dataBinding.tvType.setText(modelList.get(position).getMsg());
+        dataBinding.tvTime.setText(modelList.get(position).getCreateTime());
     }
 
     @Override
@@ -54,6 +65,9 @@ public class WarningRecordItemAdapter extends Adapter<WarningRecordItemAdapter.B
 
     @Override
     public int getItemCount() {
+        if (modelList == null || modelList.size() == 0) {
+            return 0;
+        }
         return modelList.size();
     }
 
