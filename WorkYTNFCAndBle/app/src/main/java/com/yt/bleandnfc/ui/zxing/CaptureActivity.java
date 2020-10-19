@@ -147,6 +147,7 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
         mIsStop = false;
     }
 
+    private String mCarName = "";
 
     @Override
     protected int setLayoutId() {
@@ -164,7 +165,8 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
                 if (carNumberInfoModel != null){
                     if (carNumberInfoModel.getCode() == 200){
                         // 显示子框口
-                        showScanResultDialog(mCodeNumber,carNumberInfoModel.getObj().getCarNumber(),carNumberInfoModel.getObj().getDeptName(), String.valueOf(carNumberInfoModel.getObj().getState()));
+                        mCarName = carNumberInfoModel.getObj().getCarNumber();
+                        showScanResultDialog(mCarName,carNumberInfoModel.getObj().getDeptName(),carNumberInfoModel.getObj().getDeviceBind() == null ? "未绑定" : "已绑定", "正常");
                     } else {
                         showToastMsg(carNumberInfoModel.getMessage());
                     }
@@ -180,11 +182,18 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
                 if (bindModel != null){
                     if (bindModel.getCode() == 100 && mType == 1){ // 绑定成功
                         SPManager.getInstance().setCarNum(mCodeNumber);
+                        Constants.mBindLists.add(mCarName);
                         showToastMsg("绑定成功");
                     } else if (bindModel.getCode() == 102 && mType == 3){ // 解绑成功
                         SPManager.getInstance().setCarNum("");
+                        Constants.mBindLists.remove(mCarName);
                         showToastMsg("解绑成功");
                     } else {
+                        if (bindModel.getCode() == 101) {
+
+                        } else if (bindModel.getCode() == 103) {
+
+                        }
                         showToastMsg(bindModel.getMessage());
                     }
                     finish();
@@ -215,6 +224,16 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
             }
         });
 
+        // 1 绑定  2 维修保养  3 解绑  4 维保归还
+        if (mType == 1) {
+            dataBinding.titleBar.setTitleText("扫码绑定/领用");
+        } else if (mType == 2) {
+            dataBinding.titleBar.setTitleText("扫码维修保养");
+        } else if (mType == 3) {
+            dataBinding.titleBar.setTitleText("扫码解绑/归还");
+        } else if (mType == 4) {
+            dataBinding.titleBar.setTitleText("扫码维保归还");
+        }
 
         // 初始化NFC数据
         mNfcHandler = new NfcHandler(mNFCView);

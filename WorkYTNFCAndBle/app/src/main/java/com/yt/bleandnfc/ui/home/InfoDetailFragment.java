@@ -99,6 +99,16 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         dataBinding.tvTimeoutWarningNum.setText("" + 0);
         dataBinding.tvStopWarningNum.setText("" + 0);
 
+//        StringBuilder stringBuilder = new StringBuilder();
+//        if (Constants.mBindLists.size() > 0) {
+//            for (int i = 0; i < Constants.mBindLists.size(); i++){
+//                stringBuilder.append("已绑定车辆").append(Constants.mBindLists.get(i)).append("          ");
+//            }
+//        } else {
+//            stringBuilder.append("未绑定车辆");
+//        }
+//        dataBinding.tvStatusInfo.setText(stringBuilder);
+
         // 报警列表
         mAdapter = new WarningRecordItemAdapter();
         dataBinding.rvList.setHasFixedSize(true);
@@ -126,6 +136,20 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
 //        setData();
 
         viewModel.getAlarmNum();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        StringBuilder stringBuilder = new StringBuilder();
+        if (Constants.mBindLists.size() > 0) {
+            for (int i = 0; i < Constants.mBindLists.size(); i++){
+                stringBuilder.append("已绑定车辆").append(Constants.mBindLists.get(i)).append("          ");
+            }
+        } else {
+            stringBuilder.append("未绑定车辆");
+        }
+        dataBinding.tvStatusInfo.setText(stringBuilder);
     }
 
     private void initClick(){

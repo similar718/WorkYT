@@ -45,30 +45,30 @@ public abstract class BaseHttpObserver<T> implements Observer<T> {
     public void onError(Throwable e) {
         onErrorInfo(e);
         LogUtlis.e(TAG,"onError e : " + e.getMessage());
-        if (e instanceof HttpException) {
-            if (((HttpException) e).code() == 400) {
-                ToastUtils.showText(YTApplication.getInstance(),"当前用户不存在");
-            } else if (((HttpException) e).code() == 401){
-                Activity activity = getGlobleActivity();
-                if (activity != null) { // 可以跳转
-                    IntentManager.getInstance().goLoginActivity(activity);
-                } else {
-                    ToastUtils.showText(YTApplication.getInstance(),"打不开登录界面，请先登录");
-                }
-            } else if (((HttpException) e).code() == 500 || ((HttpException) e).code() == 404) {
-                ToastUtils.showText(YTApplication.getInstance(),"网络不稳定，请稍后再试");
-            }
-        } else if (e instanceof MalformedJsonException || e.getMessage().contains("at line 1 column")) {
-            ToastUtils.showText(YTApplication.getInstance(),"解析异常");
-        } else if (e.getMessage().contains("failed to connect to")){ // 界面反应比较慢 因为需要网络超时之后才会进行显示处理
-            if (NetworkUtil.isNetworkConnected()) {
-                ToastUtils.showText(YTApplication.getInstance(), "服务器正在维护，请稍后……");
-            } else {
-                ToastUtils.showText(YTApplication.getInstance(), "请连接网络");
-            }
-        } else if (e.getMessage().contains("timeout")){
-            ToastUtils.showText(YTApplication.getInstance(), "服务器未启动，请耐心等待/稍后再试");
-        }
+//        if (e instanceof HttpException) {
+//            if (((HttpException) e).code() == 400) {
+//                ToastUtils.showText(YTApplication.getInstance(),"当前用户不存在");
+//            } else if (((HttpException) e).code() == 401){
+//                Activity activity = getGlobleActivity();
+//                if (activity != null) { // 可以跳转
+//                    IntentManager.getInstance().goLoginActivity(activity);
+//                } else {
+//                    ToastUtils.showText(YTApplication.getInstance(),"打不开登录界面，请先登录");
+//                }
+//            } else if (((HttpException) e).code() == 500 || ((HttpException) e).code() == 404) {
+//                ToastUtils.showText(YTApplication.getInstance(),"网络不稳定，请稍后再试");
+//            }
+//        } else if (e instanceof MalformedJsonException || e.getMessage().contains("at line 1 column")) {
+//            ToastUtils.showText(YTApplication.getInstance(),"解析异常");
+//        } else if (e.getMessage().contains("failed to connect to")){ // 界面反应比较慢 因为需要网络超时之后才会进行显示处理
+//            if (NetworkUtil.isNetworkConnected()) {
+//                ToastUtils.showText(YTApplication.getInstance(), "服务器正在维护，请稍后……");
+//            } else {
+//                ToastUtils.showText(YTApplication.getInstance(), "请连接网络");
+//            }
+//        } else if (e.getMessage().contains("timeout")){
+//            ToastUtils.showText(YTApplication.getInstance(), "服务器未启动，请耐心等待/稍后再试");
+//        }
     }
 
     @Override

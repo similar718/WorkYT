@@ -109,7 +109,7 @@
                 />
         </RelativeLayout>
 
-        <TextView
+        <com.yt.bleandnfc.ui.view.MarqueeView
             android:id="@+id/tv_status_info"
             android:layout_width="match_parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@+id/iv_top_bg"
             android:background="@drawable/main_text_bg"
-            android:text="000006000000绑定成功   000006000000绑定成功   000006000000解绑成功"
+            android:text=""
             android:gravity="center_vertical"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_10"
@@ -127,9 +127,6 @@
             android:paddingBottom="@dimen/dp_3"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:scrollHorizontally="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:marqueeRepeatLimit="marquee_forever"
             />
 

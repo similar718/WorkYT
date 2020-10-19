@@ -28,9 +28,11 @@ public interface YTApiInterface {
     /**
      * 根据设备编号查询部门及车辆状况接口
      * @param number
+     *      device/findDeviceByNumber/{number}
+     *      device/findDeviceBycarNumber/66660001
      * @return
      */
-    @POST("device/findDeviceByNumber/{number}")
+    @POST("device/findDeviceBycarNumber/{number}")
     Observable<CarNumberInfoModel> getCarNumberInfo(@Path("number") String number);
 
     /**

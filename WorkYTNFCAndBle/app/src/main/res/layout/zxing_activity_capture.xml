@@ -25,13 +25,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.yt.bleandnfc.ui.view.CommonTitleBarView
-            android:id="@+id/title_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title_txt="@string/scan_title"
-            />
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -40,6 +33,13 @@
                 android:id="@+id/preview_view"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent" />
+
+            <com.yt.bleandnfc.ui.view.CommonTitleBarView
+                android:id="@+id/title_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title_txt="@string/scan_title"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -156,6 +156,7 @@
                         android:background="@drawable/dialog_scan_bg"
                         android:hint="@string/scan_input_hint"
                         android:gravity="center"
+                        android:imeOptions="flagNoExtractUi|flagNoFullscreen"
                         android:textSize="@dimen/text_size_10"
                         android:layout_marginTop="@dimen/dp_7"
                         android:layout_marginBottom="@dimen/dp_7"

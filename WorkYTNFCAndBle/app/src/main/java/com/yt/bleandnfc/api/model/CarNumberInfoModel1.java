@@ -2,11 +2,11 @@ package com.yt.bleandnfc.api.model;
 
 import com.google.gson.Gson;
 
-public class CarNumberInfoModel {
+public class CarNumberInfoModel1 {
 
     /**
-     * code : 200
-     * obj : {"id":"2c9865ca716f2dad017196b2a1de08c7","number":"0CA6A266F4F8","carNumber":"66660001","name":"定位系统","type":"car","latestLocation":"103.9537672,30.5825212","lastTime":"2020-07-12 19:32:57","company":"plane","deptId":"jps","deptName":"机坪室","procurementTime":"2020-04-19 00:00:00","maxSpeed":30,"maxMileage":10000,"state":0,"configureCode":"code1","remarks":null,"personId":null,"createTime":null,"deviceConfig":null,"dictionary":null,"deviceGisList":null,"deviceGis":null,"person":null,"deviceUseRecord":null,"deviceUseRecords":null,"deviceGisSubsectionList":null,"deviceBind":null}
+     * code : 200 成功 500 服务器异常
+     * obj : {"id":"2c9865ca71ad131c0171f8b40308000e","number":"000006000000","carNumber":"民航D9005","name":"定位","type":"wheelbarrow","latestLocation":"103.9535836,30.5822868","lastTime":"2020-07-12 23:13:47","company":"car","deptId":"jps","deptName":"机坪室","procurementTime":"2020-05-08 00:00:00","maxSpeed":25,"maxMileage":11111,"state":0,"configureCode":"code1","remarks":null,"personId":null,"createTime":null,"deviceConfig":null,"dictionary":null,"deviceGisList":null,"deviceGis":null,"person":null,"deviceUseRecord":null,"deviceUseRecords":null,"deviceGisSubsectionList":null,"deviceBind":{"id":"40280305752629c201752629ffac0001","userId":"111","userName":"admin","number":"000006000000","type":"01","source":"02","bindTime":"2020-10-14 16:11:28","unbindTime":null}}
      * message : 服务器请求成功！
      * e : null
      */
@@ -16,9 +16,9 @@ public class CarNumberInfoModel {
     private String message;
     private Object e;
 
-    public static CarNumberInfoModel objectFromData(String str) {
+    public static CarNumberInfoModel1 objectFromData(String str) {
 
-        return new Gson().fromJson(str, CarNumberInfoModel.class);
+        return new Gson().fromJson(str, CarNumberInfoModel1.class);
     }
 
     public int getCode() {
@@ -55,19 +55,19 @@ public class CarNumberInfoModel {
 
     public static class ObjBean {
         /**
-         * id : 2c9865ca716f2dad017196b2a1de08c7
-         * number : 0CA6A266F4F8
-         * carNumber : 66660001
-         * name : 定位系统
-         * type : car
-         * latestLocation : 103.9537672,30.5825212
-         * lastTime : 2020-07-12 19:32:57
-         * company : plane
+         * id : 2c9865ca71ad131c0171f8b40308000e
+         * number : 000006000000
+         * carNumber : 民航D9005
+         * name : 定位
+         * type : wheelbarrow
+         * latestLocation : 103.9535836,30.5822868
+         * lastTime : 2020-07-12 23:13:47
+         * company : car
          * deptId : jps
          * deptName : 机坪室
-         * procurementTime : 2020-04-19 00:00:00
-         * maxSpeed : 30.0
-         * maxMileage : 10000.0
+         * procurementTime : 2020-05-08 00:00:00
+         * maxSpeed : 25.0
+         * maxMileage : 11111.0
          * state : 0
          * configureCode : code1
          * remarks : null
@@ -81,7 +81,7 @@ public class CarNumberInfoModel {
          * deviceUseRecord : null
          * deviceUseRecords : null
          * deviceGisSubsectionList : null
-         * deviceBind : null
+         * deviceBind : {"id":"40280305752629c201752629ffac0001","userId":"111","userName":"admin","number":"000006000000","type":"01","source":"02","bindTime":"2020-10-14 16:11:28","unbindTime":null}
          */
 
         private String id;
@@ -110,7 +110,7 @@ public class CarNumberInfoModel {
         private Object deviceUseRecord;
         private Object deviceUseRecords;
         private Object deviceGisSubsectionList;
-        private Object deviceBind;
+        private DeviceBindBean deviceBind;
 
         public static ObjBean objectFromData(String str) {
 
@@ -325,12 +325,103 @@ public class CarNumberInfoModel {
             this.deviceGisSubsectionList = deviceGisSubsectionList;
         }
 
-        public Object getDeviceBind() {
+        public DeviceBindBean getDeviceBind() {
             return deviceBind;
         }
 
-        public void setDeviceBind(Object deviceBind) {
+        public void setDeviceBind(DeviceBindBean deviceBind) {
             this.deviceBind = deviceBind;
+        }
+
+        public static class DeviceBindBean {
+            /**
+             * id : 40280305752629c201752629ffac0001
+             * userId : 111
+             * userName : admin
+             * number : 000006000000
+             * type : 01
+             * source : 02
+             * bindTime : 2020-10-14 16:11:28
+             * unbindTime : null
+             */
+
+            private String id;
+            private String userId;
+            private String userName;
+            private String number;
+            private String type;
+            private String source;
+            private String bindTime;
+            private Object unbindTime;
+
+            public static DeviceBindBean objectFromData(String str) {
+
+                return new Gson().fromJson(str, DeviceBindBean.class);
+            }
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getUserId() {
+                return userId;
+            }
+
+            public void setUserId(String userId) {
+                this.userId = userId;
+            }
+
+            public String getUserName() {
+                return userName;
+            }
+
+            public void setUserName(String userName) {
+                this.userName = userName;
+            }
+
+            public String getNumber() {
+                return number;
+            }
+
+            public void setNumber(String number) {
+                this.number = number;
+            }
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            public String getSource() {
+                return source;
+            }
+
+            public void setSource(String source) {
+                this.source = source;
+            }
+
+            public String getBindTime() {
+                return bindTime;
+            }
+
+            public void setBindTime(String bindTime) {
+                this.bindTime = bindTime;
+            }
+
+            public Object getUnbindTime() {
+                return unbindTime;
+            }
+
+            public void setUnbindTime(Object unbindTime) {
+                this.unbindTime = unbindTime;
+            }
         }
     }
 }

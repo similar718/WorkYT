@@ -165,8 +165,8 @@
     <string name="sure">确定</string>
     <string name="camera_light">手电筒</string>
     <string name="camera_rfid">RFID</string>
-    <string name="scan_result_car">车辆编号：\n使用状况：\n车辆状况：\n单位：</string>
-    <string name="scan_result_car_content">XXXXXXXX\n未绑定\n即将保养\电量不足\n机务部</string>
+    <string name="scan_result_car">车辆编号：\n所属单位：\n使用状况：\n车辆状况：</string>
+    <string name="scan_result_car_content">XXXXXXXX\n机务部\n未绑定\n即将保养\电量不足</string>
     <string name="scan_result_car_id">车辆编号：</string>
     <string name="scan_result_car_use">使用状况：</string>
     <string name="scan_result_car_status">车辆状况：</string>

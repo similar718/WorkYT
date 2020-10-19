@@ -1,5 +1,7 @@
 package com.yt.bleandnfc.constant;
 
+import java.util.ArrayList;
+
 /**
  * 用来存放静态数据
  */
@@ -28,4 +30,9 @@ public class Constants {
      * 报警记录的数量
      */
     public static int mAlarmNum = 0;
+
+    /**
+     * 绑定设备数据
+     */
+    public static ArrayList<String> mBindLists = new ArrayList<>();
 }
