@@ -90,9 +90,9 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
                 imgUrl,
                 dataBinding.ivHead
         );
-        dataBinding.tvUsername.setText("用户名"+ SPManager.getInstance().getUserName());
+        dataBinding.tvUsername.setText(SPManager.getInstance().getName());
         dataBinding.tvType.setText(SPManager.getInstance().getDeptName());
-        dataBinding.tvUserId.setText("工号：AK-" + SPManager.getInstance().getDeptId());
+        dataBinding.tvUserId.setText("工号：" + SPManager.getInstance().getUserId());
 
         // 报警number 领用报警 超时报警 停放报警
         dataBinding.tvUseWarningNum.setText("" + 0);

@@ -166,7 +166,11 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
                     if (carNumberInfoModel.getCode() == 200){
                         // 显示子框口
                         mCarName = carNumberInfoModel.getObj().getCarNumber();
-                        showScanResultDialog(mCarName,carNumberInfoModel.getObj().getDeptName(),carNumberInfoModel.getObj().getDeviceBind() == null ? "未绑定" : "已绑定", "正常");
+                        showScanResultDialog(mCarName,
+                                carNumberInfoModel.getObj().getDeptName(),
+                                carNumberInfoModel.getObj().getDeviceBind() == null ? "未绑定" : "已绑定",
+                                "正常",
+                                carNumberInfoModel.getObj().getNumber());
                     } else {
                         showToastMsg(carNumberInfoModel.getMessage());
                     }
@@ -618,7 +622,7 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
      * @param str3
      * @param str4
      */
-    private void showScanResultDialog(String str1,String str2,String str3,String str4){
+    private void showScanResultDialog(String str1,String str2,String str3,String str4,String number){
         if (mScanResultDialog == null) {
             mScanResultDialog = new ScanResultDialog(mContext);
             mScanResultDialog.setScanResultClicklistener(new ScanResultDialog.ScanResultClickListenerInterface() {
@@ -627,7 +631,7 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
                     if (mType == 1) { // 绑定
                         viewModel.optionBindAndUnBind(
                                 SPManager.getInstance().getUserId(),
-                                mCodeNumber,
+                                number,
                                 true,
                                 true,
                                 Constants.LOCATION_LNG,
@@ -639,7 +643,7 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
                     } else if (mType == 3) { // 解绑
                         viewModel.optionBindAndUnBind(
                                 SPManager.getInstance().getUserId(),
-                                mCodeNumber,
+                                number,
                                 false,
                                 true,
                                 Constants.LOCATION_LNG,

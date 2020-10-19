@@ -40,6 +40,7 @@ public class LoginActivity extends YTBaseActivity<LoginViewModel, ActivityLoginB
                         SPManager.getInstance().setUserId(loginModel.getObj().getId());
                         SPManager.getInstance().setDeptId(loginModel.getObj().getDeptId());
                         SPManager.getInstance().setDeptName(loginModel.getObj().getDeptName());
+                        SPManager.getInstance().setName(loginModel.getObj().getName());
                         loginSuccess();
                     } else {
                         showToastMsg(loginModel.message);

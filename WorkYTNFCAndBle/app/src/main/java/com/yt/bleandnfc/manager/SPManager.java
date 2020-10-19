@@ -11,6 +11,8 @@ public class SPManager {
 
     private final String USER_NAME = "username"; // 登录名称 String
 
+    private final String NAME = "name"; // 登录名称 String
+
     private final String USER_PWD = "pwd"; // 登录密码 String
 
     private final String CAR_NUM = "carNum"; // 车辆编号 String
@@ -60,6 +62,22 @@ public class SPManager {
      */
     public String getUserName(){
         return sp.getString(USER_NAME,"");
+    }
+
+    /**
+     * 保存用户登陆的中文名
+     * @param username
+     */
+    public void setName(String username){
+        sp.edit().putString(NAME,username).commit();
+    }
+
+    /**
+     * 获取用户登陆的中文名
+     * @return
+     */
+    public String getName(){
+        return sp.getString(NAME,"");
     }
 
     /**
