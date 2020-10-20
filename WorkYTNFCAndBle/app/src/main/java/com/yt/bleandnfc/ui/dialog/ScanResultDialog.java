@@ -71,6 +71,9 @@ public class ScanResultDialog extends Dialog {
                     cancel();
                     break;
                 case R.id.dialog_cancel_btn: // 取消
+                    if (clickListenerInterface != null){
+                        clickListenerInterface.cancel();
+                    }
                     cancel();
                     break;
             }
@@ -79,5 +82,6 @@ public class ScanResultDialog extends Dialog {
 
     public interface ScanResultClickListenerInterface {
         void doSure();
+        void cancel();
     }
 }

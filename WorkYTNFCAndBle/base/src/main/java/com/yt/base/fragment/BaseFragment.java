@@ -18,6 +18,8 @@ public class BaseFragment extends Fragment implements IView {
 
     public static List<BaseFragment> list = new ArrayList<>();
 
+    public boolean mIsActive = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,9 @@ public class BaseFragment extends Fragment implements IView {
 
     @Override
     public void showLoading(String content) {
+        if (!mIsActive){
+            return;
+        }
         if (mLoadingDialig == null) {
             mLoadingDialig = new LoadingDialig(getActivity(), "正在加载");
         }
@@ -58,6 +63,9 @@ public class BaseFragment extends Fragment implements IView {
 
     @Override
     public void hideLoading() {
+        if (!mIsActive){
+            return;
+        }
         if (mLoadingDialig != null) {
             mLoadingDialig.dismiss();
         }
@@ -65,6 +73,9 @@ public class BaseFragment extends Fragment implements IView {
 
     @Override
     public void showToastMsg(String msg) {
+        if (!mIsActive){
+            return;
+        }
         if(TextUtils.isEmpty(msg)){
             return;
         }
@@ -77,6 +88,9 @@ public class BaseFragment extends Fragment implements IView {
 
     @Override
     public void showToastMsg(@IdRes int res) {
+        if (!mIsActive){
+            return;
+        }
         ToastUtils.showText(getActivity(),res);
     }
 

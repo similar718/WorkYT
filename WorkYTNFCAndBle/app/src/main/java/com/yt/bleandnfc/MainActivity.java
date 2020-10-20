@@ -1,6 +1,7 @@
 package com.yt.bleandnfc;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +13,18 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Vibrator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.yt.base.utils.LogUtlis;
+import com.yt.base.utils.ToastUtils;
 import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
 import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.activity.YTBaseActivity;
@@ -27,6 +34,8 @@ import com.yt.bleandnfc.eventbus.AlarmAddResult;
 import com.yt.bleandnfc.manager.IntentManager;
 import com.yt.bleandnfc.manager.SPManager;
 import com.yt.bleandnfc.mvvm.viewmodel.MainViewModel;
+import com.yt.bleandnfc.nfcres.NfcHandler;
+import com.yt.bleandnfc.nfcres.NfcView;
 import com.yt.bleandnfc.service.KeepAppLifeService;
 import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
@@ -70,8 +79,6 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         });
         return viewModel;
     }
-
-    private int mEndMenuId = R.id.navigation_info_detail;
 
     private NavController mNavController;
 
@@ -124,8 +131,13 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestRunTimePermission(PERMISSIONPERMS_STORAGE_LOCATION,iPermissionListener);
         }
-
         startTimer();
+
+        // 初始化NFC数据
+        mNfcHandler = new NfcHandler(mNFCView);
+        mNfcHandler.init(this);
+        // 开始使用NFC
+        mNfcHandler.enableNfc(this);
     }
 
     @Override
@@ -276,6 +288,9 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
     private BLEAndGPSHintDialog mBLEAndGPSHintDialog;
 
     private void showBleAndGPSHintDialog(String title,boolean isPermissionHint){
+        if (!mIsActive){
+            return;
+        }
         if (mBLEAndGPSHintDialog == null) {
             mBLEAndGPSHintDialog = new BLEAndGPSHintDialog(mContext);
             mBLEAndGPSHintDialog.setBLEAndGPSHintClicklistener(new BLEAndGPSHintDialog.BLEAndGPSHintClickListenerInterface() {
@@ -323,4 +338,111 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         }
     }
 
+
+    private String TAG = MainActivity.class.getSimpleName();
+    @Override
+    protected void onNewIntent(Intent intent) { // TODO nfc必须要使用的
+        Log.d(TAG, "onNewIntent()! action is:" + intent.getAction());
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    // NFC 硬件相关东西
+    private NfcHandler mNfcHandler;
+    private boolean mIsRequestNFCUid = false;
+    private boolean mIsOpenNFC = true;
+
+    private String mNFCContent = "";
+    private boolean mIsClickFRID = false;
+
+
+    private NfcView mNFCView = new NfcView() {
+        @Override
+        public void appendResponse(final String response) {
+            Log.e(TAG, "appendResponse: data______________________________" + response);
+            // NFC相关信息的回调事件
+            if (TextUtils.isEmpty(response)){
+                return;
+            }
+            mIsRequestNFCUid = true; // 从线程中读取到NFC的相关数据
+            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            vibrator.vibrate(1000); // 获取成功只有震动1秒的钟
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showText(mContext,response);
+                    StringBuilder data = new StringBuilder();
+                    data.append("NFC相关信息：").append(response);
+                    mNFCContent = response;
+                    if (mIsClickFRID) {
+                        // TODO 去请求服务器
+                        // dataBinding.etScanInput.setText(mNFCContent);
+                        showBleAndGPSHintDialog("获取到NFC数据信息：\n " + mNFCContent,false);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void notNfcDevice() {
+            Toast.makeText(mContext, "未找到NFC设备！", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void notOpenNFC() {
+            mIsOpenNFC = false;
+            mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW_NFC);
+            Toast.makeText(mContext, "请在设置中打开NFC开关！", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void getNFCStatusOk() {
+            mIsOpenNFC = true;
+            mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW_NFC);
+        }
+    };
+
+    // 开始查看NFC是否被读取
+    private void getNFCInfo(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!mIsRequestNFCUid) {
+                    try {
+                        Thread.sleep(1000);
+                        // 循环读取数据
+                        mNfcHandler.readCardId(getIntent());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private final int HANDLER_INIT_IMAGEVIEW_NFC = 0x0102;
+
+    // 主线程的Handler用来刷新界面
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            // 由主线程中的Looper不断的loop将handler里面的信息不断的轮询，将符合要求的数据dispatchMessage分发
+            // 到主线程的handlerMessage进行更新界面的数据
+            switch (msg.what){
+                case HANDLER_INIT_IMAGEVIEW_NFC:
+                    if (mIsOpenNFC) { // 如果出现就开始获取nfc数据
+                        getNFCInfo();
+                    }
+                    break;
+            }
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mNfcHandler.disableNfc(this);
+    }
 }

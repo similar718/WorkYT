@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/login_logo_icon"
             android:textColor="@color/white"
-            android:text="耀塔科技"
+            android:text="@string/app_name"
             android:textSize="@dimen/text_size_14"
             android:layout_centerInParent="true"
             android:textStyle="bold"

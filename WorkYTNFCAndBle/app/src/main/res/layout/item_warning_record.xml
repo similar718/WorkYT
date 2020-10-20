@@ -18,11 +18,11 @@
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
         android:src="@drawable/warning_icon"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginLeft="@dimen/dp_7"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_10"
         />
 
     <TextView
@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:text="@string/info_detail_use_warning"
         android:textColor="@color/item_blue"
+        android:layout_marginLeft="@dimen/dp_5"
         android:layout_toRightOf="@+id/iv_icon"
         android:textSize="@dimen/text_size_11"
         android:layout_marginTop="@dimen/dp_11" />

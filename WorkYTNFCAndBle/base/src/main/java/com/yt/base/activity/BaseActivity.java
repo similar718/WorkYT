@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class BaseActivity extends AppCompatActivity implements IView {
 
     public static List<BaseActivity> list = new ArrayList<>();
+
+    public boolean mIsActive = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +33,13 @@ public class BaseActivity extends AppCompatActivity implements IView {
     @Override
     protected void onResume() {
         super.onResume();
+        mIsActive = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mIsActive = false;
     }
 
     @Override
@@ -46,6 +50,9 @@ public class BaseActivity extends AppCompatActivity implements IView {
 
     @Override
     public void showLoading(String content) {
+        if (!mIsActive){
+            return;
+        }
         if (mLoadingDialig == null) {
             mLoadingDialig = new LoadingDialig(this, "正在加载");
         }
@@ -57,6 +64,9 @@ public class BaseActivity extends AppCompatActivity implements IView {
 
     @Override
     public void hideLoading() {
+        if (!mIsActive){
+            return;
+        }
         if (mLoadingDialig != null) {
             mLoadingDialig.dismiss();
         }
@@ -64,6 +74,9 @@ public class BaseActivity extends AppCompatActivity implements IView {
 
     @Override
     public void showToastMsg(String msg) {
+        if (!mIsActive){
+            return;
+        }
         if(TextUtils.isEmpty(msg)){
             return;
         }
@@ -76,6 +89,9 @@ public class BaseActivity extends AppCompatActivity implements IView {
 
     @Override
     public void showToastMsg(@StringRes int res) {
+        if (!mIsActive){
+            return;
+        }
         ToastUtils.showText(this,res);
     }
 
