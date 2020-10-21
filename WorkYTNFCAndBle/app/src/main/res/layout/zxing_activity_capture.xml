@@ -169,6 +169,7 @@
                             android:layout_marginBottom="@dimen/dp_7"
                             android:background="@drawable/dialog_scan_bg"
                             android:gravity="center"
+                            android:singleLine="true"
                             android:hint="@string/scan_input_hint"
                             android:imeOptions="flagNoExtractUi|flagNoFullscreen"
                             android:textColor="@color/white"

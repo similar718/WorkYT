@@ -1,15 +1,19 @@
 package com.yt.bleandnfc.ui.checklocation;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 
 import com.yt.bleandnfc.R;
 import com.yt.bleandnfc.base.fragment.YTBaseFragment;
@@ -47,9 +51,9 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
     protected void initData() {
         initWebView();
         mCarNumber = SPManager.getInstance().getCarNum();
-        if (!TextUtils.isEmpty(mCarNumber)){
+        if (!TextUtils.isEmpty(mCarNumber)) {
             // WebView
-            dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS+mCarNumber);
+            dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS + mCarNumber);
             dataBinding.etCarCode.setText(mCarNumber);
         } else {
             // WebView
@@ -86,7 +90,7 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
         webSettings.setDefaultTextEncodingName("utf-8");//设置编码格式
     }
 
-    private void initClick(){
+    private void initClick() {
         // 返回
         dataBinding.titleView.setTitleLeftClick(new CommonTitleBarView.OnTitleLeftClick() {
             @Override
@@ -108,12 +112,12 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
                     return;
                 }
                 // WebView
-                dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS+mCarNumber);
+                dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS + mCarNumber);
             }
         });
 
         // webView
-        dataBinding.wvView.setWebViewClient(new WebViewClient(){
+        dataBinding.wvView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
@@ -125,6 +129,7 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
                 super.onPageFinished(view, url);
                 // 加载结束
             }
+
             // 链接跳转会走这个方法
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -135,7 +140,7 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
             }
         });
 
-        dataBinding.wvView.setWebChromeClient(new WebChromeClient(){
+        dataBinding.wvView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
@@ -148,5 +153,23 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
                 // 标题
             }
         });
+
+        dataBinding.etCarCode.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                showSoftInputFromWindow(dataBinding.etCarCode);
+                return false;
+            }
+        });
+    }
+
+    public void showSoftInputFromWindow(EditText editText) {
+        editText.setFocusable(true);
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+        editText.findFocus();
+        InputMethodManager inputManager =
+                (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
     }
 }
