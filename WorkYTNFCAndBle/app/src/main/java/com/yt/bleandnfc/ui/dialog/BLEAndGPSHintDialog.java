@@ -50,6 +50,9 @@ public class BLEAndGPSHintDialog extends Dialog {
     }
 
     public void showDialog(String content,boolean isPermissionHint){
+        if (isShowing()){
+            return;
+        }
         if (isPermissionHint){
             dataBinding.dialogCancelBtn.setVisibility(View.VISIBLE);
         } else {

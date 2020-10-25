@@ -112,7 +112,7 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
                     return;
                 }
                 // WebView
-                dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS + mCarNumber);
+                dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS+inputData);
             }
         });
 

@@ -35,4 +35,9 @@ public class Constants {
      * 绑定设备数据
      */
     public static ArrayList<String> mBindLists = new ArrayList<>();
+
+    /**
+     * 是否是第一次进行提示
+     */
+    public static boolean mIsFirstHint = true;
 }

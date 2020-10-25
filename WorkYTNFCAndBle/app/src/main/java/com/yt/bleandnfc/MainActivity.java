@@ -136,6 +136,11 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         // 初始化NFC数据
         mNfcHandler = new NfcHandler(mNFCView);
         mNfcHandler.init(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         // 开始使用NFC
         mNfcHandler.enableNfc(this);
     }
@@ -353,7 +358,6 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
     private boolean mIsOpenNFC = true;
 
     private String mNFCContent = "";
-    private boolean mIsClickFRID = false;
 
 
     private NfcView mNFCView = new NfcView() {
@@ -370,11 +374,11 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ToastUtils.showText(mContext,response);
+//                    ToastUtils.showText(mContext,response);
                     StringBuilder data = new StringBuilder();
                     data.append("NFC相关信息：").append(response);
                     mNFCContent = response;
-                    if (mIsClickFRID) {
+                    if (mIsActive) {
                         // TODO 去请求服务器
                         // dataBinding.etScanInput.setText(mNFCContent);
                         showBleAndGPSHintDialog("获取到NFC数据信息：\n " + mNFCContent,false);
@@ -385,14 +389,20 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 
         @Override
         public void notNfcDevice() {
-            Toast.makeText(mContext, "未找到NFC设备！", Toast.LENGTH_SHORT).show();
+            if (Constants.mIsFirstHint) {
+                showToastMsg("当前设备不支持NFC");
+                Constants.mIsFirstHint = false;
+            }
         }
 
         @Override
         public void notOpenNFC() {
             mIsOpenNFC = false;
             mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW_NFC);
-            Toast.makeText(mContext, "请在设置中打开NFC开关！", Toast.LENGTH_SHORT).show();
+            if (Constants.mIsFirstHint) {
+                showToastMsg("请在设置中打开NFC开关！");
+                Constants.mIsFirstHint = false;
+            }
         }
 
         @Override

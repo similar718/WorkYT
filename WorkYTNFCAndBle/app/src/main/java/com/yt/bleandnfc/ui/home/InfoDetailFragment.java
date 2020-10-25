@@ -1,5 +1,6 @@
 package com.yt.bleandnfc.ui.home;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -80,6 +81,7 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
     WarningRecordItemAdapter mAdapter;
     WarningRecordModel warningRecordModel;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void initData() {
         EventBus.getDefault().register(this);
@@ -98,16 +100,6 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         dataBinding.tvUseWarningNum.setText("" + 0);
         dataBinding.tvTimeoutWarningNum.setText("" + 0);
         dataBinding.tvStopWarningNum.setText("" + 0);
-
-//        StringBuilder stringBuilder = new StringBuilder();
-//        if (Constants.mBindLists.size() > 0) {
-//            for (int i = 0; i < Constants.mBindLists.size(); i++){
-//                stringBuilder.append("已绑定车辆").append(Constants.mBindLists.get(i)).append("          ");
-//            }
-//        } else {
-//            stringBuilder.append("未绑定车辆");
-//        }
-//        dataBinding.tvStatusInfo.setText(stringBuilder);
 
         // 报警列表
         mAdapter = new WarningRecordItemAdapter();
@@ -132,8 +124,6 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         });
 
         initClick();
-//        setTextSwitcher();
-//        setData();
 
         viewModel.getAlarmNum();
     }
@@ -261,100 +251,6 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         dataBinding.refreshLayout.finishRefresh();
         dataBinding.refreshLayout.finishLoadMore();
     }
-
-//    private int index = 0;//textview上下滚动下标
-//    private Handler handler = new Handler();
-//    private boolean isFlipping = false; // 是否启用预警信息轮播
-//    private List<String> mWarningTextList = new ArrayList<>();
-//
-//    private void setTextSwitcher() {
-//        dataBinding.textSwitcher.setInAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_bottom));
-//        dataBinding.textSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_top));
-//        dataBinding.textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-//            @Override
-//            public View makeView() {
-//                TextView textView = new TextView(getActivity());
-//                textView.setTextSize(11);//字号
-//                textView.setTextColor(Color.parseColor("#333333"));
-//                textView.setGravity(Gravity.CENTER);
-//                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                params.gravity = Gravity.CENTER;
-//                textView.setLayoutParams(params);
-//                textView.setPadding(10, 0, 0, 10);
-//                return textView;
-//            }
-//        });
-//    }
-//
-//    private Runnable runnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            if (!isFlipping) {
-//                return;
-//            }
-//            index++;
-//            dataBinding.textSwitcher.setText(mWarningTextList.get(index % mWarningTextList.size()));
-//            if (index == mWarningTextList.size()) {
-//                index = 0;
-//            }
-//            startFlipping();
-//        }
-//    };
-//
-//    //开启信息轮播
-//    public void startFlipping() {
-//        if (mWarningTextList.size() > 1) {
-//            handler.removeCallbacks(runnable);
-//            isFlipping = true;
-//            handler.postDelayed(runnable, 3000);
-//        }
-//    }
-//
-//    //关闭信息轮播
-//    public void stopFlipping() {
-//        if (mWarningTextList.size() > 1) {
-//            isFlipping = false;
-//            handler.removeCallbacks(runnable);
-//        }
-//    }
-//
-//    //设置数据
-//    private void setData() {
-//        mWarningTextList.add("XXXXXX绑定设备中");
-//        mWarningTextList.add("XXXXXX绑定设备成功");
-//        mWarningTextList.add("XXXXXX绑定设备失败");
-//        mWarningTextList.add("XXXXXX解绑设备成功");
-//        mWarningTextList.add("XXXXXX解绑设备失败");
-//        if (mWarningTextList.size() == 1) {
-//            dataBinding.textSwitcher.setText(mWarningTextList.get(0));
-//            index = 0;
-//        }
-//        if (mWarningTextList.size() > 1) {
-//            handler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    dataBinding.textSwitcher.setText(mWarningTextList.get(0));
-//                    index = 0;
-//                }
-//            }, 100);
-//            dataBinding.textSwitcher.setInAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_bottom));
-//            dataBinding.textSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_top));
-//            startFlipping();
-//        }
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        startFlipping();
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        stopFlipping();
-//    }
-
 
     private BLEAndGPSHintDialog mBLEAndGPSHintDialog;
 
