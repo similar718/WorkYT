@@ -182,7 +182,6 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
             }
         }
         viewModels.addAll(baseCustomViewModels);
-        Constants.mAlarmNum = viewModels.size();
         mAdapter.setData(viewModels);
         dataBinding.refreshLayout.finishRefresh();
         dataBinding.refreshLayout.finishLoadMore();

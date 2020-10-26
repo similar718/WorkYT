@@ -6,7 +6,7 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg">
@@ -15,9 +15,6 @@
             android:id="@+id/iv_top_bg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_200"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/info_detail_top_bg"
             />
 
@@ -27,19 +24,14 @@
             android:layout_height="wrap_content"
             app:title_txt="@string/info_detail"
             app:title_bg_show="false"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             app:left_iv_show="false" />
 
         <RelativeLayout
             android:id="@+id/rl_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_view"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_top_bg">
+            android:layout_below="@+id/title_view"
+            android:layout_alignBottom="@+id/iv_top_bg">
 
             <ImageView
                 android:id="@+id/iv_head"
@@ -122,10 +114,8 @@
         <com.yt.bleandnfc.ui.view.MarqueeView
             android:id="@+id/tv_status_info"
             android:layout_width="match_parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintLeft_toRightOf="parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_top_bg"
+            android:layout_alignBottom="@+id/iv_top_bg"
             android:background="@drawable/main_text_bg"
             android:text=""
             android:gravity="center_vertical"
@@ -145,9 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_105"
             android:background="@color/white"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_top_bg"
+            android:layout_below="@+id/iv_top_bg"
             android:orientation="horizontal"
             android:weightSum="4">
 
@@ -256,45 +244,12 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_67"
             android:background="@color/white"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_type"
+            android:layout_below="@+id/ll_type"
             android:layout_marginTop="@dimen/dp_10"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_20"
             android:paddingRight="@dimen/dp_20"
             android:weightSum="3">
-           <!-- <RelativeLayout
-                android:id="@+id/rl_status_content"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <TextSwitcher
-                    android:id="@+id/text_switcher"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:text="@string/info_detail_bind"
-                    android:textColor="@color/text_black"
-                    android:gravity="center"
-                    android:textSize="@dimen/text_size_11"
-                    android:layout_centerVertical="true"
-                    />
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="@dimen/dp_1_px"
-                android:layout_height="match_parent"
-                android:background="@color/bg"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                />-->
-
             <RelativeLayout
                 android:id="@+id/rl_use_warning"
                 android:layout_width="0dp"
@@ -413,15 +368,13 @@
         <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title_bar"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_status"
             android:background="@android:color/transparent"
             app:srlAccentColor="@color/gray"
             app:srlEnablePreviewInEditMode="true"
-            app:srlPrimaryColor="@android:color/transparent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_status">
+            android:layout_marginBottom="@dimen/dp_10"
+            app:srlPrimaryColor="@android:color/transparent">
             <com.scwang.smartrefresh.layout.header.ClassicsHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -434,5 +387,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </layout>

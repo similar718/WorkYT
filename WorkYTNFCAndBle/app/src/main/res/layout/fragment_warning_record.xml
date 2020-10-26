@@ -7,29 +7,23 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg"
-        tools:context=".ui.warningrecord.WarningRecordFragment">
+        android:background="@color/bg">
 
         <com.yt.bleandnfc.ui.view.CommonTitleBarView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/title_view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             app:title_txt="@string/warning_record"
             />
 
         <RelativeLayout
             android:id="@+id/rl_calender"
             android:layout_width="match_parent"
+            android:layout_below="@+id/title_view"
             android:layout_height="@dimen/dp_57"
-            app:layout_constraintTop_toBottomOf="@+id/title_view"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             android:background="@color/white">
 
             <RelativeLayout
@@ -73,9 +67,7 @@
             android:id="@+id/rl_warning_type"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_42"
-            app:layout_constraintTop_toBottomOf="@+id/rl_calender"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:layout_below="@+id/rl_calender"
             android:layout_marginTop="@dimen/dp_1"
             android:background="@color/white">
             <RadioGroup
@@ -151,15 +143,13 @@
         <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title_bar"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_warning_type"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@android:color/transparent"
             app:srlAccentColor="@color/gray"
             app:srlEnablePreviewInEditMode="true"
-            app:srlPrimaryColor="@android:color/transparent"
-            app:layout_constraintTop_toBottomOf="@+id/rl_warning_type"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:srlPrimaryColor="@android:color/transparent">
             <com.scwang.smartrefresh.layout.header.ClassicsHeader
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -172,5 +162,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </layout>

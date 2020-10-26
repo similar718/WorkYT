@@ -66,6 +66,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         viewModel.mAlarmFindAlarmByStateModel.observe(this, new Observer<AlarmFindAlarmByStateModel>() {
             @Override
             public void onChanged(AlarmFindAlarmByStateModel alarmFindAlarmByStateModel) {
+                LogUtlis.e("ooooooooooooooo",alarmFindAlarmByStateModel.getObj().size() + "  " + Constants.mAlarmNum);
                 if (alarmFindAlarmByStateModel.getObj().size() != Constants.mAlarmNum){
                     EventBus.getDefault().post(new AlarmAddResult(1));
                     showBleAndGPSHintDialog("有新的报警记录增加",false);

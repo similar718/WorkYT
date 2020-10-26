@@ -60,6 +60,7 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                Constants.mAlarmNum = alarmCountAlarmByStateModel.getObj();
                                 dataBinding.tvUseWarningNum.setText("" + alarmCountAlarmByStateModel.getObj());
                                 dataBinding.tvTimeoutWarningNum.setText("" + alarmCountAlarmByStateModel.getObj());
                                 dataBinding.tvStopWarningNum.setText("" + alarmCountAlarmByStateModel.getObj());
@@ -244,7 +245,6 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
             }
         }
         viewModels.addAll(baseCustomViewModels);
-        Constants.mAlarmNum = viewModels.size();
         mAdapter.setData(viewModels);
         dataBinding.refreshLayout.finishRefresh();
         dataBinding.refreshLayout.finishLoadMore();
@@ -293,6 +293,7 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
     public void onEventScanData(AlarmAddResult result) {
         if (result.type == 1) {
             warningRecordModel.refresh();
+            viewModel.getAlarmNum();
         }
     }
 }

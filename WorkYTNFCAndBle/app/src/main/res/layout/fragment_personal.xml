@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg">
+
+        <com.yt.bleandnfc.ui.view.CommonTitleBarView
+            android:id="@+id/title_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title_txt="@string/personal_title"
+            app:left_iv_show="true" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_42"
+            android:layout_below="@+id/title_view"
+            android:background="@color/white"
+            android:text="2020年10月26日"
+            android:textColor="@color/dialog_black"
+            android:textSize="@dimen/text_size_13"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_20"
+            />
+
+        <!--srlAccentColor srlPrimaryColor 控制 Header 和 Footer 的背景颜色-->
+        <!--srcAccentColor 控制 Header 和 Footer 字体颜色-->
+        <!--srlEnablePreviewInEditMode 开启和关闭预览功能-->
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            app:srlAccentColor="@color/gray"
+            android:layout_marginTop="@dimen/dp_1_px"
+            app:srlEnablePreviewInEditMode="true"
+            app:srlPrimaryColor="@android:color/transparent"
+            android:layout_below="@+id/tv_time">
+            <com.scwang.smartrefresh.layout.header.ClassicsHeader
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+            <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    </RelativeLayout>
+</layout>
