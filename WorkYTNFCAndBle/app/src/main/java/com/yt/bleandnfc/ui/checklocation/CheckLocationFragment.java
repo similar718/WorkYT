@@ -13,6 +13,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.yt.bleandnfc.R;
@@ -59,6 +60,19 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
             // WebView
             dataBinding.wvView.loadUrl(urls[0]);
         }
+
+        //通过加载xml文件配置的数据源
+        ArrayAdapter spinnerAdapterPart = ArrayAdapter.createFromResource(getActivity(), R.array.CheckLocationPartType,R.layout.custom_spinner_text_item);
+        //设置下拉选项的方式
+        spinnerAdapterPart.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
+        dataBinding.elvPartType.setAdapter(spinnerAdapterPart);
+
+        //通过加载xml文件配置的数据源
+        ArrayAdapter spinnerAdapterCar = ArrayAdapter.createFromResource(getActivity(), R.array.CheckLocationCarType,R.layout.custom_spinner_text_item);
+        //设置下拉选项的方式
+        spinnerAdapterCar.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
+        dataBinding.elvCarType.setAdapter(spinnerAdapterCar);
+
 
         initClick();
     }

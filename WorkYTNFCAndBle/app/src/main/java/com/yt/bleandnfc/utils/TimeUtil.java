@@ -22,9 +22,23 @@ public class TimeUtil {
     public static final String FORMAT_E = "MM月dd日";
     public static final String FORMAT_F = "yyyy年MM月dd日";
 
+    /**
+     * 返回年月日 时分
+     * @return
+     */
     public static String getTodayTime(){
         long time = System.currentTimeMillis();
         SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_B);
+        return formatter.format(time);
+    }
+
+    /**
+     * 返回年月日数据
+     * @return
+     */
+    public static String getTodayTimeYMD(){
+        long time = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_A);
         return formatter.format(time);
     }
 

@@ -153,6 +153,8 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         dataBinding.rlWxby.setOnClickListener(this);
         // 维保归还
         dataBinding.rlWbgh.setOnClickListener(this);
+        // 个人信息
+        dataBinding.ivPersonal.setOnClickListener(this);
 
         mAdapter.setOnItemClickListener(new WarningRecordItemAdapter.OnItemClickListener() {
             @Override
@@ -202,7 +204,10 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
             case R.id.rl_wxby: // 维修保养
                 Navigation.findNavController(v).navigate(R.id.navigation_wb);
                 break;
-            case R.id.rl_wbgh: // 维保归还 TODO
+            case R.id.iv_personal: // 个人信息
+                Navigation.findNavController(v).navigate(R.id.navigation_personal);
+                break;
+            case R.id.rl_wbgh: // 维保归还
                 if (!BLEAndGPSUtils.isOpenBLE()) {
                     // 蓝牙没有打开
                     showBleAndGPSHintDialog("请打开蓝牙，可正常使用APP内的功能",false);

@@ -100,11 +100,21 @@
 
             <ImageView
                 android:id="@+id/iv_setting"
-                android:layout_width="@dimen/dp_60"
-                android:layout_height="@dimen/dp_60"
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_52"
                 android:src="@drawable/info_detail_settings_icon"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:padding="@dimen/dp_15"
+                />
+
+            <ImageView
+                android:id="@+id/iv_personal"
+                android:layout_width="@dimen/dp_55"
+                android:layout_height="@dimen/dp_50"
+                android:src="@drawable/info_detail_personal"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/iv_setting"
                 android:padding="@dimen/dp_15"
                 />
         </RelativeLayout>

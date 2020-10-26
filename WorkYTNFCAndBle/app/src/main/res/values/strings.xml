@@ -211,4 +211,7 @@
     <string name="photo_album">从手机相册选择</string>
 
     <string name="neterror_check_appversion_fail">手机网络不可用，请检查手机网络设置</string>
+
+    <!-- 个人信息 -->
+    <string name="personal_title">人员列表</string>
 </resources>

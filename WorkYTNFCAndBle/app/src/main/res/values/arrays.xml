@@ -133,4 +133,15 @@
       <item>https://baike.baidu.com/item/ST%E6%AE%B5</item>
       <item>https://baike.baidu.com/item/%E9%98%BB%E5%A1%9E%E6%80%A7%E7%9D%A1%E7%9C%A0%E5%91%BC%E5%90%B8%E6%9A%82%E5%81%9C/10145124?fr=aladdin</item>
   </string-array>
+
+    <string-array name="CheckLocationPartType">
+        <item>单位</item>
+        <item>机坪室</item>
+    </string-array>
+
+    <string-array name="CheckLocationCarType">
+        <item>车辆类型</item>
+        <item>工作梯</item>
+        <item>手推车</item>
+    </string-array>
 </resources>

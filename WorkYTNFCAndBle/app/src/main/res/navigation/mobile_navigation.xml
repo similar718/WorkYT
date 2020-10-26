@@ -34,4 +34,10 @@
         android:name="com.yt.bleandnfc.ui.settings.SettingsFragment"
         android:label="@string/setting"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/navigation_personal"
+        android:name="com.yt.bleandnfc.ui.personal.PersonalFragment"
+        android:label="@string/personal_title"
+        tools:layout="@layout/fragment_personal" />
 </navigation>

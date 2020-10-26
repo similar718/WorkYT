@@ -56,11 +56,14 @@
     <color name="date_picker_bg">#FFFFFF</color>
     <color name="date_picker_text_dark">#333333</color>
 
+    <color name="personal_blue">#3757E8</color>
+
     <!-- 背景灰-->
     <color name="gray_bg0">#eeeeee</color>
     <color name="gray_bg1">#f5f5f6</color>
     <color name="little_title_color">#333333</color>
     <!-- 直线   灰-->
     <color name="gray_line2">#e9e7e7</color>
+    <color name="personal_line">#e7e7e9</color>
 
 </resources>
