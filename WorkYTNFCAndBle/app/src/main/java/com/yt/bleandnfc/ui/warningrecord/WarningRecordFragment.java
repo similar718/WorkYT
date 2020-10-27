@@ -120,6 +120,7 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
                 if (savecheckedId == checkedId) {
                     return;
                 }
+                savecheckedId = checkedId;
                 switch (checkedId) {
                     case R.id.tv_use_warning_type: // 领用报警
                         warning_type = 0;
@@ -134,8 +135,15 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
                         warning_type = 3;
                         break;
                 }
-                // 更新列表
-                warningRecordModel.refresh();
+                if (warning_type > 0) {
+                    dataBinding.tvEmpty.setVisibility(View.VISIBLE);
+                    dataBinding.refreshLayout.setVisibility(View.GONE);
+                } else {
+                    // 更新列表
+//                    warningRecordModel.refresh();
+                    dataBinding.tvEmpty.setVisibility(View.GONE);
+                    dataBinding.refreshLayout.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -150,6 +158,7 @@ public class WarningRecordFragment extends YTBaseFragment<WarningRecordViewModel
                         .append(viewModels.get(position).getUserId())
                         .append("）”于")
                         .append(viewModels.get(position).getCreateTime())
+                        .append("在null机位")
                         .append("使用工作梯（编号：")
                         .append(viewModels.get(position).getCarNumber())
                         .append("）发生违规行为，违规内容“违规停放”。");

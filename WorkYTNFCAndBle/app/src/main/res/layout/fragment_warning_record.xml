@@ -136,7 +136,17 @@
                     />
             </RadioGroup>
         </RelativeLayout>
-
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_warning_type"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_size_22"
+            android:visibility="gone"
+            android:text="无当前警报信息"
+            android:gravity="center"
+            />
         <!--srlAccentColor srlPrimaryColor 控制 Header 和 Footer 的背景颜色-->
         <!--srcAccentColor 控制 Header 和 Footer 字体颜色-->
         <!--srlEnablePreviewInEditMode 开启和关闭预览功能-->
@@ -144,8 +154,8 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/rl_warning_type"
             android:layout_marginBottom="@dimen/dp_10"
+            android:layout_below="@+id/rl_warning_type"
             android:background="@android:color/transparent"
             app:srlAccentColor="@color/gray"
             app:srlEnablePreviewInEditMode="true"

@@ -66,10 +66,12 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         viewModel.mAlarmFindAlarmByStateModel.observe(this, new Observer<AlarmFindAlarmByStateModel>() {
             @Override
             public void onChanged(AlarmFindAlarmByStateModel alarmFindAlarmByStateModel) {
+                // TODO 获取数量更好
                 LogUtlis.e("ooooooooooooooo",alarmFindAlarmByStateModel.getObj().size() + "  " + Constants.mAlarmNum);
                 if (alarmFindAlarmByStateModel.getObj().size() != Constants.mAlarmNum){
+                    Constants.mAlarmNum = alarmFindAlarmByStateModel.getObj().size();
                     EventBus.getDefault().post(new AlarmAddResult(1));
-                    showBleAndGPSHintDialog("有新的报警记录增加",false);
+                    showBleAndGPSHintDialog("有新报警信息",false);
                 }
             }
         });

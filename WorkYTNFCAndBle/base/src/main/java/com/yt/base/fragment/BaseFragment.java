@@ -34,11 +34,13 @@ public class BaseFragment extends Fragment implements IView {
     @Override
     public void onResume() {
         super.onResume();
+        mIsActive = true;
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        mIsActive = false;
     }
 
     @Override

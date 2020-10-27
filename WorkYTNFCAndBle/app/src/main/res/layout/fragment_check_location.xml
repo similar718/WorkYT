@@ -107,7 +107,6 @@
                         android:layout_marginRight="@dimen/dp_102"
                         android:layout_below="@+id/ll_content"
                         android:layout_marginTop="@dimen/dp_19"
-                        android:layout_marginBottom="@dimen/dp_13"
                         android:text="@string/sure_commit"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_13"

@@ -1,6 +1,5 @@
 package com.yt.bleandnfc.ui.checklocation;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -13,15 +12,18 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
+import com.yt.base.utils.LogUtlis;
 import com.yt.bleandnfc.R;
 import com.yt.bleandnfc.base.fragment.YTBaseFragment;
 import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.FragmentCheckLocationBinding;
 import com.yt.bleandnfc.manager.SPManager;
 import com.yt.bleandnfc.ui.view.CommonTitleBarView;
+import com.yt.bleandnfc.utils.TimeUtil;
 
 import androidx.annotation.RequiresApi;
 import androidx.navigation.Navigation;
@@ -45,21 +47,27 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
         return viewModel;
     }
 
-    private String[] urls = {"https://map.baidu.com"};
-    private String mCarNumber = "";
-
     @Override
     protected void initData() {
         initWebView();
-        mCarNumber = SPManager.getInstance().getCarNum();
-        if (!TextUtils.isEmpty(mCarNumber)) {
-            // WebView
-            dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS + mCarNumber);
-            dataBinding.etCarCode.setText(mCarNumber);
-        } else {
-            // WebView
-            dataBinding.wvView.loadUrl(urls[0]);
-        }
+        // http://47.108.48.111:85/?type=user&lng=103.9535407&lat=30.5821512&userName=admin&userId=123&deptName=机坪室&updateTime=2020-10-27 14:03
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(Constants.CHECK_LOCATION_ADDRESS)
+                .append("type=user&lng=")
+                .append(Constants.LOCATION_LNG)
+                .append("&lat=")
+                .append(Constants.LOCATION_LAT)
+                .append("&userName=")
+                .append(SPManager.getInstance().getUserName())
+                .append("&userId=")
+                .append(SPManager.getInstance().getUserId())
+                .append("&deptName=")
+                .append(SPManager.getInstance().getDeptName())
+                .append("&updateTime=")
+                .append(TimeUtil.getTodayTimeYMDHMS());
+        LogUtlis.e("oooooooooooo",stringBuilder.toString());
+        dataBinding.wvView.loadUrl(stringBuilder.toString());
 
         //通过加载xml文件配置的数据源
         ArrayAdapter spinnerAdapterPart = ArrayAdapter.createFromResource(getActivity(), R.array.CheckLocationPartType,R.layout.custom_spinner_text_item);
@@ -104,6 +112,12 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
         webSettings.setDefaultTextEncodingName("utf-8");//设置编码格式
     }
 
+    private final String[] partType = {"","df","jps","csc","cca"};
+    private final String[] carType = {"","powerless","wheelbarrow"};
+
+    private int mCarType = 0;
+    private int mPartType = 0;
+
     private void initClick() {
         // 返回
         dataBinding.titleView.setTitleLeftClick(new CommonTitleBarView.OnTitleLeftClick() {
@@ -116,17 +130,22 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
 
         // 确认提交
         dataBinding.tvSure.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
                 // 确认提交
                 String inputData = dataBinding.etCarCode.getText().toString().trim();
-                if (TextUtils.isEmpty(inputData)) {
-                    showToastMsg(R.string.check_location_input_car_code);
+
+                if (mCarType == 0 && mPartType == 0 && TextUtils.isEmpty(inputData)) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showToastMsg("请选择单位/车辆类型/填写车辆编号");
+                        }
+                    });
                     return;
                 }
-                // WebView
-                dataBinding.wvView.loadUrl(Constants.CHECK_LOCATION_ADDRESS+inputData);
+
+                getURLAndRequestLocation(inputData);
             }
         });
 
@@ -149,7 +168,6 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 view.loadUrl(String.valueOf(request.getUrl())); // 强制在当前WebView中加载Url
-//                return true;
                 return super.shouldOverrideUrlLoading(view, request);
             }
         });
@@ -175,6 +193,30 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
                 return false;
             }
         });
+
+        dataBinding.elvCarType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mCarType = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        dataBinding.elvPartType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mPartType = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     public void showSoftInputFromWindow(EditText editText) {
@@ -185,5 +227,23 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
         InputMethodManager inputManager =
                 (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+    }
+
+    // http://47.108.48.111:85/? carNumber=66660001&type=car&dept=jps&carType=wheelbarrow
+    /**
+     * @param carCode
+     */
+    private void getURLAndRequestLocation(String carCode){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(Constants.CHECK_LOCATION_ADDRESS)
+                .append("carNumber=")
+                .append(carCode)
+                .append("&type=car&dept=")
+                .append(partType[mPartType])
+                .append("&carType=")
+                .append(carType[mCarType]);
+        LogUtlis.e("oooooooooooo",stringBuilder.toString());
+        dataBinding.wvView.loadUrl(stringBuilder.toString());
     }
 }

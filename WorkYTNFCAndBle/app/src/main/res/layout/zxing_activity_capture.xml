@@ -54,16 +54,19 @@
                         android:id="@+id/tv_scan_tip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/viewfinder_view"
                         android:layout_centerHorizontal="true"
                         android:text="@string/activate_service_scan_tip"
+                        android:layout_marginTop="@dimen/dp_30"
                         android:textColor="#FFFFFFFF"
                         android:textSize="@dimen/text_size_14" />
 
                     <com.yt.bleandnfc.ui.view.QrcodeViewfinderView
                         android:id="@+id/viewfinder_view"
-                        android:layout_width="220dp"
-                        android:layout_height="220dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_30"
+                        android:layout_marginRight="@dimen/dp_30"
+                        android:layout_below="@+id/tv_scan_tip"
                         android:layout_above="@+id/tv_hint"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="16dp" />
@@ -123,7 +126,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:visibility="gone">
+                            android:visibility="visible">
 
                             <RelativeLayout
                                 android:layout_width="wrap_content"

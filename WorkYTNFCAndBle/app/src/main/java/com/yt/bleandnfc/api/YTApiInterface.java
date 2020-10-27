@@ -112,4 +112,5 @@ public interface YTApiInterface {
     @POST("alarm/countAlarmBystate")
     Observable<AlarmCountAlarmByStateModel> alarmCountAlarmByState(
             @Query("userId") String userId);
+
 }

@@ -50,6 +50,7 @@ public class WarningRecordItemAdapter extends Adapter<WarningRecordItemAdapter.B
                 .append(modelList.get(position).getUserId())
                 .append("）”于")
                 .append(modelList.get(position).getCreateTime())
+                .append("在null机位")
                 .append("使用工作梯（编号：")
                 .append(modelList.get(position).getCarNumber())
                 .append("）发生违规行为，违规内容“违规停放”。");

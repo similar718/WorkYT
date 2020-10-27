@@ -62,8 +62,8 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
                             public void run() {
                                 Constants.mAlarmNum = alarmCountAlarmByStateModel.getObj();
                                 dataBinding.tvUseWarningNum.setText("" + alarmCountAlarmByStateModel.getObj());
-                                dataBinding.tvTimeoutWarningNum.setText("" + alarmCountAlarmByStateModel.getObj());
-                                dataBinding.tvStopWarningNum.setText("" + alarmCountAlarmByStateModel.getObj());
+//                                dataBinding.tvTimeoutWarningNum.setText("0");
+//                                dataBinding.tvStopWarningNum.setText("0");
                             }
                         });
                     } else {
@@ -168,6 +168,7 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
                         .append(viewModels.get(position).getUserId())
                         .append("）”于")
                         .append(viewModels.get(position).getCreateTime())
+                        .append("在null机位")
                         .append("使用工作梯（编号：")
                         .append(viewModels.get(position).getCarNumber())
                         .append("）发生违规行为，违规内容“违规停放”。");

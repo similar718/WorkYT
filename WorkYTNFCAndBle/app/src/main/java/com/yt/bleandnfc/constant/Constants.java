@@ -15,7 +15,7 @@ public class Constants {
     /**
      * 查车定位的接口位置
      */
-    public static final String CHECK_LOCATION_ADDRESS = "http://47.108.48.111:85/?carNumber=";
+    public static final String CHECK_LOCATION_ADDRESS = "http://47.108.48.111:85/?";
 
     /**
      * 定位信息

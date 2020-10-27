@@ -136,12 +136,15 @@
 
     <string-array name="CheckLocationPartType">
         <item>单位</item>
+        <item>地服</item>
         <item>机坪室</item>
+        <item>川航</item>
+        <item>国航</item>
     </string-array>
 
     <string-array name="CheckLocationCarType">
         <item>车辆类型</item>
-        <item>工作梯</item>
+        <item>无动力车</item>
         <item>手推车</item>
     </string-array>
 </resources>

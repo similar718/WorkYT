@@ -228,6 +228,10 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
             }
         });
 
+        // 初始化NFC数据
+        mNfcHandler = new NfcHandler(mNFCView);
+        mNfcHandler.init(this);
+
         // 1 绑定  2 维修保养  3 解绑  4 维保归还
         if (mType == 1) {
             dataBinding.titleBar.setTitleText("扫码绑定/领用");
@@ -295,22 +299,22 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
             }
         });
 
-//        dataBinding.rlFrid.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mIsClickFRID = true;
-//                if (!TextUtils.isEmpty(mNFCContent)) {
-//                    dataBinding.etScanInput.setText(mNFCContent);
-//                } else {
-//                    if (mIsOpenNFC) { // 如果出现就开始获取nfc数据
-//                        getNFCInfo();
-//                    } else {
-//                        showToastMsg("使用当前功能，需要打开NFC功能");
-//                        finish();
-//                    }
-//                }
-//            }
-//        });
+        dataBinding.rlFrid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIsClickFRID = true;
+                if (!TextUtils.isEmpty(mNFCContent)) {
+                    dataBinding.etScanInput.setText(mNFCContent);
+                } else {
+                    if (mIsOpenNFC) { // 如果出现就开始获取nfc数据
+                        getNFCInfo();
+                    } else {
+                        showToastMsg("使用当前功能，需要打开NFC功能");
+                        finish();
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -367,6 +371,8 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
                 surfaceHolder.addCallback(this);
             }
 //        }
+
+        mNfcHandler.enableNfc((Activity) mContext);
     }
 
     SurfaceView surfaceView = null;
@@ -660,103 +666,103 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
     }
 
 
-//    @Override
-//    protected void onNewIntent(Intent intent) { // TODO nfc必须要使用的
-//        Log.d(TAG, "onNewIntent()! action is:" + intent.getAction());
-//        super.onNewIntent(intent);
-//        setIntent(intent);
-//    }
-//
-//    // NFC 硬件相关东西
-//    private NfcHandler mNfcHandler;
-//    private boolean mIsRequestNFCUid = false;
-//    private boolean mIsOpenNFC = true;
-//
-//    private String mNFCContent = "";
-//    private boolean mIsClickFRID = false;
-//
-//
-//    private NfcView mNFCView = new NfcView() {
-//        @Override
-//        public void appendResponse(final String response) {
-//            Log.e(TAG, "appendResponse: data______________________________" + response);
-//            // NFC相关信息的回调事件
-//            if (TextUtils.isEmpty(response)){
-//                return;
-//            }
-//            mIsRequestNFCUid = true; // 从线程中读取到NFC的相关数据
-//            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-//            vibrator.vibrate(1000); // 获取成功只有震动1秒的钟
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ToastUtils.showText(mContext,response);
-//                    StringBuilder data = new StringBuilder();
-//                    data.append("NFC相关信息：").append(response);
-//                    mNFCContent = response;
-//                    if (mIsClickFRID) {
-//                        dataBinding.etScanInput.setText(mNFCContent);
-//                    }
-//                }
-//            });
-//        }
-//
-//        @Override
-//        public void notNfcDevice() {
-//            Toast.makeText(mContext, "未找到NFC设备！", Toast.LENGTH_SHORT).show();
-//        }
-//
-//        @Override
-//        public void notOpenNFC() {
-//            mIsOpenNFC = false;
-//            mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW_NFC);
-//            Toast.makeText(mContext, "请在设置中打开NFC开关！", Toast.LENGTH_SHORT).show();
-//        }
-//
-//        @Override
-//        public void getNFCStatusOk() {
-//            mIsOpenNFC = true;
-//            mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW_NFC);
-//        }
-//    };
-//
-//    // 开始查看NFC是否被读取
-//    private void getNFCInfo(){
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (!mIsRequestNFCUid) {
-//                    try {
-//                        Thread.sleep(1000);
-//                        // 循环读取数据
-//                        mNfcHandler.readCardId(getIntent());
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }).start();
-//    }
-//
-//    private final int HANDLER_INIT_IMAGEVIEW_NFC = 0x0102;
-//
-//    // 主线程的Handler用来刷新界面
-//    @SuppressLint("HandlerLeak")
-//    private Handler mHandler = new Handler() {
-//        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-//        @Override
-//        public void handleMessage(@NonNull Message msg) {
-//            // 由主线程中的Looper不断的loop将handler里面的信息不断的轮询，将符合要求的数据dispatchMessage分发
-//            // 到主线程的handlerMessage进行更新界面的数据
-//            switch (msg.what){
-//                case HANDLER_INIT_IMAGEVIEW_NFC:
-//                    if (mIsOpenNFC) { // 如果出现就开始获取nfc数据
-//                        getNFCInfo();
-//                    }
-//                    break;
-//            }
-//        }
-//    };
+    @Override
+    protected void onNewIntent(Intent intent) { // TODO nfc必须要使用的
+        Log.d(TAG, "onNewIntent()! action is:" + intent.getAction());
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    // NFC 硬件相关东西
+    private NfcHandler mNfcHandler;
+    private boolean mIsRequestNFCUid = false;
+    private boolean mIsOpenNFC = true;
+
+    private String mNFCContent = "";
+    private boolean mIsClickFRID = false;
+
+
+    private NfcView mNFCView = new NfcView() {
+        @Override
+        public void appendResponse(final String response) {
+            Log.e(TAG, "appendResponse: data______________________________" + response);
+            // NFC相关信息的回调事件
+            if (TextUtils.isEmpty(response)){
+                return;
+            }
+            mIsRequestNFCUid = true; // 从线程中读取到NFC的相关数据
+            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            vibrator.vibrate(1000); // 获取成功只有震动1秒的钟
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showText(mContext,response);
+                    StringBuilder data = new StringBuilder();
+                    data.append("NFC相关信息：").append(response);
+                    mNFCContent = response;
+                    if (mIsClickFRID) {
+                        dataBinding.etScanInput.setText(mNFCContent);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void notNfcDevice() {
+            Toast.makeText(mContext, "未找到NFC设备！", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void notOpenNFC() {
+            mIsOpenNFC = false;
+            mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW_NFC);
+            Toast.makeText(mContext, "请在设置中打开NFC开关！", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void getNFCStatusOk() {
+            mIsOpenNFC = true;
+            mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW_NFC);
+        }
+    };
+
+    // 开始查看NFC是否被读取
+    private void getNFCInfo(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!mIsRequestNFCUid) {
+                    try {
+                        Thread.sleep(1000);
+                        // 循环读取数据
+                        mNfcHandler.readCardId(getIntent());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private final int HANDLER_INIT_IMAGEVIEW_NFC = 0x0102;
+
+    // 主线程的Handler用来刷新界面
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            // 由主线程中的Looper不断的loop将handler里面的信息不断的轮询，将符合要求的数据dispatchMessage分发
+            // 到主线程的handlerMessage进行更新界面的数据
+            switch (msg.what){
+                case HANDLER_INIT_IMAGEVIEW_NFC:
+                    if (mIsOpenNFC) { // 如果出现就开始获取nfc数据
+                        getNFCInfo();
+                    }
+                    break;
+            }
+        }
+    };
 
     void restartCamera(){
         historyManager = new HistoryManager(this);

@@ -19,6 +19,7 @@ public class TimeUtil {
     public static final String FORMAT_B = "yyyy-MM-dd HH:mm";
     public static final String FORMAT_C = "MM-dd";
     public static final String FORMAT_D = "yyyy-MM-dd HH:mm:ss";
+    public static final String FORMAT_D1 = "yyyy-MM-dd%20HH:mm:ss";
     public static final String FORMAT_E = "MM月dd日";
     public static final String FORMAT_F = "yyyy年MM月dd日";
 
@@ -39,6 +40,16 @@ public class TimeUtil {
     public static String getTodayTimeYMD(){
         long time = System.currentTimeMillis();
         SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_A);
+        return formatter.format(time);
+    }
+
+    /**
+     * 返回年月日数据
+     * @return
+     */
+    public static String getTodayTimeYMDHMS(){
+        long time = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_D1);
         return formatter.format(time);
     }
 
