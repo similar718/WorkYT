@@ -34,11 +34,11 @@
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_18"
+        android:layout_marginLeft="@dimen/dp_100"
         android:textSize="@dimen/text_size_9"
         android:textColor="@color/personal_blue"
         android:gravity="center_vertical"
-        android:layout_toRightOf="@+id/tv_name"
+        android:layout_toRightOf="@+id/iv_head"
         android:text="在线"
         />
 

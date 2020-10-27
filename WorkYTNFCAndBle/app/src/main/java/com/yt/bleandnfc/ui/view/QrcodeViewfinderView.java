@@ -112,8 +112,8 @@ public final class QrcodeViewfinderView extends View {
     //画扫描框
     canvas.drawRect(scanFramLeft, scanFramTop, scanFramRight, scanFramBottom, paint);
     //画框边矩形
-    float rectW = 40;
-    float rectH = 20;
+    float rectW = 20;
+    float rectH = 10;
     paint.setColor(Color.WHITE);
     canvas.drawRect(scanFramLeft-rectH, scanFramTop-rectH, scanFramLeft + rectH + rectW, scanFramTop, paint);//左上角上边框
     canvas.drawRect(scanFramLeft-rectH, scanFramTop, scanFramLeft, scanFramTop+rectW, paint);//左上角左边框
