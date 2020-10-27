@@ -144,7 +144,7 @@
             android:textColor="@color/text_black"
             android:textSize="@dimen/text_size_22"
             android:visibility="gone"
-            android:text="无当前警报信息"
+            android:text="当前无报警信息(记录)"
             android:gravity="center"
             />
         <!--srlAccentColor srlPrimaryColor 控制 Header 和 Footer 的背景颜色-->
