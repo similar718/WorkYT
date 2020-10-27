@@ -15,19 +15,37 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rl_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="操作员“XXX（工号：11111）”于2020年9月24日09点25分使用工作梯（编号：xxxx）发生违规行为，违规内容“违规停放”。"
-            android:gravity="left"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_14"
-            android:layout_marginRight="@dimen/dp_14"
-            android:lineSpacingExtra="@dimen/dp_12"
-            android:textSize="@dimen/text_size_13"
-            android:textColor="@color/text_black"
-            />
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_27"
+            android:layout_marginBottom="@dimen/dp_21">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/warning_detail_data"
+                android:textColor="@color/text_black"
+                android:lineSpacingExtra="@dimen/text_size_12"
+                android:textSize="@dimen/text_size_13" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/scan_result_car_content"
+                android:textColor="@color/text_black"
+                android:layout_marginLeft="@dimen/dp_60"
+                android:gravity="left"
+                android:maxLines="4"
+                android:lineSpacingExtra="@dimen/text_size_18"
+                android:textSize="@dimen/text_size_10" />
+
+        </RelativeLayout>
+
 
         <TextView
             android:layout_width="match_parent"

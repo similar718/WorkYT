@@ -11,10 +11,10 @@ import java.util.List;
 public class PersonalDataModel {
     private IBaseModelListener1<List<PersonalModel>> mListener;
     private int mPage = -1;
-    private final int mSize = 30;
+    private final int mSize = 11;
     private final int init_page = 0;
-
-    private final String[] name = {"赵丽颖","AngelaBaby","刘诗诗","谢娜","吴昕","何炅","胡歌","颜卓灵","杨欣","周星驰"};
+    //陈智、高吉、杨茂、张涛、张云翔、赵生美、刘兵、张杰、张军、杨鹏
+    private final String[] name = {"陈智","高吉","杨茂","张涛","张云翔","赵生美","刘兵","张杰","张军","杨鹏"};
 
     public PersonalDataModel(IBaseModelListener1 listener){
         mListener = listener;
@@ -31,15 +31,15 @@ public class PersonalDataModel {
             return;
         }
         List<PersonalModel> data = new ArrayList<>();
-        if (mPage != init_page) {
+//        if (mPage != init_page) {
             for (int i = 0; i < mSize-1; i++) {
                 data.add(new PersonalModel(name[i%name.length], 0, "9:" + (i <= 9 ? "0" + i : i)));
             }
-        } else {
-            for (int i = 0; i < mSize; i++) {
-                data.add(new PersonalModel(name[i%name.length], 0, "9:" + (i <= 9 ? "0" + i : i)));
-            }
-        }
+//        } else {
+//            for (int i = 0; i < mSize; i++) {
+//                data.add(new PersonalModel(name[i%name.length], 0, "9:" + (i <= 9 ? "0" + i : i)));
+//            }
+//        }
         mListener.onLoadSuccess(data, new PagingResult(data.isEmpty(), mPage == init_page, data.size() == mSize));
         mPage++;
 
