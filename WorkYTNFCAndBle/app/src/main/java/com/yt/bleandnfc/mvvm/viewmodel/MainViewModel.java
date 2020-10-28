@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.yt.base.view.BaseViewModel;
 import com.yt.bleandnfc.api.YTApiInterface;
+import com.yt.bleandnfc.api.model.AlarmCountAlarmByStateModel;
 import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
 import com.yt.bleandnfc.base.observer.BaseHttpObserver;
 import com.yt.bleandnfc.manager.SPManager;
@@ -16,10 +17,10 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainViewModel extends BaseViewModel {
 
-    public MutableLiveData<AlarmFindAlarmByStateModel> mAlarmFindAlarmByStateModel;
+    public MutableLiveData<AlarmCountAlarmByStateModel> mAlarmCountAlarmByStateModel;
 
     public MainViewModel(){
-        mAlarmFindAlarmByStateModel = new MutableLiveData<>();
+        mAlarmCountAlarmByStateModel = new MutableLiveData<>();
     }
 
     private int mPage = 0;
@@ -29,21 +30,36 @@ public class MainViewModel extends BaseViewModel {
         if (!NetworkUtil.isNetworkConnected()) {
             return;
         }
+//        YTNetworkApi.getService(YTApiInterface.class)
+//                .alarmFindAlarmByState(SPManager.getInstance().getUserId(),mPage,mSize)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new BaseHttpObserver<AlarmFindAlarmByStateModel>() {
+//                    @Override
+//                    public void getData(AlarmFindAlarmByStateModel data) {
+//                        if (data.getCode() == 200) {
+//                            mAlarmFindAlarmByStateModel.setValue(data);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onErrorInfo(Throwable e) {
+//
+//                    }
+//                });
         YTNetworkApi.getService(YTApiInterface.class)
-                .alarmFindAlarmByState(SPManager.getInstance().getUserId(),mPage,mSize)
+                .alarmCountAlarmByState(SPManager.getInstance().getUserId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseHttpObserver<AlarmFindAlarmByStateModel>() {
+                .subscribe(new BaseHttpObserver<AlarmCountAlarmByStateModel>() {
                     @Override
-                    public void getData(AlarmFindAlarmByStateModel data) {
-                        if (data.getCode() == 200) {
-                            mAlarmFindAlarmByStateModel.setValue(data);
-                        }
+                    public void getData(AlarmCountAlarmByStateModel data) {
+                        mAlarmCountAlarmByStateModel.setValue(data);
                     }
 
                     @Override
                     public void onErrorInfo(Throwable e) {
-
+                        mAlarmCountAlarmByStateModel.setValue(null);
                     }
                 });
     }

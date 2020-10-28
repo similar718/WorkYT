@@ -23,7 +23,7 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.yt.base.utils.LogUtlis;
-import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
+import com.yt.bleandnfc.api.model.AlarmCountAlarmByStateModel;
 import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.activity.YTBaseActivity;
 import com.yt.bleandnfc.constant.Constants;
@@ -63,13 +63,12 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
     protected MainViewModel createViewModel() {
         viewModel = new MainViewModel();
         viewModel.setIView(this);
-        viewModel.mAlarmFindAlarmByStateModel.observe(this, new Observer<AlarmFindAlarmByStateModel>() {
+        viewModel.mAlarmCountAlarmByStateModel.observe(this, new Observer<AlarmCountAlarmByStateModel>() {
             @Override
-            public void onChanged(AlarmFindAlarmByStateModel alarmFindAlarmByStateModel) {
-                // TODO 获取数量更好
-                LogUtlis.e("ooooooooooooooo",alarmFindAlarmByStateModel.getObj().size() + "  " + Constants.mAlarmNum);
-                if (alarmFindAlarmByStateModel.getObj().size() > Constants.mAlarmNum){
-                    Constants.mAlarmNum = alarmFindAlarmByStateModel.getObj().size();
+            public void onChanged(AlarmCountAlarmByStateModel alarmFindAlarmByStateModel) {
+                LogUtlis.e("ooooooooooooooo",alarmFindAlarmByStateModel.getObj() + "  " + Constants.mAlarmNum);
+                if (alarmFindAlarmByStateModel.getObj() > Constants.mAlarmNum){
+                    Constants.mAlarmNum = alarmFindAlarmByStateModel.getObj();
                     EventBus.getDefault().post(new AlarmAddResult(1));
                     showBleAndGPSHintDialog("有新报警信息",false);
                 }

@@ -229,11 +229,14 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
         inputManager.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
     }
 
-    // http://47.108.48.111:85/? carNumber=66660001&type=car&dept=jps&carType=wheelbarrow
     /**
      * @param carCode
      */
     private void getURLAndRequestLocation(String carCode){
+        /**
+         * http://47.108.48.111:85/?carNumber=66660001&type=car&dept=jps&carType=wheelbarrow&lng=103.9535407&lat=
+         * 30.5821512&userName=admin&userId=123&deptName=机坪室&updateTime=2020-10-27 14:03
+         */
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append(Constants.CHECK_LOCATION_ADDRESS)
@@ -242,7 +245,16 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
                 .append("&type=car&dept=")
                 .append(partType[mPartType])
                 .append("&carType=")
-                .append(carType[mCarType]);
+                .append(carType[mCarType]).append("&lat=")
+                .append(Constants.LOCATION_LAT)
+                .append("&userName=")
+                .append(SPManager.getInstance().getUserName())
+                .append("&userId=")
+                .append(SPManager.getInstance().getUserId())
+                .append("&deptName=")
+                .append(SPManager.getInstance().getDeptName())
+                .append("&updateTime=")
+                .append(TimeUtil.getTodayTimeYMDHMS());
         LogUtlis.e("oooooooooooo",stringBuilder.toString());
         dataBinding.wvView.loadUrl(stringBuilder.toString());
     }
