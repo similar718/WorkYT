@@ -160,7 +160,7 @@
 
     <!-- 扫码界面 -->
     <string name="scan_title">扫码领用/归还</string>
-    <string name="scan_hint">请对准车上二维码\n或</string>
+    <string name="scan_hint">或</string>
     <string name="scan_input_hint">手动输入车辆编码</string>
     <string name="sure">确定</string>
     <string name="camera_light">手电筒</string>

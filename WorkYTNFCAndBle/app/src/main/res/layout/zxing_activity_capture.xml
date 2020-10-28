@@ -25,12 +25,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.yt.bleandnfc.ui.view.CommonTitleBarView
-            android:id="@+id/title_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:title_txt="@string/scan_title" />
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -50,11 +44,20 @@
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal">
 
+                    <com.yt.bleandnfc.ui.view.CommonTitleBarView
+                        android:id="@+id/title_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:title_txt="@string/scan_title"
+                        app:title_bg_show="false"
+                        />
+
                     <TextView
                         android:id="@+id/tv_scan_tip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/title_bar"
                         android:text="@string/activate_service_scan_tip"
                         android:layout_marginTop="@dimen/dp_30"
                         android:textColor="#FFFFFFFF"
@@ -62,8 +65,8 @@
 
                     <com.yt.bleandnfc.ui.view.QrcodeViewfinderView
                         android:id="@+id/viewfinder_view"
-                        android:layout_width="@dimen/dp_300"
-                        android:layout_height="@dimen/dp_300"
+                        android:layout_width="@dimen/dp_200"
+                        android:layout_height="@dimen/dp_200"
                         android:layout_marginLeft="@dimen/dp_30"
                         android:layout_marginRight="@dimen/dp_30"
                         android:layout_below="@+id/tv_scan_tip"
@@ -76,10 +79,8 @@
                         android:layout_height="wrap_content"
                         android:layout_above="@+id/ll_input"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/dp_20"
                         android:layout_marginBottom="@dimen/dp_11"
                         android:gravity="center"
-                        android:visibility="gone"
                         android:lineSpacingExtra="@dimen/dp_8"
                         android:text="@string/scan_hint"
                         android:textColor="@color/white"
@@ -89,7 +90,8 @@
                         android:id="@+id/ll_bottom"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_100"
-                        android:layout_below="@+id/ll_input"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="@dimen/dp_50"
                         android:gravity="center">
 
                         <RelativeLayout
@@ -156,10 +158,11 @@
                         android:id="@+id/ll_input"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_80"
-                        android:layout_below="@+id/viewfinder_view"
+                        android:layout_above="@+id/ll_bottom"
                         android:layout_marginLeft="@dimen/dp_14"
                         android:layout_marginRight="@dimen/dp_14"
                         android:layout_marginTop="@dimen/dp_20"
+                        android:layout_marginBottom="@dimen/dp_50"
                         android:background="@drawable/scan_input_white_bg"
                         android:orientation="vertical">
 

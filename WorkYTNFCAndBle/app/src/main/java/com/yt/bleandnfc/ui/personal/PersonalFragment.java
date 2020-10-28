@@ -1,5 +1,7 @@
 package com.yt.bleandnfc.ui.personal;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -81,6 +83,13 @@ public class PersonalFragment extends YTBaseFragment<PersonalViewModel, Fragment
             public void onLeftClick() {
                 // 返回到主界面
                 Navigation.findNavController(dataBinding.titleView).navigateUp();
+            }
+        });
+
+        mAdapter.setOnItemClickListener(new PersonalItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                // TODO list 点击事件
             }
         });
     }

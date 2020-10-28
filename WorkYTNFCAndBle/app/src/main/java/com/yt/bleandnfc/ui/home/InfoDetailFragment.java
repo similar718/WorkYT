@@ -160,28 +160,11 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         mAdapter.setOnItemClickListener(new WarningRecordItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                StringBuilder stringBuilder = new StringBuilder();
-                // 操作员“XXX（工号：11111）”于2020年9月24日09点25分使用工作梯（编号：xxxx）发生违规行为，违规内容“违规停放”。
-//                stringBuilder.append("操作员“")
-//                        .append(viewModels.get(position).getUserName())
-//                        .append("（工号：")
-//                        .append(viewModels.get(position).getUserId())
-//                        .append("）”于")
-//                        .append(viewModels.get(position).getCreateTime())
-//                        .append("在null机位")
-//                        .append("使用工作梯（编号：")
-//                        .append(viewModels.get(position).getCarNumber())
-//                        .append("）发生违规行为，违规内容“违规停放”。");
-                stringBuilder
-                        .append(viewModels.get(position).getUserName())
-                        .append("（")
-                        .append(viewModels.get(position).getUserId())
-                        .append("）\n")
-                        .append(viewModels.get(position).getCreateTime())
-                        .append("\nnull机位,工作梯（编号：")
-                        .append(viewModels.get(position).getCarNumber())
-                        .append("）\n发生违规行为，违规内容“违规停放”。");
-                showWarningRecordDetail(stringBuilder.toString());
+                showWarningRecordDetail(viewModels.get(position).getUserName()+"(" + viewModels.get(position).getUserId() + ")",
+                        viewModels.get(position).getCreateTime(),
+                        "null机位,工作梯(编号：" + viewModels.get(position).getCarNumber() + ")",
+                        "发生违规行为，违规内容“违规停放”。"
+                        );
             }
         });
     }
@@ -233,11 +216,11 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
 
     private WarningRecordDetailDialog mWarningRecordDetail;
 
-    private void showWarningRecordDetail(String content){
+    private void showWarningRecordDetail(String content,String content2,String content3,String content4){
         if (mWarningRecordDetail == null) {
             mWarningRecordDetail = new WarningRecordDetailDialog(getActivity());
         }
-        mWarningRecordDetail.showDialog(content);
+        mWarningRecordDetail.showDialog(content, content2, content3, content4);
     }
 
     private List<AlarmFindAlarmByStateModel.ObjBean> viewModels = new ArrayList<>();

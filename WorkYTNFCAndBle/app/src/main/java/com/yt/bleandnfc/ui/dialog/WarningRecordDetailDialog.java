@@ -46,8 +46,11 @@ public class WarningRecordDetailDialog extends Dialog {
         dataBinding.tvSure.setOnClickListener(new clickListener());
     }
 
-    public void showDialog(String content){
-        dataBinding.tvTitle.setText(content);
+    public void showDialog(String content,String content2,String content3,String content4){
+        dataBinding.tvOptionor.setText(content);
+        dataBinding.tvTime.setText(content2);
+        dataBinding.tvAddress.setText(content3);
+        dataBinding.tvEvent.setText(content4);
         show();
     }
 

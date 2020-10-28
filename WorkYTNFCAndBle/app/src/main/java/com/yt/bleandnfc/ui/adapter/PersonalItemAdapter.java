@@ -92,7 +92,9 @@ public class PersonalItemAdapter extends Adapter<PersonalItemAdapter.BaseViewHol
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onItemClick(v,getLayoutPosition());
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(v, getLayoutPosition());
+                    }
                 }
             });
         }

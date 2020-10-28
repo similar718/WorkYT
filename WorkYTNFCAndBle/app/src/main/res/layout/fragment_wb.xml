@@ -185,6 +185,7 @@
                         android:text="@string/wxby_choice_car_1"
                         android:layout_marginTop="@dimen/dp_10"
                         android:checked="true"
+                        android:textSize="@dimen/text_size_13"
                         android:gravity="center"
                         android:button="@null"
                         android:background="@drawable/wxby_rb_bg"
@@ -202,6 +203,7 @@
                         android:checked="false"
                         android:gravity="center"
                         android:button="@null"
+                        android:textSize="@dimen/text_size_13"
                         android:background="@drawable/wxby_rb_bg"
                         android:textColor="@color/wxby_rb_textcolor"
                         />
@@ -218,6 +220,7 @@
                         android:checked="false"
                         android:gravity="center"
                         android:button="@null"
+                        android:textSize="@dimen/text_size_13"
                         android:background="@drawable/wxby_rb_bg"
                         android:textColor="@color/wxby_rb_textcolor"
                         />
@@ -233,6 +236,7 @@
                         android:layout_marginTop="@dimen/dp_10"
                         android:checked="false"
                         android:gravity="center"
+                        android:textSize="@dimen/text_size_13"
                         android:button="@null"
                         android:background="@drawable/wxby_rb_bg"
                         android:textColor="@color/wxby_rb_textcolor"

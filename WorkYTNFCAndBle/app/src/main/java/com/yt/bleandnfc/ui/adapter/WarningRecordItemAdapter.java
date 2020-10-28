@@ -84,7 +84,9 @@ public class WarningRecordItemAdapter extends Adapter<WarningRecordItemAdapter.B
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onItemClick(v,getLayoutPosition());
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(v, getLayoutPosition());
+                    }
                 }
             });
         }

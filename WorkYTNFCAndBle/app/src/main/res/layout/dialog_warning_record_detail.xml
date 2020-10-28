@@ -10,42 +10,126 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/dialog_bg"
-        android:layout_marginLeft="@dimen/dp_50"
-        android:layout_marginRight="@dimen/dp_50"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/rl_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginLeft="@dimen/dp_24"
             android:layout_marginRight="@dimen/dp_24"
-            android:layout_marginTop="@dimen/dp_27"
-            android:layout_marginBottom="@dimen/dp_21">
-
+            android:layout_marginTop="@dimen/dp_27">
             <TextView
+                android:id="@+id/tv_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/warning_detail_data"
+                android:text="操作员："
                 android:textColor="@color/text_black"
-                android:lineSpacingExtra="@dimen/text_size_12"
-                android:textSize="@dimen/text_size_13" />
-
+                android:textSize="@dimen/text_size_13"
+                />
             <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_optionor"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/scan_result_car_content"
+                android:text="XXXXXXXXXXXX"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_alignBottom="@+id/tv_1"
                 android:textColor="@color/text_black"
+                android:textSize="@dimen/text_size_10"
                 android:layout_marginLeft="@dimen/dp_60"
-                android:gravity="left"
-                android:maxLines="4"
-                android:lineSpacingExtra="@dimen/text_size_18"
-                android:textSize="@dimen/text_size_10" />
-
+                />
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_10">
+            <TextView
+                android:id="@+id/tv_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="时间："
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_size_13"
+                />
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XXXXXXXXXXXX"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_alignBottom="@+id/tv_2"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_size_10"
+                android:layout_marginLeft="@dimen/dp_60"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_10">
+            <TextView
+                android:id="@+id/tv_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="地点："
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_size_13"
+                />
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XXXXXXXXXXXX"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_alignBottom="@+id/tv_3"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_size_10"
+                android:layout_marginLeft="@dimen/dp_60"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_21">
+            <TextView
+                android:id="@+id/tv_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="事件："
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_size_13"
+                />
+            <TextView
+                android:id="@+id/tv_event"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XXXXXXXXXXXX"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_alignBottom="@+id/tv_4"
+                android:gravity="center_vertical"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_size_10"
+                android:layout_marginLeft="@dimen/dp_60"
+                />
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
