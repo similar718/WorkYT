@@ -3,9 +3,14 @@ package com.yt.bleandnfc;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,6 +24,7 @@ import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
@@ -46,6 +52,7 @@ import java.util.TimerTask;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -64,6 +71,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         viewModel = new MainViewModel();
         viewModel.setIView(this);
         viewModel.mAlarmCountAlarmByStateModel.observe(this, new Observer<AlarmCountAlarmByStateModel>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(AlarmCountAlarmByStateModel alarmFindAlarmByStateModel) {
                 LogUtlis.e("ooooooooooooooo",alarmFindAlarmByStateModel.getObj() + "  " + Constants.mAlarmNum);
@@ -71,10 +79,72 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                     Constants.mAlarmNum = alarmFindAlarmByStateModel.getObj();
                     EventBus.getDefault().post(new AlarmAddResult(1));
                     showBleAndGPSHintDialog("有新报警信息",false);
+
+                    getNotification();
                 }
             }
         });
         return viewModel;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getNotification() {
+        //1.获取通知管理器
+        NotificationManager manager=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        //2.创建通知  8.0以后需要自建通知通道
+        Notification notification = null;
+        //创建通道
+        String id="mchannel";//通道id
+        String name="通道1";//通道名称
+        //判断安卓版本 如果大于8.0则使用通道
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel= new NotificationChannel(id,name,NotificationManager.IMPORTANCE_HIGH);
+            //创建通道
+            manager.createNotificationChannel(channel);
+            //创建通知
+            notification = new Notification.Builder(getApplicationContext(),id)
+                    //setLargeIcon 设置大图标
+                    //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.wolf))
+                    //setSmallIcon 设置小图标
+                    .setSmallIcon(R.mipmap.ic_launcher_logo)
+                    //setContentText 设置内容
+                    .setContentText("有新报警信息")
+                    //setStyle 设置样式
+                    //.setStyle(new Notification.BigPictureStyle().bigPicture(BitmapFactory.decodeResource(getResources(), R.drawable.wolf)))
+                    //setContentTitle 设置标题
+                    //.setContentTitle("好消息")
+                    //setAutoCancel点击过后取消显示
+                    .setAutoCancel(true)
+                    //帮对应的Activity
+                    .setContentIntent(PendingIntent.getActivity(getApplicationContext(),
+                            1,new Intent(MainActivity.this, MainActivity.class), PendingIntent.FLAG_CANCEL_CURRENT)
+                    ).build();
+        }else{
+            //安卓4.0-8.0
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                notification =new Notification.Builder(getApplicationContext()
+                )//setSmallIcon 设置小图标
+                        .setSmallIcon(R.mipmap.ic_launcher_logo)
+                        //setContentText 设置内容
+                        .setContentText("有新报警信息")
+                        //setContentTitle 设置标题
+                        //.setContentTitle("好消息")
+                        //setAutoCancel点击过后取消显示
+                        .setAutoCancel(true)
+                        .setContentIntent(
+                                PendingIntent.getActivity(
+                                        getApplicationContext(),1,new
+                                                Intent(
+                                                MainActivity.this,
+                                                MainActivity.class),
+                                        PendingIntent.FLAG_CANCEL_CURRENT
+                                )
+                        ).build();
+            }
+        }
+        //4.发出通知
+        manager.notify(0,notification);
     }
 
     private NavController mNavController;

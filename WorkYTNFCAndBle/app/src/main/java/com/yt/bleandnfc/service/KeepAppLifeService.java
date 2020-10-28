@@ -42,7 +42,7 @@ public class KeepAppLifeService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private Notification getNotification() {
         Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher_logo)
                 .setContentTitle(YTApplication.getInstance().getContext().getString(R.string.app_name))
                 .setContentText("后台运行中");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
