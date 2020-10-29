@@ -11,7 +11,6 @@ import com.yt.base.mvvm.model.PagingResult;
 import com.yt.bleandnfc.R;
 import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
 import com.yt.bleandnfc.base.fragment.YTBaseFragment;
-import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.FragmentWarningRecordBinding;
 import com.yt.bleandnfc.eventbus.AlarmAddResult;
 import com.yt.bleandnfc.mvvm.model.WarningRecordModel;
