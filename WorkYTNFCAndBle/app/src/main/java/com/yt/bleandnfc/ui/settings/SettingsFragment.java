@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.view.View;
 
 import com.yt.bleandnfc.R;
+import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.fragment.YTBaseFragment;
 import com.yt.bleandnfc.databinding.FragmentSettingsBinding;
 import com.yt.bleandnfc.manager.IntentManager;
+import com.yt.bleandnfc.manager.SPManager;
 import com.yt.bleandnfc.ui.dialog.SettingsDialog;
 import com.yt.bleandnfc.ui.view.CommonTitleBarView;
 
@@ -54,6 +56,24 @@ public class SettingsFragment extends YTBaseFragment<SettingsViewModel, Fragment
         dataBinding.setPortBg.setOnClickListener(this);
         // 退出登录
         dataBinding.tvLogout.setOnClickListener(this);
+
+        // 字体变小
+        dataBinding.tvSmall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float fontscale = (float) (SPManager.getInstance().getSaveFontScale() - 0.1);
+                YTApplication.setAppFontSize(fontscale);
+            }
+        });
+
+        // 字体变大
+        dataBinding.tvBig.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float fontscale = (float) (SPManager.getInstance().getSaveFontScale() + 0.1);
+                YTApplication.setAppFontSize(fontscale);
+            }
+        });
     }
 
     @Override

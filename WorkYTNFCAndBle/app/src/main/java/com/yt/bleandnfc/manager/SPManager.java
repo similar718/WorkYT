@@ -25,6 +25,8 @@ public class SPManager {
 
     private final String SAVE_STATUS_LOGIN = "saveStatusLogin"; // 是否记住账号和密码 boolean
 
+    private final String SAVE_FONT_SCALE = "fontScale"; // 保存当前字体大小 默认 1。0 float
+
     private static SharedPreferences sp ;
 
     private SPManager(){
@@ -173,6 +175,22 @@ public class SPManager {
      */
     public boolean getSaveStatusLogin(){
         return sp.getBoolean(SAVE_STATUS_LOGIN,false);
+    }
+
+    /**
+     * 保存当前字体大小
+     * @param fontScale
+     */
+    public void setSaveFontScale(float fontScale){
+        sp.edit().putFloat(SAVE_FONT_SCALE,fontScale).commit();
+    }
+
+    /**
+     * 获取当前字体大小
+     * @return
+     */
+    public float getSaveFontScale(){
+        return sp.getFloat(SAVE_FONT_SCALE,1.0f);
     }
 
 }
