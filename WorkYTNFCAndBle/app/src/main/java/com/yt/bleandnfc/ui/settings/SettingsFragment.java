@@ -1,6 +1,5 @@
 package com.yt.bleandnfc.ui.settings;
 
-import android.app.Activity;
 import android.view.View;
 
 import com.yt.bleandnfc.R;
@@ -38,6 +37,8 @@ public class SettingsFragment extends YTBaseFragment<SettingsViewModel, Fragment
         // ip
         dataBinding.tvCurrentContent.setText("192.168.0.1");
 
+        dataBinding.tvCenter.setText(""+SPManager.getInstance().getSaveFontScale());
+
         initClick();
     }
 
@@ -63,6 +64,7 @@ public class SettingsFragment extends YTBaseFragment<SettingsViewModel, Fragment
             public void onClick(View view) {
                 float fontscale = (float) (SPManager.getInstance().getSaveFontScale() - 0.1);
                 YTApplication.setAppFontSize(fontscale);
+                dataBinding.tvCenter.setText(""+fontscale);
             }
         });
 
@@ -72,6 +74,7 @@ public class SettingsFragment extends YTBaseFragment<SettingsViewModel, Fragment
             public void onClick(View view) {
                 float fontscale = (float) (SPManager.getInstance().getSaveFontScale() + 0.1);
                 YTApplication.setAppFontSize(fontscale);
+                dataBinding.tvCenter.setText(""+fontscale);
             }
         });
     }
