@@ -13,6 +13,8 @@ import com.yt.bleandnfc.ui.view.CommonTitleBarView;
 
 import androidx.navigation.Navigation;
 
+import java.math.BigDecimal;
+
 public class SettingsFragment extends YTBaseFragment<SettingsViewModel, FragmentSettingsBinding> implements View.OnClickListener {
 
     @Override
@@ -37,10 +39,14 @@ public class SettingsFragment extends YTBaseFragment<SettingsViewModel, Fragment
         // ip
         dataBinding.tvCurrentContent.setText("192.168.0.1");
 
-        dataBinding.tvCenter.setText(""+SPManager.getInstance().getSaveFontScale());
+        mFontScale = SPManager.getInstance().getSaveFontScale();
+
+        dataBinding.tvCenter.setText("" + mFontScale);
 
         initClick();
     }
+
+    private float mFontScale = 1.0f;
 
     private void initClick(){
         // 返回
@@ -62,9 +68,11 @@ public class SettingsFragment extends YTBaseFragment<SettingsViewModel, Fragment
         dataBinding.tvSmall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float fontscale = (float) (SPManager.getInstance().getSaveFontScale() - 0.1);
-                YTApplication.setAppFontSize(fontscale);
-                dataBinding.tvCenter.setText(""+fontscale);
+                float fontscale = (float) (mFontScale - 0.1);
+                BigDecimal b = new BigDecimal(fontscale);
+                float f1 = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+                YTApplication.setAppFontSize(f1);
+                dataBinding.tvCenter.setText("" + f1);
             }
         });
 
@@ -72,9 +80,11 @@ public class SettingsFragment extends YTBaseFragment<SettingsViewModel, Fragment
         dataBinding.tvBig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float fontscale = (float) (SPManager.getInstance().getSaveFontScale() + 0.1);
-                YTApplication.setAppFontSize(fontscale);
-                dataBinding.tvCenter.setText(""+fontscale);
+                float fontscale = (float) (mFontScale + 0.1);
+                BigDecimal b = new BigDecimal(fontscale);
+                float f1 = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+                YTApplication.setAppFontSize(f1);
+                dataBinding.tvCenter.setText("" + f1);
             }
         });
     }

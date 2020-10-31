@@ -3,3 +3,4 @@
 3. 蓝牙接入信息
 4. Bugly
 5. notification 适配的问题
+6. MainActivity中软件盘弹出 EditText失去焦点问题
