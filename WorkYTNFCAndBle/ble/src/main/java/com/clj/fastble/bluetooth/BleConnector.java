@@ -12,7 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.clj.fastble.BleManager;
+import com.clj.fastble.manager.BleManager;
 import com.clj.fastble.callback.BleIndicateCallback;
 import com.clj.fastble.callback.BleMtuChangedCallback;
 import com.clj.fastble.callback.BleNotifyCallback;

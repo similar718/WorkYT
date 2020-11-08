@@ -1,4 +1,4 @@
-package com.clj.fastble;
+package com.clj.fastble.manager;
 
 import android.annotation.TargetApi;
 import android.app.Application;

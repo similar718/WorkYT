@@ -19,14 +19,14 @@
 //import android.os.Bundle;
 //import android.util.Log;
 //
-//import com.clj.fastble.BleManager;
+//import com.clj.fastble.manager.BleManager;
 //import com.clj.fastble.callback.BleGattCallback;
 //import com.clj.fastble.callback.BleReadCallback;
 //import com.clj.fastble.callback.BleScanCallback;
 //import com.clj.fastble.callback.BleWriteCallback;
 //import com.clj.fastble.data.BleDevice;
 //import com.clj.fastble.exception.BleException;
-//import com.clj.fastble.libs.config.Constants;
+//import com.clj.fastble.config.Constants;
 //import com.clj.fastble.scan.BleScanRuleConfig;
 //import com.clj.fastble.utils.HexUtil;
 //
@@ -36,9 +36,9 @@
 //import androidx.annotation.RequiresApi;
 //import androidx.core.app.ActivityCompat;
 //
-//import static com.clj.fastble.libs.config.Constants.UUID_SERVICE_READ;
-//import static com.clj.fastble.libs.config.Constants.UUID_SERVICE_WRITE;
-//import static com.clj.fastble.libs.config.Constants.characteristic_uuid;
+//import static com.clj.fastble.config.Constants.UUID_SERVICE_READ;
+//import static com.clj.fastble.config.Constants.UUID_SERVICE_WRITE;
+//import static com.clj.fastble.config.Constants.characteristic_uuid;
 //
 //public class BleNFCManager1 {
 //    static final String mDataStart = "020106"; // 开始的数据是固定的

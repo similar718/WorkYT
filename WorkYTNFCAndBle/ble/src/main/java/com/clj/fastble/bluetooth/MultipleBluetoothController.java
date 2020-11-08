@@ -4,7 +4,7 @@ package com.clj.fastble.bluetooth;
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
 
-import com.clj.fastble.BleManager;
+import com.clj.fastble.manager.BleManager;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.utils.BleLruHashMap;
 

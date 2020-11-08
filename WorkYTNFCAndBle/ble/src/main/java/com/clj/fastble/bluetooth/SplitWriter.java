@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
-import com.clj.fastble.BleManager;
+import com.clj.fastble.manager.BleManager;
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleMsg;
 import com.clj.fastble.exception.BleException;

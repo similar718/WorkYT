@@ -6,7 +6,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.clj.fastble.BleManager;
+import com.clj.fastble.manager.BleManager;
 import com.clj.fastble.callback.BleScanAndConnectCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.callback.BleScanPresenterImp;

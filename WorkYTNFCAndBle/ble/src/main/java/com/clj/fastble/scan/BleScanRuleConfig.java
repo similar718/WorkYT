@@ -1,7 +1,7 @@
 package com.clj.fastble.scan;
 
 
-import com.clj.fastble.BleManager;
+import com.clj.fastble.manager.BleManager;
 
 import java.util.UUID;
 
