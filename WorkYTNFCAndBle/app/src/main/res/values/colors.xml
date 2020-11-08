@@ -66,4 +66,8 @@
     <color name="gray_line2">#e9e7e7</color>
     <color name="personal_line">#e7e7e9</color>
 
+    <!-- main -->
+    <color name="button_bg">#264F5C</color>
+    <color name="warning">#FF5722</color>
+
 </resources>

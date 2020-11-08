@@ -20,21 +20,29 @@ import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.clj.fastble.BleNFCManager;
+import com.clj.fastble.data.BleDevice;
+import com.clj.fastble.nfc.BleNFCListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.yt.base.utils.LogUtlis;
+import com.yt.base.utils.ToastUtils;
 import com.yt.bleandnfc.api.model.AlarmCountAlarmByStateModel;
 import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.activity.YTBaseActivity;
+import com.yt.bleandnfc.bean.NotifyBLEDataConstructerBean;
 import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.ActivityMainBinding;
 import com.yt.bleandnfc.eventbus.AlarmAddResult;
+import com.yt.bleandnfc.listener.SocketListener;
 import com.yt.bleandnfc.manager.IntentManager;
 import com.yt.bleandnfc.mvvm.viewmodel.MainViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.nfcres.NfcView;
 import com.yt.bleandnfc.service.KeepAppLifeService;
+import com.yt.bleandnfc.udp.UDPThread;
 import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
 import com.yt.common.interfaces.IPermissionListener;
@@ -54,6 +62,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBinding> {
+
+    private UDPThread udpThread;
+    String mServerData = "";
 
     @Override
     protected int setLayoutId() {
@@ -137,6 +148,11 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         // 初始化NFC数据
         mNfcHandler = new NfcHandler(mNFCView);
         mNfcHandler.init(this);
+
+
+        udpThread = new UDPThread();
+        udpThread.setSocketListener(mSockestListener);
+        udpThread.start();
     }
 
     @Override
@@ -259,6 +275,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
+        BleNFCManager.getInstance().destroyBlueToothPlugin();
         stopTimer();
     }
 
@@ -447,6 +464,12 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                         getNFCInfo();
                     }
                     break;
+                case HANDLER_SEND_SERVER:
+                    updateServerData(mServerData);
+                    break;
+                case HANDLER_SEND_SERVER_UDP_STATUS: // 发送UDP数据的状态
+//                    dataBinding.tvServerStatus.setText(mUDPStatusStr);
+                    break;
             }
         }
     };
@@ -456,4 +479,455 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         super.onPause();
         mNfcHandler.disableNfc(this);
     }
+
+    // ************************************************************************ 蓝牙相关
+
+    private boolean mIsOpenGPS = false;
+    private boolean mIsOpenBT = false;
+
+    public static boolean mIsInitBleHandler = false;
+
+    private final int HANDLER_INIT_IMAGEVIEW = 0x0101;
+    private final int HANDLER_SEND_SERVER = 0x0103;
+    private final int HANDLER_SEND_SERVER_UDP_STATUS = 0x0104;
+
+    private Context mContext;
+
+    private String  mBleName = "";
+
+    private boolean mInitSuccess = false; // 是否默认蓝牙插件初始化成功
+    private boolean mClickInit = false; // 是否默认点击扫描初始化
+
+    private static final int REQUEST_CODE_OPEN_GPS = 1;
+    private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private void initBlueTooth() {
+        BleNFCManager.getInstance().initBleNFC(getApplication(),MainActivity.this,mListener);
+    }
+
+
+    private void startThread() {
+        new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void run() {
+                BleNFCManager.getInstance().getBleNFCInfo();
+            }
+        }).start();
+    }
+
+    private BleNFCListener mListener = new BleNFCListener() {
+        @Override
+        public void initFailed(byte data) {// TODO  初始化失败 需要配合相关操作之后再重新初始化
+            if (data == (byte) 0x0001){ //没有打开GPS的情况
+                mIsOpenGPS = false;
+                Toast.makeText(mContext,"请打开GPS位置信息",Toast.LENGTH_LONG).show();
+            } else if (data == (byte) 0x0010) { // 判断是否打开蓝牙设备
+                mIsOpenBT  = false;
+                Toast.makeText(mContext,"请打开蓝牙",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(mContext,"初始化失败，其他情况",Toast.LENGTH_LONG).show();
+            }
+            mInitSuccess = false;
+            mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW);
+        }
+
+        @Override
+        public void initSuccess() {
+            // 初始化成功 可以正常的扫描设备
+            mInitSuccess = true;
+            if (mClickInit){
+                mClickInit = false;
+                initBleAndStartScan();
+            }
+        }
+
+        @Override
+        public void scanDevice() {// 扫描到目标设备
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    dataBinding.tvReplyDev.setText("");
+//                    mIsParseSuccess = false;
+//                    Toast.makeText(mContext, "搜索到目标设备", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "搜索到目标设备");
+//                    dataBinding.tvStatus.setText("当前状态：搜索到目标设备正在连接中");
+//                    isStop = false;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                }
+            });
+
+        }
+
+        @Override
+        public void scanNotDevice() { // 未扫描到目标设备
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    dataBinding.tvReplyDev.setText("");
+//                    mIsParseSuccess = false;
+//                    Toast.makeText(mContext, "未搜索到目标设备", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "未搜索到目标设备");
+//                    dataBinding.tvStatus.setText("当前状态：未搜索到目标设备 请打开设备之后重试");
+//                    isStop = true;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                }
+            });
+
+        }
+
+        @Override
+        public void startConnDevice(BleDevice bleDevice) { // 开始连接
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e(TAG, "开始连接");
+//                    dataBinding.tvStatus.setText("当前状态：开始连接");
+//                    isStop = false;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                }
+            });
+        }
+
+        @Override
+        public void connSuccesDevice(BleDevice bleDevice) { // 连接成功
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    Toast.makeText(mContext, "连接成功", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "连接成功");
+//                    dataBinding.tvStatus.setText("当前状态：连接成功 正准备获取数据");
+//                    isStop = false;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                }
+            });
+        }
+
+        @Override
+        public void getNotifyConnDeviceSuccess(BleDevice bleDevice, String scanDeviceData) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    dataBinding.tvStatus.setText("当前状态：获取到蓝牙连接之后的打开通知成功");
+//                    dataBinding.tvCheckData.setText(scanDeviceData);
+//                    isStop = false;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                }
+            });
+        }
+
+        @Override
+        public void getNotifyConnDeviceFail(BleDevice bleDevice, String scanDeviceData) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    dataBinding.tvStatus.setText("当前状态：获取到蓝牙连接之后的打开通知失败~~~~~~~");
+//                    dataBinding.tvCheckData.setText(scanDeviceData);
+//                    isStop = false;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                }
+            });
+        }
+
+        @Override
+        public void getNotifyConnDeviceData(BleDevice bleDevice, String scanDeviceData) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    dataBinding.tvStatus.setText("当前状态：获取到蓝牙连接之后的通知成功获取数据信息");
+//                    dataText.append(scanDeviceData + "\n");
+//                    dataBinding.tvCheckData.setText(dataText.toString());
+//                    dataBinding.tvServer.setText(scanDeviceData);
+//                    isStop = false;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                    if (scanDeviceData.startsWith("FF") || scanDeviceData.startsWith("ff")){
+                        dataText1 = new StringBuilder();
+                        dataText1.append(scanDeviceData);
+                    } else if (scanDeviceData.endsWith("9c") || scanDeviceData.endsWith("9C")){
+                        dataText1.append(scanDeviceData);
+                    }
+                    Log.e("ooooooooooo","data = " + dataText1.toString());
+                    if(dataText1.toString().length() > 40/* && !mIsParseSuccess*/) {
+                        // TODO 开启线程解析数据
+                        parseData(bleDevice,dataText1.toString());
+                        dataText1 = new StringBuilder();
+                    }
+                }
+            });
+        }
+
+        private StringBuilder dataText = new StringBuilder();
+
+        private StringBuilder dataText1 = new StringBuilder();
+
+        @Override
+        public void connFailedDevice(BleDevice bleDevice) { // 连接失败
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    Toast.makeText(mContext, "连接失败", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "连接失败");
+//                    dataBinding.tvStatus.setText("当前状态：连接失败");
+//                    isStop = true;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                }
+            });
+        }
+
+        @Override
+        public void disConnDevice(BleDevice bleDevice) { // 断开连接
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    mIsParseSuccess = false;
+//                    Toast.makeText(mContext, "断开连接", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "断开连接");
+//                    dataBinding.tvStatus.setText("当前状态：设备 断开连接");
+//                    isStop = true;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+                }
+            });
+        }
+
+        @Override
+        public void replyDataToDeviceSuccess(BleDevice bleDevice, String data) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    dataBinding.tvStatus.setText("当前状态：回复设备（" + data +" ）成功");
+//                    isStop = true;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+//                    dataBinding.tvReplyDev.setText(data + "------回复成功");
+//                    dataText = new StringBuilder();
+//                    dataText.append("");
+//                    dataBinding.tvCheckData.setText(dataText.toString());
+                }
+            });
+        }
+
+        @Override
+        public void replyDataToDeviceFailed(BleDevice bleDevice, String data) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    mIsParseSuccess = false;
+//                    dataBinding.tvStatus.setText("当前状态：回复设备（" + data +" ）失败----呜呜呜");
+//                    isStop = false;
+//                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
+//                    dataBinding.tvLocation.setText(mLocation);
+//                    dataBinding.tvReplyDev.setText(data + "------回复失败");
+                }
+            });
+        }
+    };
+
+    private boolean mIsParse = false;
+    private boolean mIsParseSuccess = false;
+    private void parseData(BleDevice device,final String datas){
+        if (!mIsParse) {
+            mIsParse = true;
+            String data = datas.toUpperCase();
+            String content = ""; // 装所有数据的字符串
+            // 判断当前数据有头有尾
+            if (data.contains("FF") && data.contains("9C")) {
+                // 开始截取头部之后的数据 判断是否是以FF 或者 ff 开始
+                if (data.startsWith("FF")) {
+                    content = data;
+                } else {
+                    // 需要进行截取
+                    String[] splitFF = data.split("FF");
+                    if (splitFF.length > 1) {
+                        content = "FF" + splitFF[1];
+                    } else {
+                        content = "";
+                    }
+                }
+                // 开始截取尾部之前的位置 判断是否是以9C 或者 9c 结尾
+                if (content.endsWith("9C")) {
+                } else {
+                    // 需要进行截取
+                    String[] split9C = content.split("9C");
+                    if (split9C.length > 0) {
+                        content = split9C[0] + "9C";
+                    } else {
+                        content = "";
+                    }
+                }
+            }
+            // 上面的数据表示 58 表示数据是全的
+            if (content.startsWith("FF") && content.endsWith("9C") && content.length() == 60) {
+                NotifyBLEDataConstructerBean bean = new NotifyBLEDataConstructerBean();
+                bean.setByte0(content.substring(0, 2));
+                bean.setByte1(content.substring(2, 4));
+                bean.setByte2(content.substring(4, 6));
+                bean.setByte3(content.substring(6, 18));
+                bean.setByte4(content.substring(18, 22));
+                bean.setByte5(content.substring(22, 24));
+                bean.setByte6(content.substring(24, 40));
+                bean.setByte7(content.substring(40, 42));
+                bean.setByte8(content.substring(42, 44));
+                bean.setByte9(content.substring(44, 56));
+                bean.setByte10(content.substring(56, 58));
+                bean.setByte11(content.substring(58, 60));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showToastMsg("数据解析成功：" + bean.toString() + "准备发送关闭命令");
+                    }
+                });
+                BleNFCManager.getInstance().sendWriteData(device,new byte[]{(byte)0x8E});
+                mIsParseSuccess = true;
+            } else {
+                String showContent = content;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showToastMsg("数据不全 解析之后的数据：" + showContent + "\n 解析之前的数据：" + datas);
+                    }
+                });
+                mIsParseSuccess = false;
+            }
+            mIsParse = false;
+        }
+    }
+
+    private void updateServerData(String data){
+        if (data.isEmpty()){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showText(mContext,"获取服务器的数据为空");
+                }
+            });
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                upService(data);
+            }
+        }).start();
+    }
+
+    /**
+     * 上报服务器
+     * @param data
+     */
+    private void upService(String data) {  // TODO 119.23.226.237：9088 使用UDP发送数据信息
+        if (TextUtils.isEmpty(data)){
+            return;
+        }
+        if (udpThread == null) {
+            return;
+        }
+        udpThread.sendSocketData(data);
+    }
+
+    private String mUDPStatusStr = "";
+    /**
+     * UDP服务器的监听
+     */
+    private SocketListener mSockestListener = new SocketListener() {
+        @Override
+        public void receiveSocketData(String socketData) {
+            // TODO 接收到服务端的数据
+            mUDPStatusStr = "接收到服务端信息：" +socketData;
+            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
+        }
+
+        @Override
+        public void sendSocketData(String packs) {
+            // TODO 已发送数据
+            mUDPStatusStr = "已经发送到服务端信息：" +packs;
+            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
+        }
+
+        @Override
+        public void error(Throwable e) {
+            // TODO 收发数据出现异常
+            mUDPStatusStr = "接收出现异常：" +e.toString();
+            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
+        }
+    };
+
+    private void initBleAndStartScan(){
+//        dataBinding.tvStatus.setText("当前状态：正在搜索设备");
+//        isStop = false;
+        startThread();
+        startBleTimer();
+//        String mLocation = "蓝牙插件定位信息\n经度：" + Constants.LOCATION_LAT + "\n纬度：" + Constants.LOCATION_LNG;
+//        dataBinding.tvLocation.setText(mLocation);
+    }
+
+    private Timer mBleTimer = null;
+    private TimerTask mBleTimerTask = null;
+    private static int count = 0;
+    private boolean isPause = false;
+    private boolean isStop = true;
+    private static int delay = 1000;  //1s
+    private static int period = 1000;  //1s
+
+    private void startBleTimer() {
+        if (mBleTimer != null && mBleTimerTask != null) {
+            stopBleTimer();
+        }
+        if (mBleTimer == null) {
+            mBleTimer = new Timer();
+        }
+        if (mBleTimerTask == null) {
+            mBleTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Log.i(TAG, "count: " + String.valueOf(count));
+                    do {
+                        try {
+                            Log.i(TAG, "sleep(1000)...");
+                            Thread.sleep(1000);
+                            if (isStop) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+//                                        dataBinding.tvStatus.setText("当前状态：正在搜索设备");
+                                    }
+                                });
+                                isStop = false;
+                                startThread();
+                            }
+                        } catch (InterruptedException e) {
+                        }
+                    } while (isPause);
+                    count++;
+                }
+            };
+        }
+        if (mBleTimer != null && mBleTimerTask != null) {
+            mBleTimer.schedule(mBleTimerTask, delay, period);
+        }
+    }
+
+
+    private void stopBleTimer() {
+        if (mBleTimer != null) {
+            mBleTimer.cancel();
+            mBleTimer = null;
+        }
+        if (mBleTimerTask != null) {
+            mBleTimerTask.cancel();
+            mBleTimerTask = null;
+        }
+        count = 0;
+    }
+    // ************************************************************************ 蓝牙相关
+
 }
