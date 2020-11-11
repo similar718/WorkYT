@@ -732,6 +732,14 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         }
     };
 
+
+    // 8F EB 0B 8E 68 DB 0E B0 6F 80 04 00 77 17 E2 25 80 23 29 9C
+    byte[] version_data = new byte[]{
+            (byte) 0x8F,(byte) 0xEB,(byte) 0x0B,(byte) 0x8E,(byte) 0x68,
+            (byte) 0xDB,(byte) 0x0E,(byte) 0xB0,(byte) 0x6F,(byte) 0x80,
+            (byte) 0x04,(byte) 0x00,(byte) 0x77,(byte) 0x17,(byte) 0xE2,
+            (byte) 0x25,(byte) 0x80,(byte) 0x23,(byte) 0x29,(byte) 0x9C};
+
     private boolean mIsParse = false;
     private boolean mIsParseSuccess = false;
     private void parseData(BleDevice device,final String datas){
