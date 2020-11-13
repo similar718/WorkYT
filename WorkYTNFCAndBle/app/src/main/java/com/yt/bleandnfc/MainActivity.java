@@ -287,6 +287,8 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 showBleAndGPSHintDialog("请打开蓝牙，可正常使用APP内的功能",false);
             } else if (!BLEAndGPSUtils.isOpenGPS(YTApplication.getInstance())){
                 showBleAndGPSHintDialog("请打开GPS，可正常使用APP内的功能",false);
+            } else {
+                startBleTimer();
             }
         }
 
@@ -929,12 +931,12 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                             Log.i(TAG, "sleep(1000)...");
                             Thread.sleep(1000);
                             if (isStop) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-//                                        dataBinding.tvStatus.setText("当前状态：正在搜索设备");
-                                    }
-                                });
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+////                                        dataBinding.tvStatus.setText("当前状态：正在搜索设备");
+//                                    }
+//                                });
                                 isStop = false;
                                 startThread();
                             }
