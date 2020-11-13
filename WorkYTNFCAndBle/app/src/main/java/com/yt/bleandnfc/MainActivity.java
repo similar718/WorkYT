@@ -734,11 +734,15 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 
 
     // 8F EB 0B 8E 68 DB 0E B0 6F 80 04 00 77 17 E2 25 80 23 29 9C
+    // 8F 0B 8E 68 DB 0E B0 6F 80 04 00 77 17 E2 25 80 23 29 9C
     byte[] version_data = new byte[]{
-            (byte) 0x8F,(byte) 0xEB,(byte) 0x0B,(byte) 0x8E,(byte) 0x68,
+            (byte) 0x8F,(byte) 0xEB,(byte) 0xEF,(byte) 0x60,(byte) 0x68,
             (byte) 0xDB,(byte) 0x0E,(byte) 0xB0,(byte) 0x6F,(byte) 0x80,
             (byte) 0x04,(byte) 0x00,(byte) 0x77,(byte) 0x17,(byte) 0xE2,
-            (byte) 0x25,(byte) 0x80,(byte) 0x23,(byte) 0x29,(byte) 0x9C};
+            (byte) 0x25,(byte) 0x80,(byte) 0x23,(byte) 0x32,(byte) 0x9C};
+
+    byte[] reply_data = new byte[]{(byte)0x8E,(byte)0x9C};
+    byte reply_data1 = (byte) 0x32;
 
     private boolean mIsParse = false;
     private boolean mIsParseSuccess = false;
@@ -776,24 +780,34 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
             // 上面的数据表示 58 表示数据是全的
             if (content.startsWith("FF") && content.endsWith("9C") && content.length() == 60) {
                 NotifyBLEDataConstructerBean bean = new NotifyBLEDataConstructerBean();
-                bean.setByte0(content.substring(0, 2));
-                bean.setByte1(content.substring(2, 4));
-                bean.setByte2(content.substring(4, 6));
-                bean.setByte3(content.substring(6, 18));
-                bean.setByte4(content.substring(18, 22));
-                bean.setByte5(content.substring(22, 24));
-                bean.setByte6(content.substring(24, 40));
-                bean.setByte7(content.substring(40, 42));
-                bean.setByte8(content.substring(42, 44));
-                bean.setByte9(content.substring(44, 56));
-                bean.setByte10(content.substring(56, 58));
-                bean.setByte11(content.substring(58, 60));
+                bean.setBaotou(content.substring(0, 2));
+                bean.setKehudaima(content.substring(2, 4));
+                bean.setShujubaoType(content.substring(4, 6));
+                bean.setIpAndPort(content.substring(6, 18));
+                bean.setDevId(content.substring(18, 22));
+                bean.setPower(content.substring(22, 24));
+                bean.setLatlng(content.substring(24, 40));
+                bean.setLatlngType(content.substring(40, 42));
+                bean.setWeixingnum(content.substring(42, 44));
+                bean.setMac(content.substring(44, 56));
+                bean.setVersion(content.substring(56, 58));
+                bean.setBaowei(content.substring(58, 60));
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         showToastMsg("数据解析成功：" + bean.toString() + "准备发送关闭命令");
                     }
                 });
+                if (Byte.parseByte(bean.version,16) == reply_data1) {
+                    BleNFCManager.getInstance().sendWriteData(device,reply_data);
+                } else {
+                    String bledata = "8FEBEF6068DB0EB06F8004007717E2258023329C";
+                    if (TextUtils.isEmpty(bledata)){
+                        BleNFCManager.getInstance().sendWriteData(device,version_data);
+                    } else {
+                        BleNFCManager.getInstance().sendWriteData(device,hexStrToByteArray(bledata));
+                    }
+                }
                 BleNFCManager.getInstance().sendWriteData(device,new byte[]{(byte)0x8E});
                 mIsParseSuccess = true;
             } else {
@@ -808,6 +822,18 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
             }
             mIsParse = false;
         }
+    }
+
+    public static byte[] hexStrToByteArray(String data) {
+        if (TextUtils.isEmpty(data)) {
+            return  null;
+        }
+        byte[] bytes = new byte[data.length() / 2];
+        for (int i = 0; i < bytes.length; i++){
+            String subStr = data.substring(2*i,2*i+2);
+            bytes[i] = (byte) Integer.parseInt(subStr,16);
+        }
+        return bytes;
     }
 
     private void updateServerData(String data){
