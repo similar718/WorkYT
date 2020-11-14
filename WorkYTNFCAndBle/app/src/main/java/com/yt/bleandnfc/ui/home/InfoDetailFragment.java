@@ -10,6 +10,7 @@ import com.yt.base.mvvm.model.PagingResult;
 import com.yt.bleandnfc.R;
 import com.yt.bleandnfc.api.model.AlarmCountAlarmByStateModel;
 import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
+import com.yt.bleandnfc.api.model.GetUserBindByUserId;
 import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.fragment.YTBaseFragment;
 import com.yt.bleandnfc.constant.Constants;
@@ -74,6 +75,33 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
                 }
             }
         });
+        viewModel.mGetUserBindByUserId.observe(this, new Observer<GetUserBindByUserId>() {
+            @Override
+            public void onChanged(GetUserBindByUserId getUserBindByUserId) {
+                if (getUserBindByUserId != null) {
+                    if (getUserBindByUserId.getCode() == 200) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        if (getUserBindByUserId.getObj().isBindState() == false){
+                            // 没有绑定设备
+                            stringBuilder.append("未绑定车辆");
+                        } else {
+                            int len = getUserBindByUserId.getObj().getDevices().size();
+                            for (int i = 0; i < len; i++){
+                                // 有绑定设备
+                                stringBuilder.append("已绑定车辆")
+                                        .append(getUserBindByUserId.getObj().getDevices().get(i).getNumber())
+                                        .append("          ");
+                            }
+                        }
+                        dataBinding.tvStatusInfo.setText(stringBuilder);
+                    } else {
+                        showToastMsg(getUserBindByUserId.getMessage());
+                    }
+                } else {
+                    showToastMsg("服务器请求异常");
+                }
+            }
+        });
         return viewModel;
     }
 
@@ -132,15 +160,7 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
     @Override
     public void onResume() {
         super.onResume();
-        StringBuilder stringBuilder = new StringBuilder();
-        if (Constants.mBindLists.size() > 0) {
-            for (int i = 0; i < Constants.mBindLists.size(); i++){
-                stringBuilder.append("已绑定车辆").append(Constants.mBindLists.get(i)).append("          ");
-            }
-        } else {
-            stringBuilder.append("未绑定车辆");
-        }
-        dataBinding.tvStatusInfo.setText(stringBuilder);
+        viewModel.getUserBindByUserId();
     }
 
     private void initClick(){
@@ -173,7 +193,8 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_setting: // 跳转设置界面
-                Navigation.findNavController(v).navigate(R.id.navigation_settings);
+//                Navigation.findNavController(v).navigate(R.id.navigation_settings);
+                IntentManager.getInstance().goLoginActivity(getActivity());
                 break;
             case R.id.rl_bind: // 绑定
                 if (!BLEAndGPSUtils.isOpenBLE()) {

@@ -20,7 +20,6 @@ import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.clj.fastble.BleNFCManager;
 import com.clj.fastble.data.BleDevice;
@@ -42,7 +41,7 @@ import com.yt.bleandnfc.mvvm.viewmodel.MainViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.nfcres.NfcView;
 import com.yt.bleandnfc.service.KeepAppLifeService;
-import com.yt.bleandnfc.udp.UDPThread;
+//import com.yt.bleandnfc.udp.UDPThread;
 import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
 import com.yt.common.interfaces.IPermissionListener;
@@ -63,7 +62,7 @@ import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBinding> {
 
-    private UDPThread udpThread;
+//    private UDPThread udpThread;
     String mServerData = "";
 
     @Override
@@ -104,6 +103,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 
     @Override
     protected void initData() {
+        initBlueTooth();
         dataBinding.navView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -150,9 +150,9 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         mNfcHandler.init(this);
 
 
-        udpThread = new UDPThread();
-        udpThread.setSocketListener(mSockestListener);
-        udpThread.start();
+//        udpThread = new UDPThread();
+//        udpThread.setSocketListener(mSockestListener);
+//        udpThread.start();
     }
 
     @Override
@@ -524,12 +524,15 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         public void initFailed(byte data) {// TODO  初始化失败 需要配合相关操作之后再重新初始化
             if (data == (byte) 0x0001){ //没有打开GPS的情况
                 mIsOpenGPS = false;
-                Toast.makeText(mContext,"请打开GPS位置信息",Toast.LENGTH_LONG).show();
+//                Toast.makeText(mContext,"请打开GPS位置信息",Toast.LENGTH_LONG).show();
+                LogUtlis.e(TAG,"initFailed 请打开GPS位置信息");
             } else if (data == (byte) 0x0010) { // 判断是否打开蓝牙设备
                 mIsOpenBT  = false;
-                Toast.makeText(mContext,"请打开蓝牙",Toast.LENGTH_LONG).show();
+//                Toast.makeText(mContext,"请打开蓝牙",Toast.LENGTH_LONG).show();
+                LogUtlis.e(TAG,"initFailed 请打开蓝牙");
             } else {
-                Toast.makeText(mContext,"初始化失败，其他情况",Toast.LENGTH_LONG).show();
+//                Toast.makeText(mContext,"初始化失败，其他情况",Toast.LENGTH_LONG).show();
+                LogUtlis.e(TAG,"initFailed 初始化失败，其他情况");
             }
             mInitSuccess = false;
             mHandler.sendEmptyMessage(HANDLER_INIT_IMAGEVIEW);
@@ -555,7 +558,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    Toast.makeText(mContext, "搜索到目标设备", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "搜索到目标设备");
 //                    dataBinding.tvStatus.setText("当前状态：搜索到目标设备正在连接中");
-//                    isStop = false;
+                    isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                 }
@@ -573,7 +576,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    Toast.makeText(mContext, "未搜索到目标设备", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "未搜索到目标设备");
 //                    dataBinding.tvStatus.setText("当前状态：未搜索到目标设备 请打开设备之后重试");
-//                    isStop = true;
+                    isStop = true;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                 }
@@ -588,7 +591,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 public void run() {
                     Log.e(TAG, "开始连接");
 //                    dataBinding.tvStatus.setText("当前状态：开始连接");
-//                    isStop = false;
+                    isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                 }
@@ -603,7 +606,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    Toast.makeText(mContext, "连接成功", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "连接成功");
 //                    dataBinding.tvStatus.setText("当前状态：连接成功 正准备获取数据");
-//                    isStop = false;
+                    isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                 }
@@ -617,7 +620,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 public void run() {
 //                    dataBinding.tvStatus.setText("当前状态：获取到蓝牙连接之后的打开通知成功");
 //                    dataBinding.tvCheckData.setText(scanDeviceData);
-//                    isStop = false;
+                    isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                 }
@@ -631,7 +634,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 public void run() {
 //                    dataBinding.tvStatus.setText("当前状态：获取到蓝牙连接之后的打开通知失败~~~~~~~");
 //                    dataBinding.tvCheckData.setText(scanDeviceData);
-//                    isStop = false;
+                    isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                 }
@@ -647,7 +650,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    dataText.append(scanDeviceData + "\n");
 //                    dataBinding.tvCheckData.setText(dataText.toString());
 //                    dataBinding.tvServer.setText(scanDeviceData);
-//                    isStop = false;
+                    isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                     if (scanDeviceData.startsWith("FF") || scanDeviceData.startsWith("ff")){
@@ -678,7 +681,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    Toast.makeText(mContext, "连接失败", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "连接失败");
 //                    dataBinding.tvStatus.setText("当前状态：连接失败");
-//                    isStop = true;
+                    isStop = true;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                 }
@@ -694,7 +697,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    Toast.makeText(mContext, "断开连接", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "断开连接");
 //                    dataBinding.tvStatus.setText("当前状态：设备 断开连接");
-//                    isStop = true;
+                    isStop = true;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
                 }
@@ -707,7 +710,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 @Override
                 public void run() {
 //                    dataBinding.tvStatus.setText("当前状态：回复设备（" + data +" ）成功");
-//                    isStop = true;
+                    isStop = true;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
 //                    dataBinding.tvReplyDev.setText(data + "------回复成功");
@@ -725,7 +728,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 public void run() {
 //                    mIsParseSuccess = false;
 //                    dataBinding.tvStatus.setText("当前状态：回复设备（" + data +" ）失败----呜呜呜");
-//                    isStop = false;
+                    isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
 //                    dataBinding.tvReplyDev.setText(data + "------回复失败");
@@ -864,10 +867,10 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         if (TextUtils.isEmpty(data)){
             return;
         }
-        if (udpThread == null) {
-            return;
-        }
-        udpThread.sendSocketData(data);
+//        if (udpThread == null) {
+//            return;
+//        }
+//        udpThread.sendSocketData(data);
     }
 
     private String mUDPStatusStr = "";
@@ -899,7 +902,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 
     private void initBleAndStartScan(){
 //        dataBinding.tvStatus.setText("当前状态：正在搜索设备");
-//        isStop = false;
+        isStop = false;
         startThread();
         startBleTimer();
 //        String mLocation = "蓝牙插件定位信息\n经度：" + Constants.LOCATION_LAT + "\n纬度：" + Constants.LOCATION_LNG;

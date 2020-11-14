@@ -31,7 +31,9 @@ public class UDPThread extends Thread{
     private void init(){
         try {
             mIsInit = true;
-            socket = new DatagramSocket(serverPort);
+            if (socket == null) {
+                socket = new DatagramSocket(serverPort);
+            }
         } catch (SocketException e){
             e.printStackTrace();
             Log.d("socket", e.getMessage());

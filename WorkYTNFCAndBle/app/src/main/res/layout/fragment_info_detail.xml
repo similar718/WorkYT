@@ -97,7 +97,7 @@
                 android:id="@+id/iv_setting"
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_52"
-                android:src="@drawable/info_detail_settings_icon"
+                android:src="@drawable/exit"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/dp_15"

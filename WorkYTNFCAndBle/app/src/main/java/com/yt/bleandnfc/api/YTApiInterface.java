@@ -6,9 +6,11 @@ import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
 import com.yt.bleandnfc.api.model.AlarmSaveModel;
 import com.yt.bleandnfc.api.model.BindModel;
 import com.yt.bleandnfc.api.model.CarNumberInfoModel;
+import com.yt.bleandnfc.api.model.GetUserBindByUserId;
 import com.yt.bleandnfc.api.model.LoginModel;
 
 import io.reactivex.Observable;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -111,6 +113,15 @@ public interface YTApiInterface {
      */
     @POST("alarm/countAlarmBystate")
     Observable<AlarmCountAlarmByStateModel> alarmCountAlarmByState(
+            @Query("userId") String userId);
+
+    /**
+     * 查询报警分页查询最新报警记录数
+     * @param userId
+     * @return 数量
+     */
+    @GET("deviceBind/getUserBindByUserId")
+    Observable<GetUserBindByUserId> getUserBindByUserId(
             @Query("userId") String userId);
 
 }
