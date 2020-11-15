@@ -42,6 +42,7 @@ import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.nfcres.NfcView;
 import com.yt.bleandnfc.service.KeepAppLifeService;
 //import com.yt.bleandnfc.udp.UDPThread;
+import com.yt.bleandnfc.udp.UDPThread;
 import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
 import com.yt.common.interfaces.IPermissionListener;
@@ -813,7 +814,16 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                         BleNFCManager.getInstance().sendWriteData(device,hexStrToByteArray(bledata));
                     }
                 }
-                BleNFCManager.getInstance().sendWriteData(device,new byte[]{(byte)0x8E});
+                // 上报服务器的数据信息
+                String result = content.substring(0,4) + "1" + content.substring(5,60);
+                String ipandport = bean.getIpAndPort();
+                String ip = bean.getIpAddress();
+                int port = bean.getIPPort();
+                UDPThread udpThread = new UDPThread(ip,port);
+                udpThread.setSocketListener(mSockestListener);
+                udpThread.start();
+                upService(result,udpThread);
+//                BleNFCManager.getInstance().sendWriteData(device,new byte[]{(byte)0x8E});
                 mIsParseSuccess = true;
             } else {
                 String showContent = content;
@@ -854,7 +864,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         new Thread(new Runnable() {
             @Override
             public void run() {
-                upService(data);
+//                upService(data);
             }
         }).start();
     }
@@ -863,14 +873,14 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
      * 上报服务器
      * @param data
      */
-    private void upService(String data) {  // TODO 119.23.226.237：9088 使用UDP发送数据信息
+    private void upService(String data, UDPThread udpThread) {  // TODO 119.23.226.237：9088 使用UDP发送数据信息
         if (TextUtils.isEmpty(data)){
             return;
         }
-//        if (udpThread == null) {
-//            return;
-//        }
-//        udpThread.sendSocketData(data);
+        if (udpThread == null) {
+            return;
+        }
+        udpThread.sendSocketData(data);
     }
 
     private String mUDPStatusStr = "";

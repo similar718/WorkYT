@@ -130,9 +130,9 @@ public class MainActivity1 extends YTBaseActivity<MainViewModel1, ActivityMain1B
         mNfcHandler = new NfcHandler(mNFCView);
         mNfcHandler.init(this);
 
-        udpThread = new UDPThread();
-        udpThread.setSocketListener(mSockestListener);
-        udpThread.start();
+//        udpThread = new UDPThread();
+//        udpThread.setSocketListener(mSockestListener);
+//        udpThread.start();
     }
 
     private void startTimer() {

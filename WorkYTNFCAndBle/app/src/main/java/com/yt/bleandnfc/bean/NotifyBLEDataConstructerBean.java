@@ -88,25 +88,36 @@ public class NotifyBLEDataConstructerBean {
         this.shujubaoType = shujubaoType;
     }
 
+    private int port;
+    private String ipAddress;
+
+    public int getIPPort(){
+        return port;
+    }
+
+    public String getIpAddress(){
+        return ipAddress;
+    }
+
     public String getIpAndPort() { // 6
         if (mIsTest) {
             return "IP/端口：" + ipAndPort;
         } else {
-            String ip = "";
-            int port = 0;
+            ipAddress = "";
+            port = 0;
             for(int i = 0; i < 6; i++){
                 int item = Integer.parseInt(ipAndPort.substring(i*2,i*2+2),16);
                 if (i < 3) {
-                    ip += item + ".";
+                    ipAddress += item + ".";
                 } else if (i == 3){
-                    ip += item + ":";
+                    ipAddress += item + ":";
                 } else if (i == 4){
                     port = item * 100;
                 } else {
                     port = port + item;
                 }
             }
-            return ip + port;
+            return ipAddress + port;
         }
     }
 

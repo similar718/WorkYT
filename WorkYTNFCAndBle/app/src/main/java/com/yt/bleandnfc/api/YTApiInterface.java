@@ -116,7 +116,7 @@ public interface YTApiInterface {
             @Query("userId") String userId);
 
     /**
-     * 查询报警分页查询最新报警记录数
+     * 获取单个人员绑定设备情况
      * @param userId
      * @return 数量
      */

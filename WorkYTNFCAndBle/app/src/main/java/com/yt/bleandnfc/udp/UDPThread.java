@@ -22,9 +22,11 @@ public class UDPThread extends Thread{
 
     private boolean mIsInit = false;
 
-    public UDPThread(){
+    public UDPThread(String serverAddress1,int serverPort1){
         if (!mIsInit || socket == null) {
             init();
+            serverAddress = serverAddress1;
+            serverPort = serverPort1;
         }
     }
 
