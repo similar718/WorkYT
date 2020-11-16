@@ -110,14 +110,14 @@ public class NotifyBLEDataConstructerBean {
                 if (i < 3) {
                     ipAddress += item + ".";
                 } else if (i == 3){
-                    ipAddress += item + ":";
+                    ipAddress += item;
                 } else if (i == 4){
-                    port = item * 100;
+                    port = item;
                 } else {
-                    port = port + item;
+                    port = port + item * 256;
                 }
             }
-            return ipAddress + port;
+            return ipAddress + ":" + port;
         }
     }
 

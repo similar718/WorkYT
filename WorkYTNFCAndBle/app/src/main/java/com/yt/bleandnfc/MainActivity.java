@@ -63,7 +63,7 @@ import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBinding> {
 
-//    private UDPThread udpThread;
+    private UDPThread udpThread;
     String mServerData = "";
 
     @Override
@@ -467,11 +467,9 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                         getNFCInfo();
                     }
                     break;
-                case HANDLER_SEND_SERVER:
-                    updateServerData(mServerData);
-                    break;
                 case HANDLER_SEND_SERVER_UDP_STATUS: // 发送UDP数据的状态
 //                    dataBinding.tvServerStatus.setText(mUDPStatusStr);
+                    showToastMsg(mUDPStatusStr);
                     break;
             }
         }
@@ -491,7 +489,6 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
     public static boolean mIsInitBleHandler = false;
 
     private final int HANDLER_INIT_IMAGEVIEW = 0x0101;
-    private final int HANDLER_SEND_SERVER = 0x0103;
     private final int HANDLER_SEND_SERVER_UDP_STATUS = 0x0104;
 
     private Context mContext;
@@ -807,23 +804,20 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 if (Byte.parseByte(bean.version,16) == reply_data1) {
                     BleNFCManager.getInstance().sendWriteData(device,reply_data);
                 } else {
-                    String bledata = "8FEBEF6068DB0EB06F8004007717E2258023329C";
-                    if (TextUtils.isEmpty(bledata)){
-                        BleNFCManager.getInstance().sendWriteData(device,version_data);
-                    } else {
-                        BleNFCManager.getInstance().sendWriteData(device,hexStrToByteArray(bledata));
-                    }
+                    String bledata = "8FEBAC606EBC0EDA6F6C04007717E2ED8023329C";
+                    BleNFCManager.getInstance().sendWriteData(device,hexStrToByteArray(bledata));
                 }
                 // 上报服务器的数据信息
                 String result = content.substring(0,4) + "1" + content.substring(5,60);
                 String ipandport = bean.getIpAndPort();
                 String ip = bean.getIpAddress();
                 int port = bean.getIPPort();
-                UDPThread udpThread = new UDPThread(ip,port);
-                udpThread.setSocketListener(mSockestListener);
-                udpThread.start();
-                upService(result,udpThread);
-//                BleNFCManager.getInstance().sendWriteData(device,new byte[]{(byte)0x8E});
+                if (udpThread == null) {
+                    udpThread = new UDPThread(ip, port);
+                    udpThread.setSocketListener(mSockestListener);
+                    udpThread.start();
+                }
+                upService(result);
                 mIsParseSuccess = true;
             } else {
                 String showContent = content;
@@ -850,37 +844,23 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         }
         return bytes;
     }
-
-    private void updateServerData(String data){
-        if (data.isEmpty()){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtils.showText(mContext,"获取服务器的数据为空");
-                }
-            });
-            return;
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-//                upService(data);
-            }
-        }).start();
-    }
-
     /**
      * 上报服务器
      * @param data
      */
-    private void upService(String data, UDPThread udpThread) {  // TODO 119.23.226.237：9088 使用UDP发送数据信息
+    private void upService(String data) {  // TODO 119.23.226.237：9088 使用UDP发送数据信息
         if (TextUtils.isEmpty(data)){
             return;
         }
         if (udpThread == null) {
             return;
         }
-        udpThread.sendSocketData(data);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                udpThread.sendSocketData(data);
+            }
+        }).start();
     }
 
     private String mUDPStatusStr = "";

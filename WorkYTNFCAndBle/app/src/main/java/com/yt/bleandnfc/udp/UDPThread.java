@@ -2,6 +2,7 @@ package com.yt.bleandnfc.udp;
 
 import android.util.Log;
 
+import com.yt.bleandnfc.MainActivity;
 import com.yt.bleandnfc.listener.SocketListener;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class UDPThread extends Thread{
         if (!mIsInit || socket == null) {
             init();
         }
-        byte[] packs = message.getBytes();
+        byte[] packs = MainActivity.hexStrToByteArray(message);
         try {
             socket.send(new DatagramPacket(packs,packs.length,InetAddress.getByName(serverAddress),serverPort));
             socketListener.sendSocketData(message);

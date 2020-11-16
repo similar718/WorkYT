@@ -1,6 +1,13 @@
 1. BottomNavigationView + Fragment 保存fragment的状态 不要一直都是重新加载
-2. 字体大小问题处理
-3. 蓝牙接入信息
+2. 字体大小问题处理 不需要处理了
+3. 蓝牙接入信息 已接入
 4. Bugly
 5. notification 适配的问题
 6. MainActivity中软件盘弹出 EditText失去焦点问题
+
+2020.11.16
+现在应该其他没问题了；
+就
+1、打开蓝牙与GPS的时间；
+2、配置参数的读取；  8FEBAC606EBC0EDA6F6C04007717E2ED8023329C
+3、锁屏后的使用
