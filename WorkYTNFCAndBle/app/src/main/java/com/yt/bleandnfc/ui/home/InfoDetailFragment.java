@@ -303,7 +303,7 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
                 }
             });
         }
-        mBLEAndGPSHintDialog.showDialog("是否确认退出？", true);
+        mExitDialog.showDialog("是否确认退出？", true);
     }
 
     @Override
