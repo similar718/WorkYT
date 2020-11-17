@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.kingja.loadsir.core.LoadSir;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yt.base.application.BaseApplication;
 import com.yt.base.loadsir.CustomCallback;
 import com.yt.base.loadsir.EmptyCallback;
@@ -65,6 +66,7 @@ public class YTApplication extends BaseApplication implements Application.Activi
 
         fontScale = getFontScale();
         registerActivityLifecycleCallbacks(this);
+        CrashReport.initCrashReport(getApplicationContext(), "a8269e0d16", false);
     }
 
     public static float getFontScale() {

@@ -4,8 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -18,7 +21,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.clj.fastble.BleNFCManager;
@@ -27,7 +29,6 @@ import com.clj.fastble.nfc.BleNFCListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.yt.base.utils.LogUtlis;
-import com.yt.base.utils.ToastUtils;
 import com.yt.bleandnfc.api.model.AlarmCountAlarmByStateModel;
 import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.activity.YTBaseActivity;
@@ -40,6 +41,7 @@ import com.yt.bleandnfc.manager.IntentManager;
 import com.yt.bleandnfc.mvvm.viewmodel.MainViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.nfcres.NfcView;
+import com.yt.bleandnfc.receiver.BlueToothMonitorReceiver;
 import com.yt.bleandnfc.service.KeepAppLifeService;
 //import com.yt.bleandnfc.udp.UDPThread;
 import com.yt.bleandnfc.udp.UDPThread;
@@ -65,6 +67,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 
     private UDPThread udpThread;
     String mServerData = "";
+    private BlueToothMonitorReceiver bleListenerReceiver = null;
 
     @Override
     protected int setLayoutId() {
@@ -150,10 +153,16 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         mNfcHandler = new NfcHandler(mNFCView);
         mNfcHandler.init(this);
 
-
-//        udpThread = new UDPThread();
-//        udpThread.setSocketListener(mSockestListener);
-//        udpThread.start();
+        // 初始化广播
+        this.bleListenerReceiver = new BlueToothMonitorReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        // 监视蓝牙关闭和打开的状态
+        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        // 监视蓝牙设备与APP连接的状态
+        intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        // 注册广播
+        registerReceiver(this.bleListenerReceiver, intentFilter);
     }
 
     @Override
@@ -278,6 +287,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         }
         BleNFCManager.getInstance().destroyBlueToothPlugin();
         stopTimer();
+        unregisterReceiver(this.bleListenerReceiver);
     }
 
     private IPermissionListener iPermissionListener = new IPermissionListener() {
@@ -368,7 +378,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
     private String TAG = MainActivity.class.getSimpleName();
     @Override
     protected void onNewIntent(Intent intent) { // TODO nfc必须要使用的
-        Log.d(TAG, "onNewIntent()! action is:" + intent.getAction());
+        LogUtlis.d(TAG, "onNewIntent()! action is:" + intent.getAction());
         super.onNewIntent(intent);
         setIntent(intent);
     }
@@ -384,7 +394,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
     private NfcView mNFCView = new NfcView() {
         @Override
         public void appendResponse(final String response) {
-            Log.e(TAG, "appendResponse: data______________________________" + response);
+            LogUtlis.e(TAG, "appendResponse: data______________________________" + response);
             // NFC相关信息的回调事件
             if (TextUtils.isEmpty(response)){
                 return;
@@ -554,7 +564,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    dataBinding.tvReplyDev.setText("");
 //                    mIsParseSuccess = false;
 //                    Toast.makeText(mContext, "搜索到目标设备", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "搜索到目标设备");
+                    LogUtlis.e(TAG, "搜索到目标设备");
 //                    dataBinding.tvStatus.setText("当前状态：搜索到目标设备正在连接中");
                     isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
@@ -572,7 +582,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    dataBinding.tvReplyDev.setText("");
 //                    mIsParseSuccess = false;
 //                    Toast.makeText(mContext, "未搜索到目标设备", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "未搜索到目标设备");
+                    LogUtlis.e(TAG, "未搜索到目标设备");
 //                    dataBinding.tvStatus.setText("当前状态：未搜索到目标设备 请打开设备之后重试");
                     isStop = true;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
@@ -587,7 +597,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e(TAG, "开始连接");
+                    LogUtlis.e(TAG, "开始连接");
 //                    dataBinding.tvStatus.setText("当前状态：开始连接");
                     isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
@@ -602,7 +612,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 @Override
                 public void run() {
 //                    Toast.makeText(mContext, "连接成功", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "连接成功");
+                    LogUtlis.e(TAG, "连接成功");
 //                    dataBinding.tvStatus.setText("当前状态：连接成功 正准备获取数据");
                     isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
@@ -657,7 +667,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                     } else if (scanDeviceData.endsWith("9c") || scanDeviceData.endsWith("9C")){
                         dataText1.append(scanDeviceData);
                     }
-                    Log.e("ooooooooooo","data = " + dataText1.toString());
+                    LogUtlis.e("ooooooooooo","data = " + dataText1.toString());
                     if(dataText1.toString().length() > 40/* && !mIsParseSuccess*/) {
                         // TODO 开启线程解析数据
                         parseData(bleDevice,dataText1.toString());
@@ -677,7 +687,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 @Override
                 public void run() {
 //                    Toast.makeText(mContext, "连接失败", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "连接失败");
+                    LogUtlis.e(TAG, "连接失败");
 //                    dataBinding.tvStatus.setText("当前状态：连接失败");
                     isStop = true;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
@@ -693,7 +703,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                 public void run() {
 //                    mIsParseSuccess = false;
 //                    Toast.makeText(mContext, "断开连接", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "断开连接");
+                    LogUtlis.e(TAG, "断开连接");
 //                    dataBinding.tvStatus.setText("当前状态：设备 断开连接");
                     isStop = true;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
@@ -918,18 +928,12 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
             mBleTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    Log.i(TAG, "count: " + String.valueOf(count));
+                    LogUtlis.i(TAG, "count: " + String.valueOf(count));
                     do {
                         try {
-                            Log.i(TAG, "sleep(1000)...");
+                            LogUtlis.i(TAG, "sleep(1000)...");
                             Thread.sleep(1000);
                             if (isStop) {
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-////                                        dataBinding.tvStatus.setText("当前状态：正在搜索设备");
-//                                    }
-//                                });
                                 isStop = false;
                                 startThread();
                             }

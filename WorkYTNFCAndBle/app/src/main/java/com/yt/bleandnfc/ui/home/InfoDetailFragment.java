@@ -194,7 +194,7 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         switch (v.getId()) {
             case R.id.iv_setting: // 跳转设置界面
 //                Navigation.findNavController(v).navigate(R.id.navigation_settings);
-                IntentManager.getInstance().goLoginActivity(getActivity());
+                showExitDialog();
                 break;
             case R.id.rl_bind: // 绑定
                 if (!BLEAndGPSUtils.isOpenBLE()) {
@@ -288,6 +288,22 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
             });
         }
         mBLEAndGPSHintDialog.showDialog(title, isPermissionHint);
+    }
+
+
+    private BLEAndGPSHintDialog mExitDialog;
+
+    private void showExitDialog(){
+        if (mExitDialog == null) {
+            mExitDialog = new BLEAndGPSHintDialog(getActivity());
+            mExitDialog.setBLEAndGPSHintClicklistener(new BLEAndGPSHintDialog.BLEAndGPSHintClickListenerInterface() {
+                @Override
+                public void doSure() {
+                    IntentManager.getInstance().goLoginActivity(getActivity());
+                }
+            });
+        }
+        mBLEAndGPSHintDialog.showDialog("是否确认退出？", true);
     }
 
     @Override

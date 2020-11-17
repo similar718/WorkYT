@@ -1,7 +1,7 @@
 1. BottomNavigationView + Fragment 保存fragment的状态 不要一直都是重新加载
-2. 字体大小问题处理 不需要处理了
-3. 蓝牙接入信息 已接入
-4. Bugly
+2. 字体大小问题处理 不需要处理了--------------
+3. 蓝牙接入信息 已接入----------------
+4. Bugly  已集成------------------
 5. notification 适配的问题
 6. MainActivity中软件盘弹出 EditText失去焦点问题
 
