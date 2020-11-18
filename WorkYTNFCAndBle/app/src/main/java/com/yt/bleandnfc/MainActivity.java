@@ -6,10 +6,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
@@ -41,9 +44,7 @@ import com.yt.bleandnfc.manager.IntentManager;
 import com.yt.bleandnfc.mvvm.viewmodel.MainViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.nfcres.NfcView;
-import com.yt.bleandnfc.receiver.BlueToothMonitorReceiver;
 import com.yt.bleandnfc.service.KeepAppLifeService;
-//import com.yt.bleandnfc.udp.UDPThread;
 import com.yt.bleandnfc.udp.UDPThread;
 import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
@@ -66,8 +67,7 @@ import androidx.navigation.ui.NavigationUI;
 public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBinding> {
 
     private UDPThread udpThread;
-    String mServerData = "";
-    private BlueToothMonitorReceiver bleListenerReceiver = null;
+    private BluetoothMonitorReceiver bleListenerReceiver = null;
 
     @Override
     protected int setLayoutId() {
@@ -154,7 +154,7 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         mNfcHandler.init(this);
 
         // 初始化广播
-        this.bleListenerReceiver = new BlueToothMonitorReceiver();
+        this.bleListenerReceiver = new BluetoothMonitorReceiver();
         IntentFilter intentFilter = new IntentFilter();
         // 监视蓝牙关闭和打开的状态
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -163,6 +163,18 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         // 注册广播
         registerReceiver(this.bleListenerReceiver, intentFilter);
+
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getContentResolver()
+                .registerContentObserver(
+                        Settings.Secure
+                                .getUriFor(Settings.System.LOCATION_PROVIDERS_ALLOWED),
+                        false, mGpsMonitor);
     }
 
     @Override
@@ -288,6 +300,8 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         BleNFCManager.getInstance().destroyBlueToothPlugin();
         stopTimer();
         unregisterReceiver(this.bleListenerReceiver);
+
+        getContentResolver().unregisterContentObserver(mGpsMonitor);
     }
 
     private IPermissionListener iPermissionListener = new IPermissionListener() {
@@ -462,6 +476,8 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
     }
 
     private final int HANDLER_INIT_IMAGEVIEW_NFC = 0x0102;
+    private final int BLE_CLOSE_OK = 0x0109;
+    private final int BLE_OPEN_OK = 0x0108;
 
     // 主线程的Handler用来刷新界面
     @SuppressLint("HandlerLeak")
@@ -481,6 +497,16 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    dataBinding.tvServerStatus.setText(mUDPStatusStr);
                     showToastMsg(mUDPStatusStr);
                     break;
+
+                case BLE_CLOSE_OK:
+                    break;
+
+                case BLE_OPEN_OK:
+                    if (BLEAndGPSUtils.isOpenBLE() && BLEAndGPSUtils.isOpenGPS(YTApplication.getInstance()) && !mInitSuccess) {
+                        BleNFCManager.getInstance().initBleNFC(YTApplication.getInstance(),(Activity) mContext,mListener);
+                    }
+                    break;
+
             }
         }
     };
@@ -492,24 +518,11 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
     }
 
     // ************************************************************************ 蓝牙相关
-
-    private boolean mIsOpenGPS = false;
-    private boolean mIsOpenBT = false;
-
-    public static boolean mIsInitBleHandler = false;
-
     private final int HANDLER_INIT_IMAGEVIEW = 0x0101;
     private final int HANDLER_SEND_SERVER_UDP_STATUS = 0x0104;
 
-    private Context mContext;
-
-    private String  mBleName = "";
-
     private boolean mInitSuccess = false; // 是否默认蓝牙插件初始化成功
     private boolean mClickInit = false; // 是否默认点击扫描初始化
-
-    private static final int REQUEST_CODE_OPEN_GPS = 1;
-    private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void initBlueTooth() {
@@ -522,7 +535,9 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void run() {
-                BleNFCManager.getInstance().getBleNFCInfo();
+                if (BLEAndGPSUtils.isOpenBLE()) {
+                    BleNFCManager.getInstance().getBleNFCInfo();
+                }
             }
         }).start();
     }
@@ -531,11 +546,9 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         @Override
         public void initFailed(byte data) {// TODO  初始化失败 需要配合相关操作之后再重新初始化
             if (data == (byte) 0x0001){ //没有打开GPS的情况
-                mIsOpenGPS = false;
 //                Toast.makeText(mContext,"请打开GPS位置信息",Toast.LENGTH_LONG).show();
                 LogUtlis.e(TAG,"initFailed 请打开GPS位置信息");
             } else if (data == (byte) 0x0010) { // 判断是否打开蓝牙设备
-                mIsOpenBT  = false;
 //                Toast.makeText(mContext,"请打开蓝牙",Toast.LENGTH_LONG).show();
                 LogUtlis.e(TAG,"initFailed 请打开蓝牙");
             } else {
@@ -584,6 +597,14 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 //                    Toast.makeText(mContext, "未搜索到目标设备", Toast.LENGTH_LONG).show();
                     LogUtlis.e(TAG, "未搜索到目标设备");
 //                    dataBinding.tvStatus.setText("当前状态：未搜索到目标设备 请打开设备之后重试");
+
+                    // TODO 间隔扫描时间的问题 需要进行处理
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                     isStop = true;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
@@ -745,20 +766,10 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         }
     };
 
-
-    // 8F EB 0B 8E 68 DB 0E B0 6F 80 04 00 77 17 E2 25 80 23 29 9C
-    // 8F 0B 8E 68 DB 0E B0 6F 80 04 00 77 17 E2 25 80 23 29 9C
-    byte[] version_data = new byte[]{
-            (byte) 0x8F,(byte) 0xEB,(byte) 0xEF,(byte) 0x60,(byte) 0x68,
-            (byte) 0xDB,(byte) 0x0E,(byte) 0xB0,(byte) 0x6F,(byte) 0x80,
-            (byte) 0x04,(byte) 0x00,(byte) 0x77,(byte) 0x17,(byte) 0xE2,
-            (byte) 0x25,(byte) 0x80,(byte) 0x23,(byte) 0x32,(byte) 0x9C};
-
     byte[] reply_data = new byte[]{(byte)0x8E,(byte)0x9C};
     byte reply_data1 = (byte) 0x32;
 
     private boolean mIsParse = false;
-    private boolean mIsParseSuccess = false;
     private void parseData(BleDevice device,final String datas){
         if (!mIsParse) {
             mIsParse = true;
@@ -828,7 +839,6 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                     udpThread.start();
                 }
                 upService(result);
-                mIsParseSuccess = true;
             } else {
                 String showContent = content;
                 runOnUiThread(new Runnable() {
@@ -837,7 +847,6 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                         showToastMsg("数据不全 解析之后的数据：" + showContent + "\n 解析之前的数据：" + datas);
                     }
                 });
-                mIsParseSuccess = false;
             }
             mIsParse = false;
         }
@@ -962,5 +971,64 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
         count = 0;
     }
     // ************************************************************************ 蓝牙相关
+
+
+    // ************************************************************************ 蓝牙监听相关
+    public class BluetoothMonitorReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action != null){
+                switch (action) {
+                    case BluetoothAdapter.ACTION_STATE_CHANGED:
+                        int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
+                        switch (blueState) {
+                            case BluetoothAdapter.STATE_TURNING_ON:
+//                                showToastMsg("蓝牙正在打开");
+                                break;
+                            case BluetoothAdapter.STATE_ON:
+                                showToastMsg("蓝牙已经打开");
+                                mHandler.sendEmptyMessage(BLE_OPEN_OK);
+                                break;
+                            case BluetoothAdapter.STATE_TURNING_OFF:
+//                                showToastMsg("蓝牙正在关闭");
+                                break;
+                            case BluetoothAdapter.STATE_OFF:
+                                showToastMsg("蓝牙已经关闭");
+                                mHandler.sendEmptyMessage(BLE_CLOSE_OK);
+                                break;
+                        }
+                        break;
+
+                    case BluetoothDevice.ACTION_ACL_CONNECTED:
+//                        showToastMsg("蓝牙设备已连接");
+                        break;
+
+                    case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+//                        showToastMsg("蓝牙设备已断开");
+                        break;
+                }
+
+            }
+        }
+    }
+    // ************************************************************************ 蓝牙监听相关
+
+
+    // ************************************************************************ GPS监听相关
+    private final ContentObserver mGpsMonitor = new ContentObserver(null) {
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+
+            boolean enabled = mLocationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+            System.out.println("gps enabled? " + enabled);
+        }
+    };
+
+    private LocationManager mLocationManager;
+    // ************************************************************************ GPS监听相关
+
 
 }
