@@ -94,7 +94,7 @@ public class BleNFCManager {
     private void setScanRule() {
         BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
                 .setAutoConnect(false)      // 连接时的autoConnect参数，可选，默认false
-                .setScanTimeOut(10000)      // 扫描超时时间，可选，默认10秒
+                .setScanTimeOut(3000)      // 扫描超时时间，可选，默认10秒
                 .build();
         BleManager.getInstance().initScanRule(scanRuleConfig);
     }

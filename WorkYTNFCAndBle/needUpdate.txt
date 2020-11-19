@@ -4,6 +4,7 @@
 4. Bugly  已集成------------------
 5. notification 适配的问题
 6. MainActivity中软件盘弹出 EditText失去焦点问题  TODO 做成demo找老师解决
+7. 自定义一个BLEManager，调用系统的蓝牙 fastBle数据有点老了 扫描相关还是Android4.3之前的API
 
 2020.11.16
 现在应该其他没问题了；

@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
@@ -13,9 +14,8 @@ import com.yt.bleandnfc.MainActivity;
 import com.yt.bleandnfc.R;
 import com.yt.bleandnfc.api.YTApiInterface;
 import com.yt.bleandnfc.api.model.AlarmCountAlarmByStateModel;
-import com.yt.bleandnfc.api.model.AlarmFindAlarmByStateModel;
+import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.observer.BaseHttpObserver;
-import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.manager.SPManager;
 import com.yt.bleandnfc.utils.NetworkUtil;
 import com.yt.network.YTNetworkApi;
@@ -31,10 +31,8 @@ public class MainViewModel extends BaseViewModel {
 
     public MutableLiveData<AlarmCountAlarmByStateModel> mAlarmCountAlarmByStateModel;
 
-    private Activity mContext;
 
     public MainViewModel(Activity context){
-        mContext = context;
         mAlarmCountAlarmByStateModel = new MutableLiveData<>();
     }
 
@@ -61,9 +59,8 @@ public class MainViewModel extends BaseViewModel {
                 });
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void getNotification() {
+        Context mContext = YTApplication.getInstance().getContext();
         //1.获取通知管理器
         NotificationManager manager=(NotificationManager)mContext.getSystemService(NOTIFICATION_SERVICE);
         //2.创建通知  8.0以后需要自建通知通道
