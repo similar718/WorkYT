@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Build;
 
 import com.clj.fastble.manager.BleManager;
@@ -17,7 +16,7 @@ import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
-import com.clj.fastble.config.Constants;
+import com.clj.fastble.config.BLEConstants;
 import com.clj.fastble.nfc.BleNFCListener;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.clj.fastble.utils.HexUtil;
@@ -121,7 +120,7 @@ public class BleNFCManager {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
             @Override
             public void onScanning(BleDevice bleDevice) {
-                if (Constants.mBleName.equals(bleDevice.getName())){ // TODO 判断是否是我们需要的设备名称的设备
+                if (bleDevice.getName() != null && bleDevice.getName().contains(BLEConstants.mBleName)){  // TODO 判断是否是我们需要的设备名称的设备
                     if (!BleManager.getInstance().isConnected(bleDevice)) { // 判断设备名称是正常的设备是否已经被连接
                         mIsScanDes = true;
                         mBlueToothListener.scanDevice(); // 已经扫描到一个可用设备
@@ -227,7 +226,7 @@ public class BleNFCManager {
 //                    }
 //                }
 //                if (notify_uuid_chara != null && notify_uuid_service != null) {
-                    BleManager.getInstance().notify(bleDevice, Constants.UUID_NOTIFY_SERVICE, Constants.UUID_NOTIFY_CHARA, new BleNotifyCallback() {
+                    BleManager.getInstance().notify(bleDevice, BLEConstants.UUID_NOTIFY_SERVICE, BLEConstants.UUID_NOTIFY_CHARA, new BleNotifyCallback() {
                         @Override
                         public void onNotifySuccess() {
                             mBlueToothListener.getNotifyConnDeviceSuccess(bleDevice,"打开notify成功");
@@ -262,7 +261,7 @@ public class BleNFCManager {
 
     public static void sendWriteData(final BleDevice device, final byte[] data) {
         if (device != null) {
-            BleManager.getInstance().write(device, Constants.UUID_WRITE_SERVICE, Constants.UUID_WRITE_CHARA, data, new BleWriteCallback() {
+            BleManager.getInstance().write(device, BLEConstants.UUID_WRITE_SERVICE, BLEConstants.UUID_WRITE_CHARA, data, new BleWriteCallback() {
                 @Override
                 public void onWriteSuccess(int current, int total, byte[] justWrite) {
                     mBlueToothListener.replyDataToDeviceSuccess(device,HexUtil.encodeHexStr(data));
