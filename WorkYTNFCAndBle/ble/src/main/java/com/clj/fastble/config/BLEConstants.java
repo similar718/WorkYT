@@ -1,6 +1,6 @@
 package com.clj.fastble.config;
 
-public class Constants {
+public class BLEConstants {
     public static String mBleName = "BTELITE"; // 扫描蓝牙设备的名称
 
 //    uuid_service = 0000ffe0-0000-1000-8000-00805f9b34fb  支持notify和indicate
