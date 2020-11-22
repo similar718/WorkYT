@@ -503,10 +503,10 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
 
                 case BLE_OPEN_OK:
                     if (BLEAndGPSUtils.isOpenBLE() && BLEAndGPSUtils.isOpenGPS(YTApplication.getInstance()) && !mInitSuccess) {
+                        mClickInit = true;
                         BleNFCManager.getInstance().initBleNFC(YTApplication.getInstance(),(Activity) mContext,mListener);
                     }
                     break;
-
             }
         }
     };

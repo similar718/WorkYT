@@ -175,7 +175,8 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         // 维保归还
         dataBinding.rlWbgh.setOnClickListener(this);
         // 个人信息
-        dataBinding.ivPersonal.setOnClickListener(this);
+        dataBinding.rlRylb.setOnClickListener(this);
+//        dataBinding.ivPersonal.setOnClickListener(this);
 
         mAdapter.setOnItemClickListener(new WarningRecordItemAdapter.OnItemClickListener() {
             @Override
@@ -219,7 +220,8 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
             case R.id.rl_wxby: // 维修保养
                 Navigation.findNavController(v).navigate(R.id.navigation_wb);
                 break;
-            case R.id.iv_personal: // 个人信息
+//            case R.id.iv_personal: // 个人信息
+            case R.id.rl_rylb: // 个人信息
                 Navigation.findNavController(v).navigate(R.id.navigation_personal);
                 break;
             case R.id.rl_wbgh: // 维保归还

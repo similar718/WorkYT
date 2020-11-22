@@ -22,4 +22,9 @@
         android:icon="@drawable/tab_wb_select"
         android:title="@string/wb" />
 
+<!--    <item
+        android:id="@+id/navigation_personal"
+        android:icon="@drawable/info_detail_personal"
+        android:title="@string/personal_title" />-->
+
 </menu>
