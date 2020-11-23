@@ -54,11 +54,13 @@ public class UDPThread extends Thread{
         byte[] packs = MainActivity.hexStrToByteArray(message);
         try {
             socket.send(new DatagramPacket(packs,packs.length,InetAddress.getByName(serverAddress),serverPort));
-            socketListener.sendSocketData(message);
+            if(socketListener != null)
+                socketListener.sendSocketData(message);
         } catch (IOException e){
             e.printStackTrace();
             Log.d("socket", e.getMessage());
-            socketListener.error(e);
+            if(socketListener != null)
+                socketListener.error(e);
         }
     }
 
@@ -74,20 +76,24 @@ public class UDPThread extends Thread{
                 // 接收数据
                 byte[] receiveBytes = new byte[1024];
                 DatagramPacket datagramPacket = new DatagramPacket(receiveBytes, receiveBytes.length);
-                socket.receive(datagramPacket);
+                if(socket != null)
+                    socket.receive(datagramPacket);
                 // 解析数据
 //                byte[] data = datagramPacket.getData();
                 String json = new String(datagramPacket.getData() , datagramPacket.getOffset() , datagramPacket.getLength());
-                socketListener.receiveSocketData(json);
+                if(socketListener != null)
+                    socketListener.receiveSocketData(json);
             }
         } catch (SocketException e) {
             e.printStackTrace();
             Log.d("socket", "socket exception :" + e.getMessage());
-            socketListener.error(e);
+            if(socketListener != null)
+                socketListener.error(e);
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("socket", "io exception :" + e.getMessage());
-            socketListener.error(e);
+            if(socketListener != null)
+                socketListener.error(e);
         } finally {
             Log.d("socket", "close");
             if (socket != null) {
