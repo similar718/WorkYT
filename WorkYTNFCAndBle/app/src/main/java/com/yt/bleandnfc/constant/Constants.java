@@ -1,5 +1,7 @@
 package com.yt.bleandnfc.constant;
 
+import com.yt.network.constant.NetConstants;
+
 import java.util.ArrayList;
 
 /**
@@ -15,7 +17,7 @@ public class Constants {
     /**
      * 查车定位的接口位置
      */
-    public static final String CHECK_LOCATION_ADDRESS = "http://47.108.48.111:85/?";
+    public static final String CHECK_LOCATION_ADDRESS = NetConstants.HOSTIP_DATA + ":85/?";
 
     /**
      * 定位信息

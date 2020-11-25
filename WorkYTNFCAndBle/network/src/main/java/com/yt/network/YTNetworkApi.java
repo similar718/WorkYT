@@ -2,6 +2,7 @@ package com.yt.network;
 
 import com.yt.network.base.NetworkApi;
 import com.yt.network.beans.TecentBaseResponse;
+import com.yt.network.constant.NetConstants;
 import com.yt.network.errorhandler.ExceptionHandle;
 import com.yt.network.utils.TecentUtil;
 
@@ -63,11 +64,11 @@ public class YTNetworkApi extends NetworkApi {
 
     @Override
     public String getFormal() {
-        return "http://47.108.48.111:8088/";
+        return NetConstants.HOSTIP_DATA + ":8088/";
     }
 
     @Override
     public String getTest() {
-        return "http://47.108.48.111:8088/";
+        return NetConstants.HOSTIP_DATA + ":8088/";
     }
 }
