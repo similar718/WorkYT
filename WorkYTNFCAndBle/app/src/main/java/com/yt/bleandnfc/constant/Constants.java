@@ -17,7 +17,7 @@ public class Constants {
     /**
      * 查车定位的接口位置
      */
-    public static final String CHECK_LOCATION_ADDRESS = NetConstants.HOSTIP_DATA + ":85/?";
+    public static final String CHECK_LOCATION_ADDRESS = NetConstants.HOSTPORT_LOC_DATA + "?";
 
     /**
      * 定位信息

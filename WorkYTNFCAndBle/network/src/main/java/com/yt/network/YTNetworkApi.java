@@ -64,11 +64,11 @@ public class YTNetworkApi extends NetworkApi {
 
     @Override
     public String getFormal() {
-        return NetConstants.HOSTIP_DATA + ":8088/";
+        return NetConstants.HOSTIP_DATA;
     }
 
     @Override
     public String getTest() {
-        return NetConstants.HOSTIP_DATA + ":8088/";
+        return NetConstants.HOSTIP_DATA;
     }
 }

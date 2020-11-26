@@ -25,9 +25,9 @@ public class UDPThread extends Thread{
 
     public UDPThread(String serverAddress1,int serverPort1){
         if (!mIsInit || socket == null) {
-            init();
             serverAddress = serverAddress1;
             serverPort = serverPort1;
+            init();
         }
     }
 
@@ -53,6 +53,9 @@ public class UDPThread extends Thread{
         }
         byte[] packs = MainActivity.hexStrToByteArray(message);
         try {
+            if (socket == null) {
+                init();
+            }
             socket.send(new DatagramPacket(packs,packs.length,InetAddress.getByName(serverAddress),serverPort));
             if(socketListener != null)
                 socketListener.sendSocketData(message);

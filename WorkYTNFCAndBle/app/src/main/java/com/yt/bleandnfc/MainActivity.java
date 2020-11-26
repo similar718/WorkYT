@@ -49,6 +49,7 @@ import com.yt.bleandnfc.udp.UDPThread;
 import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
 import com.yt.common.interfaces.IPermissionListener;
+import com.yt.network.constant.NetConstants;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -829,11 +830,16 @@ public class MainActivity extends YTBaseActivity<MainViewModel, ActivityMainBind
                     BleNFCManager.getInstance().sendWriteData(device,hexStrToByteArray(bledata));
                 }
                 // 上报服务器的数据信息
-                String result = content.substring(0,4) + "1" + content.substring(5,60);
+//                String result = content.substring(0,4) + "1" + content.substring(5,60);
+                String result = content;
                 String ipandport = bean.getIpAndPort();
                 String ip = bean.getIpAddress();
                 int port = bean.getIPPort();
                 if (udpThread == null) {
+                    if (NetConstants.IS_IN_TEST) {
+                        ip = NetConstants.UPLOAD_SOCKET_IP;
+                        port = NetConstants.UPLOAD_SOCKET_PORT;
+                    }
                     udpThread = new UDPThread(ip, port);
                     udpThread.setSocketListener(mSockestListener);
                     udpThread.start();
