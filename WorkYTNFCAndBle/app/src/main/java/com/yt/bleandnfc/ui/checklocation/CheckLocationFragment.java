@@ -54,18 +54,21 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append(Constants.CHECK_LOCATION_ADDRESS)
-                .append("type=user&lng=")
+                .append("type=user")
+                .append("&lng=")
                 .append(Constants.LOCATION_LNG)
                 .append("&lat=")
                 .append(Constants.LOCATION_LAT)
                 .append("&userName=")
                 .append(SPManager.getInstance().getUserName())
                 .append("&userId=")
-                .append(SPManager.getInstance().getUserId())
+                .append("222")
+//                .append(SPManager.getInstance().getUserId())
                 .append("&deptName=")
                 .append(SPManager.getInstance().getDeptName())
                 .append("&updateTime=")
-                .append(TimeUtil.getTodayTimeYMDHMS());
+                .append(TimeUtil.getTodayTimeYMDHMS())
+        ;
         LogUtlis.e("oooooooooooo",stringBuilder.toString());
         dataBinding.wvView.loadUrl(stringBuilder.toString());
 
@@ -253,11 +256,13 @@ public class CheckLocationFragment extends YTBaseFragment<CheckLocationViewModel
                 .append("&userName=")
                 .append(SPManager.getInstance().getUserName())
                 .append("&userId=")
-                .append(SPManager.getInstance().getUserId())
+                .append("222")
+//                .append(SPManager.getInstance().getUserId())
                 .append("&deptName=")
                 .append(SPManager.getInstance().getDeptName())
                 .append("&updateTime=")
-                .append(TimeUtil.getTodayTimeYMDHMS());
+                .append(TimeUtil.getTodayTimeYMDHMS())
+                ;
         LogUtlis.e("oooooooooooo",stringBuilder.toString());
         dataBinding.wvView.loadUrl(stringBuilder.toString());
     }
