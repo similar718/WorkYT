@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.provider.Settings;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -38,12 +37,10 @@ import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.activity.YTBaseActivity;
 import com.yt.bleandnfc.bean.NotifyBLEDataConstructerBean;
 import com.yt.bleandnfc.constant.Constants;
-import com.yt.bleandnfc.listener.SocketListener;
 import com.yt.bleandnfc.manager.IntentManager;
 import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.nfcres.NfcView;
-import com.yt.bleandnfc.service.KeepAppLifeService;
-import com.yt.bleandnfc.udp.UDPThread;
+import com.yt.bleandnfc.udp.demo.UDPBuild;
 import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
 import com.yt.common.interfaces.IPermissionListener;
@@ -55,7 +52,8 @@ import java.util.TimerTask;
 
 public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewDataBinding> extends YTBaseActivity<VM,DB> {
 
-    public UDPThread udpThread;
+//    public UDPThread udpThread;
+    public UDPBuild udpBuild;
     public BluetoothMonitorReceiver bleListenerReceiver = null;
     public boolean mIsGoMainActivity = false;
     public String TAG = "BaseBleActivity";
@@ -354,7 +352,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
     }
     public BleNFCListener mListener = new BleNFCListener() {
         @Override
-        public void initFailed(byte data) {// TODO  初始化失败 需要配合相关操作之后再重新初始化
+        public void initFailed(byte data) {//  初始化失败 需要配合相关操作之后再重新初始化
             if (data == (byte) 0x0001){ //没有打开GPS的情况
 //                Toast.makeText(mContext,"请打开GPS位置信息",Toast.LENGTH_LONG).show();
                 LogUtlis.e(TAG,"initFailed 请打开GPS位置信息");
@@ -500,7 +498,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                     }
                     LogUtlis.e("ooooooooooo","data = " + dataText1.toString());
                     if(dataText1.toString().length() > 40/* && !mIsParseSuccess*/) {
-                        // TODO 开启线程解析数据
+                        // 开启线程解析数据
                         parseData(bleDevice,dataText1.toString());
                         dataText1 = new StringBuilder();
                     }
@@ -632,11 +630,11 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                         showToastMsg("数据解析成功：" + bean.toString() + "准备发送关闭命令");
                     }
                 });
-                if (Byte.parseByte(bean.version,16) == reply_data1) {
-                    BleNFCManager.getInstance().sendWriteData(device,reply_data);
+                if (Byte.parseByte(bean.version, 16) == reply_data1) {
+                    BleNFCManager.getInstance().sendWriteData(device, reply_data);
                 } else {
                     String bledata = "8FEBAC606EBC0EDA6F6C04007717E2ED8023329C";
-                    BleNFCManager.getInstance().sendWriteData(device,hexStrToByteArray(bledata));
+                    BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(bledata));
                 }
                 // 上报服务器的数据信息
 //                String result = content.substring(0,4) + "1" + content.substring(5,60);
@@ -644,16 +642,16 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                 String ipandport = bean.getIpAndPort();
                 String ip = bean.getIpAddress();
                 int port = bean.getIPPort();
-                if (udpThread == null) {
-                    if (NetConstants.IS_IN_TEST) {
-                        ip = NetConstants.UPLOAD_SOCKET_IP;
-                        port = NetConstants.UPLOAD_SOCKET_PORT;
-                    }
-                    udpThread = new UDPThread(ip, port);
-                    udpThread.setSocketListener(mSockestListener);
-                    udpThread.start();
+//                if (udpThread == null) {
+                if (NetConstants.IS_IN_TEST) {
+                    ip = NetConstants.UPLOAD_SOCKET_IP;
+                    port = NetConstants.UPLOAD_SOCKET_PORT;
                 }
-                upService(result);
+//                    udpThread = new UDPThread(ip, port);
+//                    udpThread.setSocketListener(mSockestListener);
+//                    udpThread.start();
+//                }
+                upService(result, ip, port);
             } else {
                 String showContent = content;
                 runOnUiThread(new Runnable() {
@@ -682,47 +680,45 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
      * 上报服务器
      * @param data
      */
-    public void upService(String data) {  // TODO 119.23.226.237：9088 使用UDP发送数据信息
+    public void upService(String data,String ip,int port) {  // 119.23.226.237：9088 使用UDP发送数据信息
         if (TextUtils.isEmpty(data)){
             return;
         }
-        if (udpThread == null) {
-            return;
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                udpThread.sendSocketData(data);
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                udpThread.sendSocketData(data);
+                udpBuild.sendMessage(data,ip,port);
+//            }
+//        }).start();
     }
 
     public String mUDPStatusStr = "";
-    /**
-     * UDP服务器的监听
-     */
-    public SocketListener mSockestListener = new SocketListener() {
-        @Override
-        public void receiveSocketData(String socketData) {
-            // TODO 接收到服务端的数据
-            mUDPStatusStr = "接收到服务端信息：" +socketData;
-            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
-        }
-
-        @Override
-        public void sendSocketData(String packs) {
-            // TODO 已发送数据
-            mUDPStatusStr = "已经发送到服务端信息：" +packs;
-            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
-        }
-
-        @Override
-        public void error(Throwable e) {
-            // TODO 收发数据出现异常
-            mUDPStatusStr = "接收出现异常：" +e.toString();
-            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
-        }
-    };
+//    /**
+//     * UDP服务器的监听
+//     */
+//    public SocketListener mSockestListener = new SocketListener() {
+//        @Override
+//        public void receiveSocketData(String socketData) {
+//            //  接收到服务端的数据
+//            mUDPStatusStr = "接收到服务端信息：" +socketData;
+//            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
+//        }
+//
+//        @Override
+//        public void sendSocketData(String packs) {
+//            //  已发送数据
+//            mUDPStatusStr = "已经发送到服务端信息：" +packs;
+//            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
+//        }
+//
+//        @Override
+//        public void error(Throwable e) {
+//            //  收发数据出现异常
+//            mUDPStatusStr = "接收出现异常：" +e.toString();
+//            mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
+//        }
+//    };
 
     public void initBleAndStartScan(){
         isStop = false;

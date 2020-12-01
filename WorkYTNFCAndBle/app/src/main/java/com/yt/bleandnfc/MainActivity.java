@@ -1,65 +1,38 @@
 package com.yt.bleandnfc;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.database.ContentObserver;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Vibrator;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.clj.fastble.BleNFCManager;
-import com.clj.fastble.data.BleDevice;
-import com.clj.fastble.nfc.BleNFCListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.yt.base.utils.LogUtlis;
 import com.yt.bleandnfc.api.model.AlarmCountAlarmByStateModel;
 import com.yt.bleandnfc.base.YTApplication;
-import com.yt.bleandnfc.base.activity.YTBaseActivity;
-import com.yt.bleandnfc.bean.NotifyBLEDataConstructerBean;
 import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.ActivityMainBinding;
 import com.yt.bleandnfc.eventbus.AlarmAddResult;
-import com.yt.bleandnfc.listener.SocketListener;
-import com.yt.bleandnfc.manager.IntentManager;
 import com.yt.bleandnfc.mvvm.viewmodel.MainViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
-import com.yt.bleandnfc.nfcres.NfcView;
 import com.yt.bleandnfc.service.KeepAppLifeService;
-import com.yt.bleandnfc.udp.UDPThread;
-import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
+import com.yt.bleandnfc.udp.demo.UDPBuild;
 import com.yt.bleandnfc.ui.loginhome.BaseBleActivity;
-import com.yt.bleandnfc.utils.BLEAndGPSUtils;
-import com.yt.common.interfaces.IPermissionListener;
-import com.yt.network.constant.NetConstants;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.List;
+import java.net.DatagramPacket;
 import java.util.Timer;
 import java.util.TimerTask;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -167,6 +140,16 @@ public class MainActivity extends BaseBleActivity<MainViewModel, ActivityMainBin
         registerReceiver(this.bleListenerReceiver, intentFilter);
 
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        udpBuild = UDPBuild.getUdpBuild();
+        udpBuild.setUdpReceiveCallback(new UDPBuild.OnUDPReceiveCallbackBlock() {
+            @Override
+            public void OnParserComplete(DatagramPacket data) {
+                String strReceive = new String(data.getData(), 0, data.getLength());
+                mUDPStatusStr = "已经发送到服务端信息：" +strReceive;
+                mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
+            }
+        });
     }
 
 //    @Override
