@@ -25,7 +25,9 @@ public class SPManager {
 
     private final String SAVE_STATUS_LOGIN = "saveStatusLogin"; // 是否记住账号和密码 boolean
 
-    private final String SAVE_FONT_SCALE = "fontScale"; // 保存当前字体大小 默认 1。0 float
+    private final String SAVE_FONT_SCALE = "fontScale"; // 保存当前字体大小 默认 1.0 float
+
+    private final String SAVE_BLE_CONTENT = "bleContent"; // 保存蓝牙回复数据 String
 
     private static SharedPreferences sp ;
 
@@ -193,4 +195,19 @@ public class SPManager {
         return sp.getFloat(SAVE_FONT_SCALE,1.0f);
     }
 
+    /**
+     * 保存蓝牙回复数据
+     * @param bleContent
+     */
+    public void setBleContent(String bleContent){
+        sp.edit().putString(SAVE_BLE_CONTENT,bleContent).commit();
+    }
+
+    /**
+     * 获取蓝牙回复数据
+     * @return
+     */
+    public String getBleContent(){
+        return sp.getString(SAVE_BLE_CONTENT,"");
+    }
 }
