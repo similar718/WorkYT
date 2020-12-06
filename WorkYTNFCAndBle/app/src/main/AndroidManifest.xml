@@ -67,6 +67,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             />
+        <!-- 设置顶部状态栏透明之后 设置adjustPan 就会没有聚焦 设置adjust 没有设置状态栏透明的情况正常 设置之后界面无响应 -->
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"

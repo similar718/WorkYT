@@ -1,3 +1,4 @@
+include ':ytdemo'
 rootProject.name='WorkYTNFCAndBle'
 include ':app', ':ble'
 include ':base'
