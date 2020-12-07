@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
@@ -93,7 +94,7 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
 
     String mServerData = "";
 
-    private UDPThread udpThread;
+//    private UDPThread udpThread;
 
     @Override
     protected int setLayoutId() {
@@ -106,7 +107,7 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
         viewModel.setIView(this);
         return viewModel;
     }
-
+    private boolean mIsSleep = false;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void initData() {
@@ -126,6 +127,17 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
             }
         });
 
+        dataBinding.tvSleep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsSleep){
+                    return;
+                }
+                dataBinding.tvSleep.setBackgroundColor(Color.parseColor("#cccccc"));
+                mIsSleep = true;
+            }
+        });
+
         // 初始化蓝牙设备的状态
         initBlueTooth();
 
@@ -133,9 +145,9 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
         mNfcHandler = new NfcHandler(mNFCView);
         mNfcHandler.init(this);
 
-        udpThread = new UDPThread();
-        udpThread.setSocketListener(mSockestListener);
-        udpThread.start();
+//        udpThread = new UDPThread();
+//        udpThread.setSocketListener(mSockestListener);
+//        udpThread.start();
     }
 
     private void startTimer() {
@@ -1049,48 +1061,48 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
                     }
                 });
                 if (bean.checkMacAndDevId(macStr, devId)) {
-                    // TODO 判断设备当前是否未激活
-                    if (bean.getShujubaoType().equals("04")) {
-                        StringBuilder devIds = new StringBuilder()
-                                .append(macStr.substring(7, 8))
-                                .append(macStr.substring(3, 4))
-                                .append(macStr.substring(10, 11))
-                                .append(macStr.substring(5, 6));
-                        StringBuilder dataBle = new StringBuilder();
-                        dataBle.append("8D"); // 0x8F/0x8D/0x8C	用于标明配置包/通知终端激活/休眠
-                        dataBle.append(bean.getKehudaima()); // 客户代码
-                        dataBle.append(devIds.toString()); // DevId
-                        dataBle.append(macStr); // 设备mac地址
-                        dataBle.append("03");//停止事件的判断时间	1 Byte 0x03 停止运动超过设置时间，则判断事件有效，开启GPS。单位：分钟，0A代表10分钟。默认3分钟。
-                        dataBle.append("05");//终端休眠	1 Byte	0x05	禁用4G，GPS的小时数；默认0小时；单位小时，05代表5小时。
-                        dataBle.append(ipandport);//IP在前，设备4G上报的IP和端口。
-                        dataBle.append("02");//用于标注配置的版本号，设备应保存。
-                        dataBle.append("9C");//结束字符
+                    if (mIsSleep){
                         String dataSend = "8D0000000000000000000000000000000000009C";
+//                        String dataSend = "8C0000000000000000000000000000000000009C";
                         BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataSend));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dataBinding.tvSleep.setBackgroundColor(Color.parseColor("#264F5C"));
+                                mIsSleep = false;
+                            }
+                        });
                     } else {
-                        // TODO 判断设备版本与服务器版本是否一致
-                        if (Byte.parseByte(bean.version, 16) == reply_data1) {
-                            // 一致 返回8E 9C
-                            BleNFCManager.getInstance().sendOffLine(reply_data);
+                        // TODO 判断设备当前是否未激活
+                        if (bean.getShujubaoType().equals("04")) {
+                            String dataSend = "8C0000000000000000000000000000000000009C";
+//                            String dataSend = "8D0000000000000000000000000000000000009C";
+                            BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataSend));
                         } else {
-                            // 8F EB EF60 68DB0EB06F80 04 00 7717E2258023 02 9C
-                            StringBuilder devIds = new StringBuilder()
-                                    .append(macStr.substring(7, 8))
-                                    .append(macStr.substring(3, 4))
-                                    .append(macStr.substring(10, 11))
-                                    .append(macStr.substring(5, 6));
-                            StringBuilder dataBle = new StringBuilder();
-                            dataBle.append("8F"); // 0x8F/0x8D/0x8C	用于标明配置包/通知终端激活/休眠
-                            dataBle.append("EB"); // 客户代码
-                            dataBle.append(devIds.toString()); // DevId
-                            dataBle.append(macStr); // 设备mac地址
-                            dataBle.append("03");//停止事件的判断时间	1 Byte 0x03 停止运动超过设置时间，则判断事件有效，开启GPS。单位：分钟，0A代表10分钟。默认3分钟。
-                            dataBle.append("05");//终端休眠	1 Byte	0x05	禁用4G，GPS的小时数；默认0小时；单位小时，05代表5小时。
-                            dataBle.append(ipandport);//IP在前，设备4G上报的IP和端口。
-                            dataBle.append("02");//用于标注配置的版本号，设备应保存。
-                            dataBle.append("9C");//结束字符
-                            BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataBle.toString()));
+                            // TODO 判断设备版本与服务器版本是否一致
+                            if (Byte.parseByte(bean.version, 16) == reply_data1) {
+                                // 一致 返回8E 9C
+                                BleNFCManager.getInstance().sendOffLine(reply_data);
+                            } else {
+                                // 8F EB EF60 68DB0EB06F80 04 00 7717E2258023 02 9C
+                                StringBuilder devIds = new StringBuilder()
+                                        .append(macStr.substring(7, 8))
+                                        .append(macStr.substring(3, 4))
+                                        .append(macStr.substring(10, 11))
+                                        .append(macStr.substring(5, 6));
+                                StringBuilder dataBle = new StringBuilder();
+                                dataBle.append("8F"); // 0x8F/0x8D/0x8C	用于标明配置包/通知终端激活/休眠
+                                dataBle.append("EB"); // 客户代码
+                                dataBle.append(devIds.toString()); // DevId
+                                dataBle.append(macStr); // 设备mac地址
+                                dataBle.append("03");//停止事件的判断时间	1 Byte 0x03 停止运动超过设置时间，则判断事件有效，开启GPS。单位：分钟，0A代表10分钟。默认3分钟。
+                                dataBle.append("05");//终端休眠	1 Byte	0x05	禁用4G，GPS的小时数；默认0小时；单位小时，05代表5小时。
+                                ipandport = dataBinding.etBleData.getText().toString().trim().substring(24,36);
+                                dataBle.append(ipandport);//IP在前，设备4G上报的IP和端口。
+                                dataBle.append("02");//用于标注配置的版本号，设备应保存。
+                                dataBle.append("9C");//结束字符
+                                BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataBle.toString()));
+                            }
                         }
                     }
                 } else {
@@ -1171,10 +1183,10 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
         if (TextUtils.isEmpty(data)){
             return;
         }
-        if (udpThread == null) {
-            return;
-        }
-        udpThread.sendSocketData(data);
+//        if (udpThread == null) {
+//            return;
+//        }
+//        udpThread.sendSocketData(data);
     }
 
     private String mUDPStatusStr = "";

@@ -267,16 +267,16 @@ public class NotifyBLEDataConstructerBean {
     public boolean checkMacAndDevId(String macStr,String devId){
 //        String macStr = getMac();
 //        String devId = getDevId();
-        // 大端格式
-        char mac_b1 = macStr.charAt(4);
-        char mac_b2 = macStr.charAt(9);
-        char mac_b3 = macStr.charAt(1);
-        char mac_b4 = macStr.charAt(6);
+//        // 大端格式
+//        char mac_b1 = macStr.charAt(4);
+//        char mac_b2 = macStr.charAt(9);
+//        char mac_b3 = macStr.charAt(1);
+//        char mac_b4 = macStr.charAt(6);
         // 小端
-//        char mac_b1 = macStr.charAt(6);
-//        char mac_b2 = macStr.charAt(3);
-//        char mac_b3 = macStr.charAt(11);
-//        char mac_b4 = macStr.charAt(4);
+        char mac_b1 = macStr.charAt(6);
+        char mac_b2 = macStr.charAt(3);
+        char mac_b3 = macStr.charAt(11);
+        char mac_b4 = macStr.charAt(4);
 
         char dev_b1 = devId.charAt(3);
         char dev_b2 = devId.charAt(2);
