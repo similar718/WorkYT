@@ -6,10 +6,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.clj.fastble.BleNFCManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -20,6 +22,7 @@ import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.ActivityMainBinding;
 import com.yt.bleandnfc.eventbus.AlarmAddResult;
+import com.yt.bleandnfc.keyboard.SoftKeyBoardListener;
 import com.yt.bleandnfc.mvvm.viewmodel.MainViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.service.KeepAppLifeService;
@@ -148,6 +151,41 @@ public class MainActivity extends BaseBleActivity<MainViewModel, ActivityMainBin
                 String strReceive = new String(data.getData(), 0, data.getLength());
                 mUDPStatusStr = "已经发送到服务端信息：" +strReceive;
                 mHandler.sendEmptyMessage(HANDLER_SEND_SERVER_UDP_STATUS);
+            }
+        });
+
+
+        decorView = getWindow().getDecorView();
+        contentView = findViewById(R.id.container);
+
+        setSoftKeyBoardListener();
+    }
+
+    private View decorView;
+    private View contentView;
+
+    private SoftKeyBoardListener softKeyBoardListener;
+    /**
+     * 添加软键盘监听
+     */
+    private void setSoftKeyBoardListener() {
+        softKeyBoardListener = new SoftKeyBoardListener(this);
+        //软键盘状态监听
+        softKeyBoardListener.setListener(new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                Rect r = new Rect();
+                decorView.getWindowVisibleDisplayFrame(r);
+                if (contentView.getPaddingBottom() != height) {
+                    contentView.setPadding(0, 0, 0, height);
+                }
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                if (contentView.getPaddingBottom() != 0) {
+                    contentView.setPadding(0, 0, 0, 0);
+                }
             }
         });
     }

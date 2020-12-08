@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,6 +57,7 @@ import com.yt.bleandnfc.base.activity.YTBaseActivity;
 import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.ZxingActivityCaptureBinding;
 import com.yt.bleandnfc.eventbus.ScanResult;
+import com.yt.bleandnfc.keyboard.SoftKeyBoardListener;
 import com.yt.bleandnfc.manager.SPManager;
 import com.yt.bleandnfc.mvvm.viewmodel.InputActivateCodeViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
@@ -312,6 +314,40 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
                         showToastMsg("使用当前功能，需要打开NFC功能");
                         finish();
                     }
+                }
+            }
+        });
+
+        decorView = getWindow().getDecorView();
+        contentView = findViewById(R.id.container);
+
+        setSoftKeyBoardListener();
+    }
+
+    private View decorView;
+    private View contentView;
+
+    private SoftKeyBoardListener softKeyBoardListener;
+    /**
+     * 添加软键盘监听
+     */
+    private void setSoftKeyBoardListener() {
+        softKeyBoardListener = new SoftKeyBoardListener(this);
+        //软键盘状态监听
+        softKeyBoardListener.setListener(new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                Rect r = new Rect();
+                decorView.getWindowVisibleDisplayFrame(r);
+                if (contentView.getPaddingBottom() != height) {
+                    contentView.setPadding(0, 0, 0, height);
+                }
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                if (contentView.getPaddingBottom() != 0) {
+                    contentView.setPadding(0, 0, 0, 0);
                 }
             }
         });

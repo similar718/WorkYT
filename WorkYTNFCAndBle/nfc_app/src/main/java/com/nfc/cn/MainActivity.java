@@ -1060,7 +1060,7 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
                         showLoadFail("数据解析成功：" + bean.toString() + "准备发送关闭命令");
                     }
                 });
-                if (bean.checkMacAndDevId(macStr, devId)) {
+                if (bean.checkMacAndDevId(macStr, devId)) { // 验证
                     if (mIsSleep){
                         String dataSend = "8D0000000000000000000000000000000000009C";
 //                        String dataSend = "8C0000000000000000000000000000000000009C";
@@ -1074,7 +1074,7 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
                         });
                     } else {
                         // TODO 判断设备当前是否未激活
-                        if (bean.getShujubaoType().equals("04")) {
+                        if (bean.getShujubaoType().contains("04")) {
                             String dataSend = "8C0000000000000000000000000000000000009C";
 //                            String dataSend = "8D0000000000000000000000000000000000009C";
                             BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataSend));
