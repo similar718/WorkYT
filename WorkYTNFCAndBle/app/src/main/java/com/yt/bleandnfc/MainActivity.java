@@ -22,6 +22,7 @@ import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.ActivityMainBinding;
 import com.yt.bleandnfc.eventbus.AlarmAddResult;
+import com.yt.bleandnfc.eventbus.BlueToothStatusAndGPSAndBTResult;
 import com.yt.bleandnfc.keyboard.SoftKeyBoardListener;
 import com.yt.bleandnfc.mvvm.viewmodel.MainViewModel;
 import com.yt.bleandnfc.nfcres.NfcHandler;
@@ -68,6 +69,16 @@ public class MainActivity extends BaseBleActivity<MainViewModel, ActivityMainBin
 
                     viewModel.getNotification();
                 }
+            }
+        });
+        mBlueToothStatus.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (Constants.BT_STATUS == integer){
+                    return;
+                }
+                Constants.BT_STATUS = integer;
+                EventBus.getDefault().post(new BlueToothStatusAndGPSAndBTResult(integer));
             }
         });
         return viewModel;

@@ -16,6 +16,7 @@ import com.yt.bleandnfc.base.fragment.YTBaseFragment;
 import com.yt.bleandnfc.constant.Constants;
 import com.yt.bleandnfc.databinding.FragmentInfoDetailBinding;
 import com.yt.bleandnfc.eventbus.AlarmAddResult;
+import com.yt.bleandnfc.eventbus.BlueToothStatusAndGPSAndBTResult;
 import com.yt.bleandnfc.manager.ImageShowManager;
 import com.yt.bleandnfc.manager.IntentManager;
 import com.yt.bleandnfc.manager.SPManager;
@@ -23,6 +24,7 @@ import com.yt.bleandnfc.mvvm.model.WarningRecordModel;
 import com.yt.bleandnfc.ui.adapter.WarningRecordItemAdapter;
 import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.ui.dialog.WarningRecordDetailDialog;
+import com.yt.bleandnfc.ui.view.CommonTitleBarView;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,6 +38,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import io.reactivex.internal.operators.flowable.FlowableCache;
 
 public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, FragmentInfoDetailBinding> implements IBaseModelListener1<List<AlarmFindAlarmByStateModel.ObjBean>>,View.OnClickListener {
 
@@ -152,6 +156,16 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
             }
         });
 
+        dataBinding.titleView.setTitleRightClick(new CommonTitleBarView.OnTitleRightClick() {
+            @Override
+            public void onRightClick() {
+                if (Constants.mIsSleep){
+                    return;
+                }
+                Constants.mIsSleep = true;
+            }
+        });
+
         initClick();
 
         viewModel.getAlarmNum();
@@ -161,6 +175,17 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
     public void onResume() {
         super.onResume();
         viewModel.getUserBindByUserId();
+
+        if (!BLEAndGPSUtils.isOpenBLE()) {
+            // 蓝牙没有打开
+            dataBinding.ivGreenAndWhite.setImageResource(R.drawable.ble_white);
+        } else if (!BLEAndGPSUtils.isOpenGPS(YTApplication.getInstance())){
+            dataBinding.ivLocation.setImageResource(R.drawable.location);
+        } else {
+            dataBinding.ivGreenAndWhite.setImageResource(R.drawable.ble_green);
+            dataBinding.ivLocation.setImageResource(R.drawable.location);
+        }
+        dataBinding.ivRedAndGray.setImageResource(Constants.BT_STATUS == 0 ? R.drawable.ble_gray : R.drawable.ble_red);
     }
 
     private void initClick(){
@@ -326,6 +351,38 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
         if (result.type == 1) {
             warningRecordModel.refresh();
             viewModel.getAlarmNum();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventStatusData(BlueToothStatusAndGPSAndBTResult result) {
+        /**
+         *  0 蓝牙未通讯状态
+         *  1 蓝牙通讯状态改变
+         *  2 蓝牙打开状态
+         *  3 蓝牙关闭状态
+         *  4 GPS打开状态
+         *  5 GPS关闭状态
+         */
+        switch (result.type){
+            case 0:
+                dataBinding.ivRedAndGray.setImageResource(R.drawable.ble_gray);
+                break;
+            case 1:
+                dataBinding.ivRedAndGray.setImageResource(R.drawable.ble_red);
+                break;
+            case 2:
+                dataBinding.ivGreenAndWhite.setImageResource(R.drawable.ble_green);
+                break;
+            case 3:
+                dataBinding.ivGreenAndWhite.setImageResource(R.drawable.ble_white);
+                break;
+            case 4:
+                dataBinding.ivLocation.setImageResource(R.drawable.location);
+                break;
+            case 5:
+                dataBinding.ivLocation.setImageResource(R.drawable.location);
+                break;
         }
     }
 }

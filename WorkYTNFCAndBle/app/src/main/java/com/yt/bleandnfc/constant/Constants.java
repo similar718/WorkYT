@@ -42,4 +42,14 @@ public class Constants {
      * 是否是第一次进行提示
      */
     public static boolean mIsFirstHint = true;
+
+    /**
+     * 是否发送休眠
+     */
+    public static boolean mIsSleep = false;
+
+    /**
+     * 蓝牙当前状态
+     */
+    public static int BT_STATUS = 0; // 0 为通讯中 1 通讯中
 }

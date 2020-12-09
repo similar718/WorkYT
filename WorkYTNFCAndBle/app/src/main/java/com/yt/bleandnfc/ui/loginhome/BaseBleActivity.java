@@ -27,16 +27,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.MutableLiveData;
 
 import com.clj.fastble.BleNFCManager;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.nfc.BleNFCListener;
+import com.nfc.cn.bean.NotifyBLEDataConstructerBean;
 import com.yt.base.utils.LogUtlis;
 import com.yt.base.view.BaseViewModel;
 import com.yt.bleandnfc.base.YTApplication;
 import com.yt.bleandnfc.base.activity.YTBaseActivity;
-import com.yt.bleandnfc.bean.NotifyBLEDataConstructerBean;
 import com.yt.bleandnfc.constant.Constants;
+import com.yt.bleandnfc.eventbus.BlueToothStatusAndGPSAndBTResult;
 import com.yt.bleandnfc.manager.IntentManager;
 import com.yt.bleandnfc.nfcres.NfcHandler;
 import com.yt.bleandnfc.nfcres.NfcView;
@@ -45,6 +47,8 @@ import com.yt.bleandnfc.ui.dialog.BLEAndGPSHintDialog;
 import com.yt.bleandnfc.utils.BLEAndGPSUtils;
 import com.yt.common.interfaces.IPermissionListener;
 import com.yt.network.constant.NetConstants;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Timer;
@@ -60,6 +64,8 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
     public LocationManager locationManager = null;
     public String mProviderName = "";
+
+    public MutableLiveData<Integer> mBlueToothStatus = new MutableLiveData<>();
 
     public void setLocationInfo(Application activity) {
         String serviceName = Context.LOCATION_SERVICE;
@@ -316,9 +322,11 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                     break;
 
                 case BLE_CLOSE_OK:
+                    EventBus.getDefault().post(new BlueToothStatusAndGPSAndBTResult(3));
                     break;
 
                 case BLE_OPEN_OK:
+                    EventBus.getDefault().post(new BlueToothStatusAndGPSAndBTResult(2));
                     if (BLEAndGPSUtils.isOpenBLE() && BLEAndGPSUtils.isOpenGPS(YTApplication.getInstance()) && !mInitSuccess) {
                         mClickInit = true;
                         BleNFCManager.getInstance().initBleNFC(YTApplication.getInstance(),(Activity) mContext,mListener);
@@ -353,6 +361,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
     public BleNFCListener mListener = new BleNFCListener() {
         @Override
         public void initFailed(byte data) {//  初始化失败 需要配合相关操作之后再重新初始化
+            mBlueToothStatus.setValue(0);
             if (data == (byte) 0x0001){ //没有打开GPS的情况
 //                Toast.makeText(mContext,"请打开GPS位置信息",Toast.LENGTH_LONG).show();
                 LogUtlis.e(TAG,"initFailed 请打开GPS位置信息");
@@ -369,6 +378,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void initSuccess() {
+            mBlueToothStatus.setValue(0);
             // 初始化成功 可以正常的扫描设备
             mInitSuccess = true;
             if (mClickInit){
@@ -379,6 +389,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void scanDevice() {// 扫描到目标设备
+            mBlueToothStatus.setValue(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -397,6 +408,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void scanNotDevice() { // 未扫描到目标设备
+            mBlueToothStatus.setValue(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -423,6 +435,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void startConnDevice(BleDevice bleDevice) { // 开始连接
+            mBlueToothStatus.setValue(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -437,6 +450,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void connSuccesDevice(BleDevice bleDevice) { // 连接成功
+            mBlueToothStatus.setValue(1);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -452,6 +466,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void getNotifyConnDeviceSuccess(BleDevice bleDevice, String scanDeviceData) {
+            mBlueToothStatus.setValue(1);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -466,6 +481,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void getNotifyConnDeviceFail(BleDevice bleDevice, String scanDeviceData) {
+            mBlueToothStatus.setValue(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -480,6 +496,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void getNotifyConnDeviceData(BleDevice bleDevice, String scanDeviceData) {
+            mBlueToothStatus.setValue(1);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -512,6 +529,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void connFailedDevice(BleDevice bleDevice) { // 连接失败
+            mBlueToothStatus.setValue(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -527,6 +545,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void disConnDevice(BleDevice bleDevice) { // 断开连接
+            mBlueToothStatus.setValue(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -543,11 +562,12 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void replyDataToDeviceSuccess(BleDevice bleDevice, String data) {
+            mBlueToothStatus.setValue(1);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 //                    dataBinding.tvStatus.setText("当前状态：回复设备（" + data +" ）成功");
-                    isStop = true;
+                    isStop = false;
 //                    String mLocation = "蓝牙插件定位信息\n经度："+ Constants.LOCATION_LAT +"\n纬度："+ Constants.LOCATION_LNG;
 //                    dataBinding.tvLocation.setText(mLocation);
 //                    dataBinding.tvReplyDev.setText(data + "------回复成功");
@@ -560,6 +580,7 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
         @Override
         public void replyDataToDeviceFailed(BleDevice bleDevice, String data) {
+            mBlueToothStatus.setValue(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -616,12 +637,14 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                 bean.setKehudaima(content.substring(2, 4));
                 bean.setShujubaoType(content.substring(4, 6));
                 bean.setIpAndPort(content.substring(6, 18));
-                bean.setDevId(content.substring(18, 22));
+                String devId = content.substring(18, 22);
+                bean.setDevId(devId);
                 bean.setPower(content.substring(22, 24));
                 bean.setLatlng(content.substring(24, 40));
                 bean.setLatlngType(content.substring(40, 42));
                 bean.setWeixingnum(content.substring(42, 44));
-                bean.setMac(content.substring(44, 56));
+                String macStr = content.substring(44, 56);
+                bean.setMac(macStr);
                 bean.setVersion(content.substring(56, 58));
                 bean.setBaowei(content.substring(58, 60));
                 runOnUiThread(new Runnable() {
@@ -630,28 +653,70 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                         showToastMsg("数据解析成功：" + bean.toString() + "准备发送关闭命令");
                     }
                 });
-                if (Byte.parseByte(bean.version, 16) == reply_data1) {
-                    BleNFCManager.getInstance().sendWriteData(device, reply_data);
-                } else {
-//                    String bledata = "8FEBAC606EBC0EDA6F6C04007717E2ED8023329C";
-//                    BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(bledata));
-                }
-                // 上报服务器的数据信息
+
+                if (bean.checkMacAndDevId(macStr, devId)) {
+                    if (Constants.mIsSleep){
+                        String dataSend = "8D0000000000000000000000000000000000009C";
+                        BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(dataSend));
+                        Constants.mIsSleep = false;
+                    } else {
+                        // TODO 判断设备当前是否未激活
+                        if (bean.getShujubaoType().contains("04")) {
+                            String dataSend = "8C0000000000000000000000000000000000009C";
+                            BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(dataSend));
+                        } else {
+                            // TODO 判断设备版本与服务器版本是否一致
+                            if (Byte.parseByte(bean.version, 16) == reply_data1) {
+                                // 一致 返回8E 9C
+                                BleNFCManager.getInstance().sendWriteData(device, reply_data);
+                            } else {
+                                String bledata = "8FEBAC606EBC0EDA6F6C04007717E2ED8023329C";
+                                // 8F EB EF60 68DB0EB06F80 04 00 7717E2258023 02 9C
+                                StringBuilder devIds = new StringBuilder()
+                                        .append(macStr.substring(7, 8))
+                                        .append(macStr.substring(3, 4))
+                                        .append(macStr.substring(10, 11))
+                                        .append(macStr.substring(5, 6));
+                                StringBuilder dataBle = new StringBuilder();
+                                dataBle.append("8F"); // 0x8F/0x8D/0x8C	用于标明配置包/通知终端激活/休眠
+                                dataBle.append("EB"); // 客户代码
+                                dataBle.append(devIds.toString()); // DevId
+                                dataBle.append(macStr); // 设备mac地址
+                                dataBle.append("03");//停止事件的判断时间	1 Byte 0x03 停止运动超过设置时间，则判断事件有效，开启GPS。单位：分钟，0A代表10分钟。默认3分钟。
+                                dataBle.append("05");//终端休眠	1 Byte	0x05	禁用4G，GPS的小时数；默认0小时；单位小时，05代表5小时。
+                                String ipandport = bledata.substring(24,36);
+                                dataBle.append(ipandport);//IP在前，设备4G上报的IP和端口。
+                                dataBle.append("32");//用于标注配置的版本号，设备应保存。
+                                dataBle.append("9C");//结束字符
+                                BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(dataBle.toString()));
+                            }
+                        }
+                    }
+
+                    // 上报服务器的数据信息
 //                String result = content.substring(0,4) + "1" + content.substring(5,60);
-                String result = content;
-                String ipandport = bean.getIpAndPort();
-                String ip = bean.getIpAddress();
-                int port = bean.getIPPort();
+                    String result = content;
+                    String ipandport = bean.getIpAndPort();
+                    String ip = bean.getIpAddress();
+                    int port = bean.getIPPort();
 //                if (udpThread == null) {
-                if (NetConstants.IS_IN_TEST) {
-                    ip = NetConstants.UPLOAD_SOCKET_IP;
-                    port = NetConstants.UPLOAD_SOCKET_PORT;
-                }
+                    if (NetConstants.IS_IN_TEST) {
+                        ip = NetConstants.UPLOAD_SOCKET_IP;
+                        port = NetConstants.UPLOAD_SOCKET_PORT;
+                    }
 //                    udpThread = new UDPThread(ip, port);
 //                    udpThread.setSocketListener(mSockestListener);
 //                    udpThread.start();
 //                }
-                upService(result, ip, port);
+                    upService(result, ip, port);
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showToastMsg("设备验证失败");
+                        }
+                    });
+                }
             } else {
                 String showContent = content;
                 runOnUiThread(new Runnable() {
@@ -831,6 +896,8 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
 
             boolean enabled = mLocationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            EventBus.getDefault().post(new BlueToothStatusAndGPSAndBTResult(enabled ? 4 : 5));
             System.out.println("gps enabled? " + enabled);
         }
     };
