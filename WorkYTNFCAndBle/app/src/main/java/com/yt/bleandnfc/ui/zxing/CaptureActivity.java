@@ -277,7 +277,7 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
                     // 扫码知道数据信息
                     mCodeNumber = data;
                     if (mType == 1 || mType == 3) { // 绑定  解绑
-                        viewModel.getCarNumberInfo(mCodeNumber);
+                        parseCarNumber(mCodeNumber);
                     } else if (mType == 2) { // 维修保养
                         EventBus.getDefault().post(new ScanResult(mType, mCodeNumber));
                         finish();
@@ -585,7 +585,7 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
             mCodeNumber = (String) displayContents;
             //提交服务器
             if (mType == 1 || mType == 3) { // 绑定  解绑
-                viewModel.getCarNumberInfo(mCodeNumber);
+                parseCarNumber(mCodeNumber);
             } else if (mType == 2){ // 维修保养
                 EventBus.getDefault().post(new ScanResult(mType,mCodeNumber));
                 finish();
@@ -593,6 +593,21 @@ public final class CaptureActivity extends YTBaseActivity<InputActivateCodeViewM
 
             }
         }
+    }
+
+    private void parseCarNumber(String carNumber){
+        if (carNumber.contains("4028816f6dafb57c016daffc5f41005053")){
+            carNumber = "666666000001";
+        } else if (carNumber.contains("4028816f6dafb57c016daffc5f41004120")){
+            carNumber = "666666000002";
+        } else if (carNumber.contains("4028816f6dafb57c016daffc5f41004405")){
+            carNumber = "666666000003";
+//        } else if (carNumber.contains("4028816f6dafb57c016daffc5f41005053")){
+//            carNumber = "666666000001";
+        } else if (carNumber.contains("4028816f6dafb57c016daffc5f41006359")){
+            carNumber = "666666000005";
+        }
+        viewModel.getCarNumberInfo(carNumber);
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {

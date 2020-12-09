@@ -633,8 +633,8 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                 if (Byte.parseByte(bean.version, 16) == reply_data1) {
                     BleNFCManager.getInstance().sendWriteData(device, reply_data);
                 } else {
-                    String bledata = "8FEBAC606EBC0EDA6F6C04007717E2ED8023329C";
-                    BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(bledata));
+//                    String bledata = "8FEBAC606EBC0EDA6F6C04007717E2ED8023329C";
+//                    BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(bledata));
                 }
                 // 上报服务器的数据信息
 //                String result = content.substring(0,4) + "1" + content.substring(5,60);
