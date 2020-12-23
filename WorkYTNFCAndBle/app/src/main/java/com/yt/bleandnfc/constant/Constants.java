@@ -22,8 +22,10 @@ public class Constants {
     /**
      * 定位信息
      */
-    public static double LOCATION_LNG = 103.3432423;
-    public static double LOCATION_LAT = 30.2321334;
+//    public static double LOCATION_LNG = 103.3432423;
+//    public static double LOCATION_LAT = 30.2321334;
+    public static double LOCATION_LNG = 0.0;
+    public static double LOCATION_LAT = 0.0;
     public static String LOCATION_LNG_TYPE = "E"; // E代表东经，W代表西经
     public static String LOCATION_LAT_TYPE = "N"; // N代表北纬  S 代表南纬
     public static int LOCATION_SATELLIE = 12; // 卫星数量
