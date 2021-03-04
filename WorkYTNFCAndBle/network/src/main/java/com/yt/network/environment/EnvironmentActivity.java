@@ -1,6 +1,5 @@
 package com.yt.network.environment;
 
-
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+
 
 public class EnvironmentActivity extends AppCompatActivity {
 

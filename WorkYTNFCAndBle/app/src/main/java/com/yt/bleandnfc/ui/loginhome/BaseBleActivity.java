@@ -696,7 +696,6 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                     // 上报服务器的数据信息
 //                String result = content.substring(0,4) + "1" + content.substring(5,60);
                     String result = content;
-                    String ipandport = bean.getIpAndPort();
                     String ip = bean.getIpAddress();
                     int port = bean.getIPPort();
 //                if (udpThread == null) {

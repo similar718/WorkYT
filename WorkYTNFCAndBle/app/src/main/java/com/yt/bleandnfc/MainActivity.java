@@ -170,6 +170,10 @@ public class MainActivity extends BaseBleActivity<MainViewModel, ActivityMainBin
         contentView = findViewById(R.id.container);
 
         setSoftKeyBoardListener();
+
+//        upService("FF000000000000000000000000000000000000000000000000000000009C","119.23.226.237",9088);
+//        showToastMsg("上传数据信息 ： FF000000000000000000000000000000000000000000000000000000009C");
+//        LogUtlis.e("ooooooooooo","FF000000000000000000000000000000000000000000000000000000009C");
     }
 
     private View decorView;

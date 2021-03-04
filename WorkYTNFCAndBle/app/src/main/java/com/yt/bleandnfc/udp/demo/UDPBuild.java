@@ -2,6 +2,8 @@ package com.yt.bleandnfc.udp.demo;
 
 import android.util.Log;
 
+import com.yt.bleandnfc.MainActivity;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -137,9 +139,9 @@ public class UDPBuild {
             @Override
             public void run() {
                 try {
+                    byte[] packs = MainActivity.hexStrToByteArray(message);
                     InetAddress targetAddress = InetAddress.getByName(SOCKET_HOST);
-
-                    DatagramPacket packet = new DatagramPacket(message.getBytes(), message.length(), targetAddress, SOCKET_UDP_PORT);
+                    DatagramPacket packet = new DatagramPacket(packs,packs.length, targetAddress, SOCKET_UDP_PORT);
                     client.send(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
