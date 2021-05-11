@@ -148,7 +148,7 @@
             android:layout_height="@dimen/dp_50"
             android:layout_below="@id/tv_ble_name"
             android:background="@color/gray"
-            android:hint="8FEBEF6068DB0EB06F8004007717E2258023029C"
+            android:hint="8FEBEF6068DB0EB06F8004007717E2ED8023029C"
             android:textColor="@color/color_white"
             android:textColorHint="@color/color_white"
             android:singleLine="true"
@@ -156,11 +156,38 @@
             />
 
         <TextView
+            android:id="@+id/tv_mac"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_50"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/et_ble_mac"
+            android:layout_below="@id/et_ble_data"
+            android:layout_marginTop="@dimen/dp_10"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_16"
+            android:text="MAC地址"/>
+
+        <EditText
+            android:id="@+id/et_ble_mac"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_50"
+            android:layout_below="@id/et_ble_data"
+            android:background="@color/gray"
+            android:hint="7717E2ED8023"
+            android:textColor="@color/color_white"
+            android:textColorHint="@color/color_white"
+            android:layout_centerHorizontal="true"
+            android:singleLine="true"
+            android:textSize="@dimen/text_size_14"
+            android:layout_marginTop="@dimen/dp_10"
+            />
+
+        <TextView
             android:id="@+id/tv_nfc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="NFC相关信息："
-            android:layout_below="@+id/et_ble_data"
+            android:layout_below="@+id/et_ble_mac"
             android:textColor="@color/color_black"
             android:layout_marginTop="@dimen/dp_10"
             />

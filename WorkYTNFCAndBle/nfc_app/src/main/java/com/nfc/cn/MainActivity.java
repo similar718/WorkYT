@@ -27,8 +27,6 @@ import com.clj.fastble.libs.config.Constants;
 import com.clj.fastble.libs.utils.GPSUtils;
 import com.clj.fastble.nfc.BleNFCListener;
 import com.clj.fastble.nfc.BleNFCManager;
-// import com.nfc.cn.application.NFCBleApplication;
-// import com.nfc.cn.ble.BleDeviceManager;
 import com.nfc.cn.bean.NotifyBLEDataConstructerBean;
 import com.nfc.cn.databinding.ActivityMainBinding;
 import com.nfc.cn.listener.SocketListener;
@@ -36,7 +34,6 @@ import com.nfc.cn.nfcres.NfcHandler;
 import com.nfc.cn.nfcres.NfcView;
 import com.nfc.cn.service.GPSService;
 import com.nfc.cn.service.KeepAppLifeService;
-import com.nfc.cn.udp.UDPThread;
 import com.nfc.cn.utils.NetWorkUtils;
 import com.nfc.cn.vm.MainViewModel;
 
@@ -119,7 +116,7 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
             @Override
             public void onClick(View v) {
                 mBleName = dataBinding.etBleName.getText().toString().trim(); // 去掉前后的空格
-                if (!mBleName.isEmpty()){
+                if (!TextUtils.isEmpty(mBleName)){
                     Constants.mBleName = mBleName;
 //                    SPUtils.putString(SPUtils.BLE_NAME,mBleName); // 将数据进行保存
                 }
@@ -993,15 +990,15 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
     };
 
     // 8F EB 0B 8E 68 DB 0E B0 6F 80 04 00 77 17 E2 25 80 23 29 9C
-    // 8F 0B 8E 68 DB 0E B0 6F 80 04 00 77 17 E2 25 80 23 29 9C
+    // 8F 0B 8E 68 DB 0E B0 6F 80 04 00 77 17 E2 ED 80 23 29 9C
     byte[] version_data = new byte[]{
             (byte) 0x8F,(byte) 0xEB,(byte) 0xEF,(byte) 0x60,(byte) 0x68,
             (byte) 0xDB,(byte) 0x0E,(byte) 0xB0,(byte) 0x6F,(byte) 0x80,
             (byte) 0x04,(byte) 0x00,(byte) 0x77,(byte) 0x17,(byte) 0xE2,
-            (byte) 0x25,(byte) 0x80,(byte) 0x23,(byte) 0x02,(byte) 0x9C};
+            (byte) 0xED,(byte) 0x80,(byte) 0x23,(byte) 0x02,(byte) 0x9C};
 
     byte[] reply_data = new byte[]{(byte)0x8E,(byte)0x9C};
-    byte reply_data1 = (byte) 0x02;
+    byte reply_data1 = (byte) 0x04;
 
     private boolean mIsParse = false;
     private boolean mIsParseSuccess = false;
@@ -1064,7 +1061,12 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
                     if (mIsSleep){
 //                        String dataSend = "8D0000000000000000000000000000000000009C";
                         String dataSend = "8C0000000000000000000000000000000000009C";
-                        BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataSend));
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataSend));
+                            }
+                        }).start();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -1077,31 +1079,62 @@ public class MainActivity extends NFCBaseActivity<MainViewModel, ActivityMainBin
                         if (bean.getShujubaoType().contains("04")) {
 //                            String dataSend = "8C0000000000000000000000000000000000009C";
                             String dataSend = "8D0000000000000000000000000000000000009C";
-                            BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataSend));
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataSend));
+                                }
+                            }).start();
                         } else {
                             // TODO 判断设备版本与服务器版本是否一致
                             if (Byte.parseByte(bean.version, 16) == reply_data1) {
                                 // 一致 返回8E 9C
-                                BleNFCManager.getInstance().sendOffLine(reply_data);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        BleNFCManager.getInstance().sendOffLine(reply_data);
+                                    }
+                                }).start();
                             } else {
-                                // 8F EB EF60 68DB0EB06F80 04 00 7717E2258023 02 9C
-                                StringBuilder devIds = new StringBuilder()
-                                        .append(macStr.substring(7, 8))
-                                        .append(macStr.substring(3, 4))
-                                        .append(macStr.substring(10, 11))
-                                        .append(macStr.substring(5, 6));
                                 StringBuilder dataBle = new StringBuilder();
                                 dataBle.append("8F"); // 0x8F/0x8D/0x8C	用于标明配置包/通知终端激活/休眠
                                 dataBle.append("EB"); // 客户代码
-                                dataBle.append(devIds.toString()); // DevId
-                                dataBle.append(macStr); // 设备mac地址
+                                String data_mac = dataBinding.etBleMac.getText().toString().trim();
+                                if(!TextUtils.isEmpty(data_mac) && data_mac.length() == 12){
+                                    StringBuilder devIds1 = new StringBuilder()
+                                            .append(data_mac.substring(7, 8))
+                                            .append(data_mac.substring(3, 4))
+                                            .append(data_mac.substring(10, 11))
+                                            .append(data_mac.substring(5, 6));
+                                    dataBle.append(devIds1.toString()); // DevId
+                                    dataBle.append(data_mac);
+                                } else {
+                                    // 8F EB EF60 68DB0EB06F80 04 00 7717E2258023 02 9C
+                                    StringBuilder devIds = new StringBuilder()
+                                            .append(macStr.substring(7, 8))
+                                            .append(macStr.substring(3, 4))
+                                            .append(macStr.substring(10, 11))
+                                            .append(macStr.substring(5, 6));
+                                    dataBle.append(devIds.toString()); // DevId
+                                    dataBle.append(macStr); // 设备mac地址
+                                }
                                 dataBle.append("03");//停止事件的判断时间	1 Byte 0x03 停止运动超过设置时间，则判断事件有效，开启GPS。单位：分钟，0A代表10分钟。默认3分钟。
                                 dataBle.append("05");//终端休眠	1 Byte	0x05	禁用4G，GPS的小时数；默认0小时；单位小时，05代表5小时。
-                                ipandport = dataBinding.etBleData.getText().toString().trim().substring(24,36);
+                                String bleData = dataBinding.etBleData.getText().toString().trim();
+                                if (!TextUtils.isEmpty(bleData) && bleData.length() > 36){
+                                    ipandport = bleData.substring(24,36);
+                                } else {
+                                    ipandport = "7717E2ED8023";
+                                }
                                 dataBle.append(ipandport);//IP在前，设备4G上报的IP和端口。
                                 dataBle.append("02");//用于标注配置的版本号，设备应保存。
                                 dataBle.append("9C");//结束字符
-                                BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataBle.toString()));
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        BleNFCManager.getInstance().sendOffLine(hexStrToByteArray(dataBle.toString()));
+                                    }
+                                }).start();
                             }
                         }
                     }

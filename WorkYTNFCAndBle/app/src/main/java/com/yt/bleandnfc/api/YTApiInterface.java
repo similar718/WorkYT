@@ -34,8 +34,8 @@ public interface YTApiInterface {
      *      device/findDeviceBycarNumber/66660001
      * @return
      */
-//    @POST("device/findDeviceBycarNumber/{number}")
-    @POST("device/findDeviceByNumber/{number}")
+    @POST("device/findDeviceBycarNumber/{number}")
+//    @POST("device/findDeviceByNumber/{number}")
     Observable<CarNumberInfoModel> getCarNumberInfo(@Path("number") String number);
 
     /**

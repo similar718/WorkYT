@@ -90,11 +90,13 @@ public class InfoDetailFragment extends YTBaseFragment<InfoDetailViewModel, Frag
                             stringBuilder.append("未绑定车辆");
                         } else {
                             int len = getUserBindByUserId.getObj().getDevices().size();
-                            for (int i = 0; i < len; i++){
-                                // 有绑定设备
-                                stringBuilder.append("已绑定车辆")
-                                        .append(getUserBindByUserId.getObj().getDevices().get(i).getNumber())
-                                        .append("          ");
+                            for (int i = 0; i < len; i++) {
+                                if (getUserBindByUserId.getObj() != null && getUserBindByUserId.getObj().getDevices() != null && getUserBindByUserId.getObj().getDevices().get(i) != null) {
+                                    // 有绑定设备
+                                    stringBuilder.append("已绑定车辆")
+                                            .append(getUserBindByUserId.getObj().getDevices().get(i).getNumber())
+                                            .append("          ");
+                                }
                             }
                         }
                         dataBinding.tvStatusInfo.setText(stringBuilder);

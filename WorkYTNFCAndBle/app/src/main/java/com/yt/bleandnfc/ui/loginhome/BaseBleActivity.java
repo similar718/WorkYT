@@ -666,30 +666,30 @@ public abstract class BaseBleActivity<VM extends BaseViewModel, DB extends ViewD
                             BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(dataSend));
                         } else {
                             // TODO 判断设备版本与服务器版本是否一致
-                            if (Byte.parseByte(bean.version, 16) == reply_data1) {
+//                            if (Byte.parseByte(bean.version, 16) == reply_data1) {
                                 // 一致 返回8E 9C
                                 BleNFCManager.getInstance().sendWriteData(device, reply_data);
-                            } else {
-                                String bledata = "8FEBAC606EBC0EDA6F6C04007717E2ED8023329C";
-                                // 8F EB EF60 68DB0EB06F80 04 00 7717E2258023 02 9C
-                                StringBuilder devIds = new StringBuilder()
-                                        .append(macStr.substring(7, 8))
-                                        .append(macStr.substring(3, 4))
-                                        .append(macStr.substring(10, 11))
-                                        .append(macStr.substring(5, 6));
-                                StringBuilder dataBle = new StringBuilder();
-                                dataBle.append("8F"); // 0x8F/0x8D/0x8C	用于标明配置包/通知终端激活/休眠
-                                dataBle.append("EB"); // 客户代码
-                                dataBle.append(devIds.toString()); // DevId
-                                dataBle.append(macStr); // 设备mac地址
-                                dataBle.append("03");//停止事件的判断时间	1 Byte 0x03 停止运动超过设置时间，则判断事件有效，开启GPS。单位：分钟，0A代表10分钟。默认3分钟。
-                                dataBle.append("05");//终端休眠	1 Byte	0x05	禁用4G，GPS的小时数；默认0小时；单位小时，05代表5小时。
-                                String ipandport = bledata.substring(24,36);
-                                dataBle.append(ipandport);//IP在前，设备4G上报的IP和端口。
-                                dataBle.append("32");//用于标注配置的版本号，设备应保存。
-                                dataBle.append("9C");//结束字符
-                                BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(dataBle.toString()));
-                            }
+//                            } else {
+//                                String bledata = "8FEBAC606EBC0EDA6F6C04007717E2ED8023329C";
+//                                // 8F EB EF60 68DB0EB06F80 04 00 7717E2258023 02 9C
+//                                StringBuilder devIds = new StringBuilder()
+//                                        .append(macStr.substring(7, 8))
+//                                        .append(macStr.substring(3, 4))
+//                                        .append(macStr.substring(10, 11))
+//                                        .append(macStr.substring(5, 6));
+//                                StringBuilder dataBle = new StringBuilder();
+//                                dataBle.append("8F"); // 0x8F/0x8D/0x8C	用于标明配置包/通知终端激活/休眠
+//                                dataBle.append("EB"); // 客户代码
+//                                dataBle.append(devIds.toString()); // DevId
+//                                dataBle.append(macStr); // 设备mac地址
+//                                dataBle.append("03");//停止事件的判断时间	1 Byte 0x03 停止运动超过设置时间，则判断事件有效，开启GPS。单位：分钟，0A代表10分钟。默认3分钟。
+//                                dataBle.append("05");//终端休眠	1 Byte	0x05	禁用4G，GPS的小时数；默认0小时；单位小时，05代表5小时。
+//                                String ipandport = bledata.substring(24,36);
+//                                dataBle.append(ipandport);//IP在前，设备4G上报的IP和端口。
+//                                dataBle.append("32");//用于标注配置的版本号，设备应保存。
+//                                dataBle.append("9C");//结束字符
+//                                BleNFCManager.getInstance().sendWriteData(device, hexStrToByteArray(dataBle.toString()));
+//                            }
                         }
                     }
 
